@@ -8,7 +8,8 @@ import pyfiglet
 import textwrap
 import brainsss
 
-modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz py-scikit-learn/0.19.1_py36 #antspy/0.2.2'
+modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz py-scikit-learn/0.19.1_py36 
+#antspy/0.2.2'
 
 #########################
 ### Setup preferences ###
@@ -38,6 +39,9 @@ com_path = "/home/users/asmart/projects/brainsss_ash/scripts/com"
 #change this path to your oak directory, something like /oak/stanford/groups/trc/data/Brezovec/data
 dataset_path = "/home/users/asmart/projects/brainsss_ash/demo_data"
 
+date = '20210806
+dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + tr(date)
+
 ###################
 ### Print Title ###
 ###################
@@ -50,26 +54,31 @@ time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
 printlog(F"{day_now+' | '+time_now:^{width}}")
 printlog("")
 
-###############
-### Fictrac ###
-###############
+########################
+## stitch nii files ####
+########################
 
-### This will make some figures of your fictrac data
-printlog(f"\n{'   FICTRAC QC   ':=^{width}}")
-job_ids = []
-for fly in flies:
-    directory = os.path.join(dataset_path, fly, 'fictrac')
-    if os.path.exists(directory):
-        args = {'logfile': logfile, 'directory': directory}
-        script = 'fictrac.py'
-        job_id = brainsss.sbatch(jobname='fictrac',
-                             script=os.path.join(scripts_path, script),
-                             modules=modules,
-                             args=args,
-                             logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
-        job_ids.append(job_id)
-for job_id in job_ids:
-    brainsss.wait_for_job(job_id, logfile, com_path)
+
+# ###############
+# ### Fictrac ###
+# ###############
+
+# ### This will make some figures of your fictrac data
+# printlog(f"\n{'   FICTRAC QC   ':=^{width}}")
+# job_ids = []
+# for fly in flies:
+#     directory = os.path.join(dataset_path, fly, 'fictrac')
+#     if os.path.exists(directory):
+#         args = {'logfile': logfile, 'directory': directory}
+#         script = 'fictrac.py'
+#         job_id = brainsss.sbatch(jobname='fictrac',
+#                              script=os.path.join(scripts_path, script),
+#                              modules=modules,
+#                              args=args,
+#                              logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
+#         job_ids.append(job_id)
+# for job_id in job_ids:
+#     brainsss.wait_for_job(job_id, logfile, com_path)
 
 ####################
 ### Bleaching QC ###
