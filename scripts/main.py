@@ -37,10 +37,10 @@ scripts_path = "/home/users/asmart/projects/brainsss_ash/scripts"
 com_path = "/home/users/asmart/projects/brainsss_ash/scripts/com"
 
 #change this path to your oak directory, something like /oak/stanford/groups/trc/data/Brezovec/data
-dataset_path = "/home/users/asmart/projects/brainsss_ash/demo_data"
+#dataset_path = "/home/users/asmart/projects/brainsss_ash/demo_data"
 
 date = '20210806
-dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + tr(date)
+dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 
 ###################
 ### Print Title ###
