@@ -39,8 +39,9 @@ com_path = "/home/users/asmart/projects/brainsss_ash/scripts/com"
 #change this path to your oak directory, something like /oak/stanford/groups/trc/data/Brezovec/data
 #dataset_path = "/home/users/asmart/projects/brainsss_ash/demo_data"
 
-date = '20210806
-dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+date = '20210806'
+fly_folder = 'fly1_20s-011'
+dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date) + "/" + str(fly_folder)
 
 ###################
 ### Print Title ###
@@ -53,10 +54,6 @@ day_now = datetime.datetime.now().strftime("%B %d, %Y")
 time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
 printlog(F"{day_now+' | '+time_now:^{width}}")
 printlog("")
-
-########################
-## stitch nii files ####
-########################
 
 
 # ###############
