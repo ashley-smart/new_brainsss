@@ -14,12 +14,13 @@ def main(args):
     directory = args['directory']
     width = 120
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
+    files = args['files']
 
     #################
     ### Load Data ###
     #################
 
-    files = ['functional_channel_1', 'functional_channel_2']
+    
     data_mean = {}
     for file in files:
         full_file = os.path.join(directory, file + '.nii')
