@@ -6,6 +6,7 @@ import json
 import datetime
 import pyfiglet
 import textwrap
+import numpy as np
 
 
 
