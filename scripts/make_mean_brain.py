@@ -8,13 +8,11 @@ import numpy as np
 import nibabel as nib
 
 def main(args):
-
     logfile = args['logfile']
     directory = args['directory'] # directory will be a full path to either an anat/imaging folder or a func/imaging folder
     files = args['files']
     width = 120
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
-
     #files = ['functional_channel_1', 'functional_channel_2', 'anatomy_channel_1', 'anatomy_channel_2']
     
     #need to loop through all the files to stitch the brain, then I can make the means. 
@@ -58,7 +56,7 @@ def main(args):
         printlog("ch2 brain stiched and saved")
         
         
-     for file in files:
+    for file in files:
         #only look at stitched brains
         if "stitched_" in file:
             ### make mean ###
