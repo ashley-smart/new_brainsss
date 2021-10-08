@@ -75,9 +75,11 @@ def main(args):
             #printlog(f"COMPLETE | {fly_func_str} | {file} | {brain.shape} --> {meanbrain.shape}")
             printlog(F"meanbrn | COMPLETED | {fly_print} | {func_print} | {file} | {brain.shape} ===> {meanbrain.shape}")
             print(brain.shape[-1]) ### IMPORTANT: for communication to main
-        except FileNotFoundError:
-            printlog(F"Not found (skipping){file:.>{width-20}}")
-            #printlog(f'{file} not found.')
+         else:
+            printlog("COULD NOT FIND STITCHED FILES")
+#         except FileNotFoundError:
+#             printlog(F"Not found (skipping){file:.>{width-20}}")
+#             #printlog(f'{file} not found.')
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
