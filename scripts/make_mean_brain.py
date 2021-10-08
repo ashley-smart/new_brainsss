@@ -31,7 +31,7 @@ def main(args):
             full_brain_ch2.append(brain_ch2)
         else:
             printlog("did not find channels-stitch brain brain")
-            printlog(files, "files mean-brain")
+            printlog(files)
         #catch Exception as e:
         #    printlog(e)
 #         except:
