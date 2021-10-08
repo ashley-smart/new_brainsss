@@ -34,7 +34,7 @@ for fly in fly_folders:
       aff = np.eye(4)
       img = nib.Nifti1Image(stitched_brain_ch1, aff)
       img.to_filename(save_file)
-      #printlog("ch1 brain stitched and saved")
+      printlog("ch1 brain stitched and saved")
 
   if len(full_brain_ch2) > 0:
       stitched_brain_ch2 = np.concatenate(full_brain_ch2, axis = -1)
@@ -43,4 +43,4 @@ for fly in fly_folders:
       aff = np.eye(4)
       img = nib.Nifti1Image(stitched_brain_ch2, aff)
       img.to_filename(save_file)
-      #printlog("ch2 brain stiched and saved")
+      printlog("ch2 brain stiched and saved")
