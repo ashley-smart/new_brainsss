@@ -12,12 +12,13 @@ import ants
 
 def main(args):
     files = args['files'] # need all stitched files
-    printlog("MOCO FILES", files)
+    
     logfile = args['logfile']
     directory = args['directory'] # directory will be a full path to either an anat folder or a func folder
     start = int(args['start'])
     stop = int(args['stop'])
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
+    printlog("MOCO FILES", files)
 
     moco_dir = os.path.join(directory, 'moco')
 
