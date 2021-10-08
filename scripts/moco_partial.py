@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 import ants
 
 def main(args):
-    files = arg['files'] # need all stitched files
+    files = args['files'] # need all stitched files
     logfile = args['logfile']
     directory = args['directory'] # directory will be a full path to either an anat folder or a func folder
     start = int(args['start'])
