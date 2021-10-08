@@ -76,7 +76,7 @@ printlog(f"\n{'   MEAN BRAINS   ':=^{width}}")
 job_ids = []
 for fly in flies:
     directory = os.path.join(dataset_path, fly)
-    files = os.listdir(os.path.join(dataset_path, fly) #to get the name of the files in each fly folder
+    files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
     args = {'logfile': logfile, 'directory': directory, 'files': files}
     script = 'make_mean_brain.py'
     job_id = brainsss.sbatch(jobname='meanbrn',
