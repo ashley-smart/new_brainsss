@@ -17,6 +17,7 @@ fly_folders = os.listdir(dataset_path)  ## find directory names, they are the fl
 
 for fly in fly_folders: 
   directory = os.path.join(dataset_path, fly)
+  files = os.listdir(directory)
   for file in files:
       ## stitch brain ##
       if "channel_1" in file:
