@@ -75,7 +75,7 @@ def main(args):
             #printlog(f"COMPLETE | {fly_func_str} | {file} | {brain.shape} --> {meanbrain.shape}")
             printlog(F"meanbrn | COMPLETED | {fly_print} | {func_print} | {file} | {brain.shape} ===> {meanbrain.shape}")
             print(brain.shape[-1]) ### IMPORTANT: for communication to main
-         else:
+        else:
             printlog("COULD NOT FIND STITCHED FILES")
 #         except FileNotFoundError:
 #             printlog(F"Not found (skipping){file:.>{width-20}}")
