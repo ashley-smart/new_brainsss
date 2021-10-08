@@ -126,7 +126,7 @@ job_ids = []
 for fly in flies:
     directory = os.path.join(dataset_path, fly)
     ### ADD FILES ARGUMENT TO BLEACHING AND FIND THE STITCHED BRAIN FILES TO RUN BLEACHING ON      
-    all_files = os.listdir(os.path.join(dataset_path, fly) #to get the name of the files in each fly folder
+    all_files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
     files = []
     for file in all_files:
         if "stitched.nii" in file: #to get just stitched channels (to get mean brain stitched use "stitched_mean.nii")
