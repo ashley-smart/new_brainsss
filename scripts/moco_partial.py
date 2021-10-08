@@ -18,7 +18,7 @@ def main(args):
     start = int(args['start'])
     stop = int(args['stop'])
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
-    printlog("MOCO FILES", files)
+    #printlog("MOCO FILES", files)
 
     moco_dir = os.path.join(directory, 'moco')
 
