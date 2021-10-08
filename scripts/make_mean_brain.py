@@ -21,6 +21,7 @@ def main(args):
     full_brain_ch1 = []
     full_brain_ch2 = []
     for file in files:
+        printlog(str(file))
         #try:
         ## stitch brain ##
         if "channel_1" in file:
