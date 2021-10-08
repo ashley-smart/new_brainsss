@@ -27,17 +27,20 @@ def main(args):
         if "channel_1" in file:
             brain_ch1 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
             full_brain_ch1.append(brain_ch1)
+            printlog("found ch1 file")
         elif "channel_2" in file:
             brain_ch2 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
             full_brain_ch2.append(brain_ch2)
-        else:
-            printlog("did not find channels-stitch brain brain")
-            #printlog(files)
+            printlog("found ch2 file")
+#         else:
+#             printlog("did not find channels-stitch brain brain")
+#             #printlog(files)
         #catch Exception as e:
         #    printlog(e)
 #         except:
 #             printlog("did not find channels-mean brain")
-            
+    
+    #save files        
     if len(full_brain_ch1) > 0:       
         stitched_brain_ch1 = np.concatenate(full_brain_ch1, axis = -1)
         #save stiched brain
@@ -55,6 +58,7 @@ def main(args):
         img = nib.Nifti1Image(stitched_brain_ch2, aff)
         img.to_filename(save_file)
         printlog("ch2 brain stiched and saved")
+    
         
         
     for file in files:
