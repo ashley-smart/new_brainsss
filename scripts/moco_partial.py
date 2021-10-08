@@ -11,7 +11,7 @@ warnings.filterwarnings("ignore")
 import ants
 
 def main(args):
-
+    files = arg['files'] # need all stitched files
     logfile = args['logfile']
     directory = args['directory'] # directory will be a full path to either an anat folder or a func folder
     start = int(args['start'])
@@ -21,9 +21,13 @@ def main(args):
     moco_dir = os.path.join(directory, 'moco')
 
     try:
-      master_path = os.path.join(directory, 'functional_channel_1.nii')
-      moving_path = os.path.join(directory, 'functional_channel_2.nii')
-      master_path_mean = os.path.join(directory, 'functional_channel_1_mean.nii')
+      for file in files:
+          if 'ch1_stitched.nii' in file:
+              master_path = os.path.join(directory, file)
+          elif 'ch2_stitched.nii' in file:
+              moving_path = os.path.join(directory, file)
+          elif 'ch_1_stitched_mean' in file: 
+              master_path_mean = os.path.join(directory, file)
 
       # For the sake of memory, load only the part of the brain we will need.
       master_brain = load_partial_brain(master_path,start,stop)
