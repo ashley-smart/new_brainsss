@@ -43,16 +43,10 @@ com_path = "/home/users/asmart/projects/brainsss_ash/scripts/com"
 #dataset_path = "/home/users/asmart/projects/brainsss_ash/demo_data"
 
 date = '20210806'
-#fly_folder = 'fly1_20s-011'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 flies = os.listdir(dataset_path)  ## find directory names, they are the fly names
-#dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date) + "/" + str(fly_folder)
+#fly specified later
 
-########################
-### get files ########
-#####################
-##files = os.listdir(os.path.join(dataset_path, )
-#will be specified to stitched brain after mean brains code
 
 ###################
 ### Print Title ###
