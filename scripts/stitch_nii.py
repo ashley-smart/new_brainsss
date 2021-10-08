@@ -7,6 +7,7 @@ import datetime
 import pyfiglet
 import textwrap
 import numpy as np
+import nibabel as nib
 
 
 
