@@ -16,16 +16,17 @@ date = '20210806'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 fly_folders = os.listdir(dataset_path)  ## find directory names, they are the fly names
 
-
+full_brain_ch1 = []
+full_brain_ch2 = []
 for fly in fly_folders: 
   directory = os.path.join(dataset_path, fly)
   files = os.listdir(directory)
   for file in files:
       ## stitch brain ##
-      if "channel_1" in file:
+      if "channel_1" in file and "nii" in file: 
           brain_ch1 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
           full_brain_ch1.append(brain_ch1)
-      elif "channel_2" in file:
+      elif "channel_2" in file and "nii" in file:
           brain_ch2 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
           full_brain_ch2.append(brain_ch2)
           
