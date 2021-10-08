@@ -119,7 +119,7 @@ for job_id in job_ids:
 ####################
 
 ### This will make a figure of bleaching
-for file in files:
+
     
 printlog(f"\n{'   BLEACHING QC   ':=^{width}}")
 job_ids = []
