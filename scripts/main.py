@@ -168,13 +168,19 @@ for fly in flies:
 
     starts = list(range(0,timepoints,step))
     stops = starts[1:] + [timepoints]
+    
+    files = []
+    for file in all_files:
+        if "stitched" in file: #to get just stitched channels (mean and non-mean)
+            files.append(file)
 
     #######################
     ### Launch partials ###
     #######################
+     
     job_ids = []
     for start, stop in zip (starts, stops):
-        args = {'logfile': logfile, 'directory': directory, 'start': start, 'stop': stop}
+        args = {'logfile': logfile, 'directory': directory, 'start': start, 'stop': stop, 'files': files}
         script = 'moco_partial.py'
         job_id = brainsss.sbatch(jobname='moco',
                              script=os.path.join(scripts_path, script),
