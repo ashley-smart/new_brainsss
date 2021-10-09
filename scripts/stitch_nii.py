@@ -8,6 +8,7 @@ import pyfiglet
 import textwrap
 import numpy as np
 import nibabel as nib
+import gc
 
 
 
@@ -42,6 +43,7 @@ for fly in fly_folders:
       printlog("ch1 brain stitched and saved")
       del full_brain_ch1  #to delete from memory
       del stitched_brain_ch1 # to delete from memory
+      gc.collect()
       
   ### splitting this up to help the memory (hopefully)
   
@@ -61,3 +63,4 @@ for fly in fly_folders:
       printlog("ch2 brain stiched and saved")
       del full_brain_ch2  #to delete from memory
       del stitched_brain_ch2 # to delete from memory
+      gc.collect()
