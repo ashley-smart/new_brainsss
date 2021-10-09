@@ -40,7 +40,6 @@ for fly in fly_folders:
       aff = np.eye(4)
       img = nib.Nifti1Image(stitched_brain_ch1, aff)
       img.to_filename(save_file)
-      printlog("ch1 brain stitched and saved")
       del full_brain_ch1  #to delete from memory
       del stitched_brain_ch1 # to delete from memory
       gc.collect()
@@ -60,7 +59,6 @@ for fly in fly_folders:
       aff = np.eye(4)
       img = nib.Nifti1Image(stitched_brain_ch2, aff)
       img.to_filename(save_file)
-      printlog("ch2 brain stiched and saved")
       del full_brain_ch2  #to delete from memory
       del stitched_brain_ch2 # to delete from memory
       gc.collect()
