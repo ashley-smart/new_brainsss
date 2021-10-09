@@ -36,13 +36,13 @@ for fly in fly_folders:
   if len(full_brain_ch1) > 0:       
       stitched_brain_ch1 = np.concatenate(full_brain_ch1, axis = -1)
       #save stiched brain
-      save_file = os.path.join(directory, '_ch1_stitched.nii')
+      save_file = os.path.join(directory, 'ch1_stitched.nii')  #it is important this is saved as ch1 rather than channel so it doesn't try to get restitched if the code runs twice
       aff = np.eye(4)
       img = nib.Nifti1Image(stitched_brain_ch1, aff)
       img.to_filename(save_file)
       del full_brain_ch1  #to delete from memory
       del stitched_brain_ch1 # to delete from memory
-      gc.collect()
+      gc.collect()  #extra delete from memory
       
   ### splitting this up to help the memory (hopefully)
   
@@ -55,7 +55,7 @@ for fly in fly_folders:
   if len(full_brain_ch2) > 0:
       stitched_brain_ch2 = np.concatenate(full_brain_ch2, axis = -1)
       #save stitched brain
-      save_file = os.path.join(directory, '_ch2_stitched.nii')
+      save_file = os.path.join(directory, 'ch2_stitched.nii')
       aff = np.eye(4)
       img = nib.Nifti1Image(stitched_brain_ch2, aff)
       img.to_filename(save_file)
