@@ -15,55 +15,11 @@ def main(args):
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     #files = ['functional_channel_1', 'functional_channel_2', 'anatomy_channel_1', 'anatomy_channel_2']
     
-    #need to loop through all the files to stitch the brain, then I can make the means. 
-    #can make the means from the stitched brains rather than the individual files. It will require storing more memory since will have to open both brains and store them
-    #could save them and then reopen it
-    full_brain_ch1 = []
-    full_brain_ch2 = []
-    for file in files:
-        printlog(str(file))
-        #try:
-        ## stitch brain ##
-        if "channel_1" in file:
-            brain_ch1 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
-            full_brain_ch1.append(brain_ch1)
-            printlog("found ch1 file")
-        elif "channel_2" in file:
-            brain_ch2 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
-            full_brain_ch2.append(brain_ch2)
-            printlog("found ch2 file")
-#         else:
-#             printlog("did not find channels-stitch brain brain")
-#             #printlog(files)
-        #catch Exception as e:
-        #    printlog(e)
-#         except:
-#             printlog("did not find channels-mean brain")
-    
-    #save files        
-    if len(full_brain_ch1) > 0:       
-        stitched_brain_ch1 = np.concatenate(full_brain_ch1, axis = -1)
-        #save stiched brain
-        save_file = os.path.join(directory, '_ch1_stitched.nii')
-        aff = np.eye(4)
-        img = nib.Nifti1Image(stitched_brain_ch1, aff)
-        img.to_filename(save_file)
-        printlog("ch1 brain stitched and saved")
-        
-    if len(full_brain_ch2) > 0:
-        stitched_brain_ch2 = np.concatenate(full_brain_ch2, axis = -1)
-        #save stitched brain
-        save_file = os.path.join(directory, '_ch2_stitched.nii')
-        aff = np.eye(4)
-        img = nib.Nifti1Image(stitched_brain_ch2, aff)
-        img.to_filename(save_file)
-        printlog("ch2 brain stiched and saved")
-    
-        
+    ### stitching now happens in a different script. run stitch.sh        
         
     for file in files:
         #only look at stitched brains
-        if "stitched_" in file:
+        if "stitched" in file:
             ### make mean ###
             brain = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
             meanbrain = np.mean(brain, axis=-1)
