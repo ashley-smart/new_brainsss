@@ -25,7 +25,7 @@ def main(args):
             meanbrain = np.mean(brain, axis=-1)
 
             ### Save ###
-            save_file = os.path.join(directory, file + '_mean.nii')
+            save_file = os.path.join(directory, file[:-4] + '_mean.nii') ##file[:-4] is to remove the .nii from the previous file
             aff = np.eye(4)
             img = nib.Nifti1Image(meanbrain, aff)
             img.to_filename(save_file)
