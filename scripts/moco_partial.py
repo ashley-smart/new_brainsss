@@ -26,6 +26,7 @@ def main(args):
       for file in files:
           if 'ch1_stitched.nii' in file:
               master_path = os.path.join(directory, file)
+              printlog("ch1 stitched found and master path created")
           elif 'ch2_stitched.nii' in file:
               moving_path = os.path.join(directory, file)
           elif 'ch_1_stitched_mean' in file: 
