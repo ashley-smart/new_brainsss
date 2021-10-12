@@ -167,6 +167,8 @@ for fly in flies:
     for file in all_files:
         if "stitched" in file: #to get just stitched channels (mean and non-mean)
             files.append(file)
+    printlog("MOCO files: ")
+    printlog(files)
 
     #######################
     ### Launch partials ###
