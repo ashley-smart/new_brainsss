@@ -23,7 +23,7 @@ def main(args):
     
     data_mean = {}
     for file in files:
-        full_file = os.path.join(directory, file + '.nii')
+        full_file = os.path.join(directory, file)
         if os.path.exists(full_file):
             brain = np.asarray(nib.load(full_file).get_data(), dtype='uint16')
             data_mean[file] = np.mean(brain,axis=(0,1,2))
