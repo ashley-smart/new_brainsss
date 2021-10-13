@@ -29,7 +29,7 @@ def main(args):
               printlog("ch1 stitched found and master path created")
           elif 'ch2_stitched.nii' in file:
               moving_path = os.path.join(directory, file)
-          elif 'ch_1_stitched_mean' in file: 
+          elif 'ch1_stitched_mean' in file: 
               master_path_mean = os.path.join(directory, file)
 
       # For the sake of memory, load only the part of the brain we will need.
