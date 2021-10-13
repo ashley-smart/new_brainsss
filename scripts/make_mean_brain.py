@@ -19,7 +19,7 @@ def main(args):
         
     for file in files:
         #only look at stitched brains
-        if "stitched" in file:
+        if "stitched.nii" in file:
             ### make mean ###
             brain = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
             meanbrain = np.mean(brain, axis=-1)
