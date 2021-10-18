@@ -15,8 +15,12 @@ import gc
 #get to files
 date = '20210716'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
-fly_folders = os.listdir(dataset_path)  ## find directory names, they are the fly names
-
+fly_files = os.listdir(dataset_path)  ## find directory names, they are the fly names
+fly_folders = []
+for i in fly_files:
+  if os.path.isdir(os.path.join(dataset_path, i)):
+    fly_folders.append(i)
+  
 
 for fly in fly_folders: 
   directory = os.path.join(dataset_path, fly)
