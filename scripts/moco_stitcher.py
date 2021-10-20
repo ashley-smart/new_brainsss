@@ -49,7 +49,7 @@ def main(args):
             stitched_brain = np.concatenate(brains, axis=-1)
             printlog('Stitched brain shape: {}'.format(np.shape(stitched_brain)))
 
-            save_file = os.path.join(directory, 'stitched_brain_{}.nii'.format(color))
+            save_file = os.path.join(directory, 'moco_stitched_brain_{}.nii'.format(color))
             printlog(f'Saving {save_file}')
             aff = np.eye(4)
             img = nib.Nifti1Image(stitched_brain, aff)
