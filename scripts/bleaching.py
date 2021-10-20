@@ -53,7 +53,7 @@ def main(args):
         if not np.isnan(signal_loss[file]):
             loss_string = loss_string + file + ' lost' + F'{int(signal_loss[file])}' +'%\n'
         else:
-            printlog("Nan found)
+            printlog("Nan found")
             loss_string = file + 'nan'
     plt.title(loss_string, ha='center', va='bottom')
     # plt.text(0.5,0.9,
