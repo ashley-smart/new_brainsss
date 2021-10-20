@@ -20,7 +20,7 @@ def main(args):
     #['red', 'green']
     printlog('colors are: {}'.format(colors))
     for color in colors:
-        brain_file = os.path.join(directory, 'moco', 'stitched_brain_{}.nii'.format(color))
+        brain_file = os.path.join(directory, 'moco', 'moco_stitched_brain_{}.nii'.format(color))
         if os.path.exists(brain_file):
             t0 = time.time()
             to_print = '/'.join(brain_file.split('/')[-4:])
