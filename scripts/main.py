@@ -141,14 +141,13 @@ for job_id in job_ids:
 ##################
 ### Start MOCO ###
 ##################
-timepoints = 10 #number of volumes
-step = 5 #how many volumes one job will handle
-mem = 4
-time_moco = 1
+timepoints = 6761 #number of volumes  Try to unhard-code this to match my actual brains
+step = 100 #how many volumes one job will handle Luke recs 100 for functional and 10 for anatomical
+mem = 4 #luke recs 7 for anatomical (should write this in later to check which one it is)
+time_moco = 4 #no idea what this means
 
 printlog(f"\n{'   MOTION CORRECTION   ':=^{width}}")
 # This will immediately launch all partial mocos and their corresponding dependent moco stitchers
-### ADD FILES ARGUMENT TO MOCO AND FIND THE STITCHED BRAIN FILES TO RUN ON ---sort out how it runs auto? ahh do it below            
                        
 stitcher_job_ids = []
 progress_tracker = {}
@@ -201,7 +200,7 @@ for fly in flies:
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
-                         logfile=logfile, time=2, mem=4, dep=job_ids_colons, nice=nice, nodes=nodes)
+                         logfile=logfile, time=2, mem=12, dep=job_ids_colons, nice=nice, nodes=nodes)
     stitcher_job_ids.append(job_id)
 
 if bool(progress_tracker): #if not empty
