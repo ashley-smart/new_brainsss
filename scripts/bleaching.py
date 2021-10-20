@@ -50,7 +50,8 @@ def main(args):
     plt.ylabel('Avg signal')
     loss_string = ''
     for file in data_mean:
-        loss_string = loss_string + file + ' lost' + F'{int(signal_loss[file])}' +'%\n'
+        if not np.isnan(signal_loss[file]):
+            loss_string = loss_string + file + ' lost' + F'{int(signal_loss[file])}' +'%\n'
     plt.title(loss_string, ha='center', va='bottom')
     # plt.text(0.5,0.9,
     #          loss_string,
