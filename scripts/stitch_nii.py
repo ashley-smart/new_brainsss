@@ -13,7 +13,7 @@ import gc
 
 
 #get to files
-date = '20210716'
+date = '20210714'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 fly_files = os.listdir(dataset_path)  ## find directory names, they are the fly names
 fly_folders = []
