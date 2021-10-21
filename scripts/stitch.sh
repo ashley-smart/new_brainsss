@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=brainsss
+#SBATCH --job-name=stitch nii
 #SBATCH --partition=trc
 #SBATCH --time=3-00:00:00
 #SBATCH --ntasks=1
