@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=brainsss
+#SBATCH --job-name=brainsss_ash
 #SBATCH --partition=trc
 #SBATCH --time=3-00:00:00
 #SBATCH --ntasks=1
