@@ -223,7 +223,7 @@ for fly in flies:
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
-                         logfile=logfile, time=2, mem=16, nice=nice, nodes=nodes)
+                         logfile=logfile, time=2, mem=32, nice=nice, nodes=nodes)
     job_ids.append(job_id)
 
 for job_id in job_ids:
