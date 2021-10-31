@@ -68,6 +68,10 @@ def main(args):
             img.to_filename(zbrain_file)
 
             # printlog("brain save duration: ({})".format(time.time()-t0))
+            
+            del zbrain_file  #to delete from memory
+            del brain # to delete from memory
+            gc.collect()  #extra delete from memory
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
