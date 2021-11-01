@@ -40,8 +40,10 @@ def main(args):
     for file in data_mean:
         xs = np.arange(len(data_mean[file]))
         color='k'
-        if file[-1] == '1': color='red'
-        if file[-1] == '2': color='green'
+#         if file[-1] == '1': color='red'
+#         if file[-1] == '2': color='green'
+        if 'ch1' in file: color='red'
+        if 'ch2' in file: color='green'
         plt.plot(data_mean[file],color=color,label=file)
         linear_fit = np.polyfit(xs, data_mean[file], 1)
         plt.plot(np.poly1d(linear_fit)(xs),color='k',linewidth=3,linestyle='--')
