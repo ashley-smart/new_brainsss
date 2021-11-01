@@ -45,8 +45,13 @@ com_path = "/home/users/asmart/projects/brainsss_ash/scripts/com"
 
 date = '20210716'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
-flies = os.listdir(dataset_path)  ## find directory names, they are the fly names
+flies_temp = os.listdir(dataset_path)  ## find directory names, they are the fly names
 #fly specified later
+flies = []
+for i in flies_temp:
+    if os.path.isdir(i):
+        flies.append(i)
+    
 
 
 ###################
