@@ -7,6 +7,7 @@ import json
 import nibabel as nib
 from time import time
 import matplotlib.pyplot as plt
+import gc
 
 def main(args):
 
@@ -58,6 +59,12 @@ def main(args):
 
             # delete partial brains
             [os.remove(file) for file in files[color]]
+            
+            del stitched_brain
+            del brains
+            gc.collect()
+            
+            
 
     ##########################
     ### Stitch moco params ###
