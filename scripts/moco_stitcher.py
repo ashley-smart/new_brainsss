@@ -21,7 +21,7 @@ def main(args):
     ### Get file names ###
     ######################
 
-    colors = ['green', 'red']
+    colors = ['ch1', 'ch2']
     files = {}
     for color in colors:
         files[color] = []
