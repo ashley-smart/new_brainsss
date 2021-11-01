@@ -8,6 +8,7 @@ import time
 from scipy.ndimage import gaussian_filter1d
 import nibabel as nib
 import brainsss
+import gc
 
 def main(args):
 
@@ -72,6 +73,7 @@ def main(args):
             del zbrain_file  #to delete from memory
             del brain # to delete from memory
             gc.collect()  #extra delete from memory
+            printlog("deleting brains from memory")
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
