@@ -200,7 +200,7 @@ for fly in flies:
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
-                         logfile=logfile, time=2, mem=12, dep=job_ids_colons, nice=nice, nodes=nodes)
+                         logfile=logfile, time=2, mem=20, dep=job_ids_colons, nice=nice, nodes=nodes)
     stitcher_job_ids.append(job_id)
 
 if bool(progress_tracker): #if not empty
