@@ -223,7 +223,7 @@ printlog(f"\n{'   Z-SCORE   ':=^{width}}")
 job_ids = []
 for fly in flies:
     directory = os.path.join(dataset_path, fly)
-    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['ch1', 'ch2']} #['green', 'red']}
+    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green', 'red']} #['ch1', 'ch2']} #moco.py will add color suffix and then moco_stitcher will save with that suffix
     script = 'zscore.py'
     job_id = brainsss.sbatch(jobname='zscore',
                          script=os.path.join(scripts_path, script),
