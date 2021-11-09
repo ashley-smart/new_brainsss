@@ -29,7 +29,7 @@ def main(args):
 
             brain = np.asarray(nib.load(brain_file).get_data(), dtype='uint16')
 
-            # printlog("brain load duration: ({})".format(time.time()-t0))
+            printlog("brain load duration: ({})".format(time.time()-t0))
             # t0 = time.time()
             printlog('smooth is {}'.format(smooth))
             if smooth:
@@ -48,30 +48,32 @@ def main(args):
             # Z-score brain
             brain_mean  = np.mean(brain, axis=3)
 
-            # printlog("brain mean duration: ({})".format(time.time()-t0))
+            printlog("brain mean duration: ({})".format(time.time()-t0))
             # t0 = time.time()
 
             brain_std = np.std(brain, axis=3)
 
-            # printlog("brain std duration: ({})".format(time.time()-t0))
+            printlog("brain std duration: ({})".format(time.time()-t0))
             # t0 = time.time()
 
             brain = (brain - brain_mean[:,:,:,None]) / brain_std[:,:,:,None]
 
-            # printlog("brain zscored duration: ({})".format(time.time()-t0))
+            printlog("brain zscored duration: ({})".format(time.time()-t0))
             # t0 = time.time()
 
             # Save brain
             
-            #printlog('Saving {}'.format(zbrain_file))
+            printlog('Saving {}'.format(zbrain_file))
             aff = np.eye(4)
             img = nib.Nifti1Image(brain, aff)
             img.to_filename(zbrain_file)
 
-            # printlog("brain save duration: ({})".format(time.time()-t0))
+            printlog("brain save duration: ({})".format(time.time()-t0))
             
             del zbrain_file  #to delete from memory
             del brain # to delete from memory
+            del brain_std
+            del brain_mean
             gc.collect()  #extra delete from memory
             printlog("deleting brains from memory")
 
