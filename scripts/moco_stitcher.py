@@ -21,7 +21,8 @@ def main(args):
     ### Get file names ###
     ######################
 
-    colors = ['ch1', 'ch2']
+    #colors = ['ch1', 'ch2']
+    colors = ['green', 'red'] #keep colors green and red moco.py converst ch2 to green and ch1 to red
     files = {}
     for color in colors:
         files[color] = []
