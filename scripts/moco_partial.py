@@ -28,7 +28,7 @@ def main(args):
               master_path = os.path.join(directory, file)
               printlog("ch1 stitched found and master path created")
           elif 'ch2_stitched.nii' in file:
-              moving_path = os.path.join(directory, file)
+              moving_path = os.path.join(directory, file)  #in moco.py moving brain will be saved as green
           elif 'ch1_stitched_mean' in file: 
               master_path_mean = os.path.join(directory, file)
 
