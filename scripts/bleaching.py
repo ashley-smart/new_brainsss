@@ -29,6 +29,21 @@ def main(args):
             data_mean[file] = np.mean(brain,axis=(0,1,2))
         else:
             printlog(F"Not found (skipping){file:.>{width-20}}")
+            
+        ## run bleaching correction and save bleach corrected brain -> consider using for rest of analysis, currently I'm not
+        bleach_corr_brain = bleaching_correction(brain, sigma = 200)
+        #save bleach corr brain
+        if 'ch1' in file: color='red'
+        elif 'ch2' in file: color='green'
+        save_file = os.path.join(directory, 'bleach_corr_brain_{}.nii'.format(color))
+        aff = np.eye(4)
+        img = nib.Nifti1Image(bleach_corr_brain, aff)
+        img.to_filename(save_file)
+        bleach_corr_brain = None
+        del bleach_corr_brain
+        gc.collect()
+       
+       
 
     ##############################
     ### Output Bleaching Curve ###
@@ -43,7 +58,7 @@ def main(args):
 #         if file[-1] == '1': color='red'
 #         if file[-1] == '2': color='green'
         if 'ch1' in file: color='red'
-        if 'ch2' in file: color='green'
+        elif 'ch2' in file: color='green'
         plt.plot(data_mean[file],color=color,label=file)
         linear_fit = np.polyfit(xs, data_mean[file], 1)
         plt.plot(np.poly1d(linear_fit)(xs),color='k',linewidth=3,linestyle='--')
@@ -66,6 +81,32 @@ def main(args):
 
     save_file = os.path.join(directory, 'bleaching.png')
     plt.savefig(save_file,dpi=300,bbox_inches='tight')
+    
+    
+
+
+##Luke's bleaching correction
+def bleaching_correction(brain,sigma=200):
+    """ Subtracts slow brain trends over time.
+    Subtracts each voxel's slow-pass truncated gaussian filter from itself.
+    The slow-pass filtering will be different for different speeds of aquisition since
+    sigma is in units of indicies, not time. Not worrying about this for now since
+    my imaging is all similar aquisition rates (2-3Hz).
+    Parameters
+    ----------
+    brain: numpy array. Time must be axis=-1.
+    sigma: sigma of gaussian filter. sigma=200 is default. At 2Hz aquisition, this is a
+    200*(1/2Hz)*2 = 200sec or ~3min window of smoothing.
+    Returns
+    -------
+    brain: original numpy array with slow trends subtracted."""
+
+    print('brain_shape: {}'.format(np.shape(brain)))
+    sys.stdout.flush()
+
+    smoothed = scipy.ndimage.gaussian_filter1d(brain,sigma=sigma,axis=-1,truncate=1)
+    brain = brain - smoothed
+    return brain
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
