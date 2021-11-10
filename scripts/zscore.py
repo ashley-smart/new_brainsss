@@ -59,8 +59,11 @@ def main(args):
             #brain = (brain - brain_mean[:,:,:,None]) / brain_std[:,:,:,None]
             #luke suggestion to reduce memory usage
             for z in range(brain.shape[-2]):  #I think this should iterate over slice z for [x,y,z,none] https://stackoverflow.com/questions/1589706/iterating-over-arbitrary-dimension-of-numpy-array
-                brain[:,:,z,None] = (brain[:,:,z,None] - brain_mean[:,:,z,None]) / brain_std[:,:,z,None]
+                #brain[:,:,z,None] = (brain[:,:,z,None] - brain_mean[:,:,z,None]) / brain_std[:,:,z,None]
                 
+                #may be this because brain should have a time dimension, but not sure about it...
+                brain[:,:,z,:] = (brain[:,:,z,:] - brain_mean[:,:,z,None]) / brain_std[:,:,z,None]
+
                 
                 
             printlog("brain zscored duration: ({})".format(time.time()-t0))
