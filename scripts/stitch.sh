@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=stitch nii
+#SBATCH --job-name=stitch_nii
 #SBATCH --partition=trc
 #SBATCH --time=3-00:00:00
 #SBATCH --ntasks=1
