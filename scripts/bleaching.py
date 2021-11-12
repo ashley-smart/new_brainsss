@@ -7,6 +7,7 @@ from skimage.filters import threshold_triangle
 import psutil
 import brainsss
 import nibabel as nib
+import scipy
 
 def main(args):
 
