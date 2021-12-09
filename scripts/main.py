@@ -43,7 +43,7 @@ com_path = "/home/users/asmart/projects/brainsss_ash/scripts/com"
 #change this path to your oak directory, something like /oak/stanford/groups/trc/data/Brezovec/data
 #dataset_path = "/home/users/asmart/projects/brainsss_ash/demo_data"
 
-date = '20210709'
+date = '20210802'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 flies_temp = os.listdir(dataset_path)  ## find directory names, they are the fly names
 #to sort out non-fly directories (issue if I ever label a file with fly but I can't get isdir to work.)
@@ -148,8 +148,8 @@ for job_id in job_ids:
 ### Start MOCO ###
 ##################
 timepoints = 6761 #number of volumes  Try to unhard-code this to match my actual brains
-step = 100 #how many volumes one job will handle Luke recs 100 for functional and 10 for anatomical
-mem = 4 #luke recs 7 for anatomical (should write this in later to check which one it is)
+step = 10 #how many volumes one job will handle Luke recs 100 for functional and 10 for anatomical
+mem = 8 #luke recs 7 for anatomical (should write this in later to check which one it is)
 time_moco = 4 #no idea what this means
 
 printlog(f"\n{'   MOTION CORRECTION   ':=^{width}}")
