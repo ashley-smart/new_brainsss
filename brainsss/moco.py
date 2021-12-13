@@ -48,7 +48,7 @@ def motion_correction(brain_master,
         transformlist = motCorr_vol['fwdtransforms']
 
         #Use warp parameters on moving volume if provided
-        if brain_moving:
+        if brain_moving is not None:
             motCorr_brain_moving.append(ants.apply_transforms(meanbrain,ants.from_numpy(brain_moving[:,:,:,i]),transformlist).numpy())
         
         #Lets immediately grab the transform file because otherwise I think it is auto deleted due to "tmp" status...?
