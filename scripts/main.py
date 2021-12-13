@@ -43,7 +43,7 @@ com_path = "/home/users/asmart/projects/brainsss_ash/scripts/com"
 #change this path to your oak directory, something like /oak/stanford/groups/trc/data/Brezovec/data
 #dataset_path = "/home/users/asmart/projects/brainsss_ash/demo_data"
 
-date = '20210802'
+date = '20210719'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 flies_temp = os.listdir(dataset_path)  ## find directory names, they are the fly names
 #to sort out non-fly directories (issue if I ever label a file with fly but I can't get isdir to work.)
@@ -69,25 +69,25 @@ printlog("")
 ##########################
 ### Create mean brains ###
 ##########################
-# reordered to be first to create stitched files
+# 
 
-printlog(f"\n{'   MEAN BRAINS   ':=^{width}}")
-#files = ['functional_channel_1', 'functional_channel_2']
-job_ids = []
-for fly in flies:
-    directory = os.path.join(dataset_path, fly)
-    files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
-    args = {'logfile': logfile, 'directory': directory, 'files': files}
-    script = 'make_mean_brain.py'
-    job_id = brainsss.sbatch(jobname='meanbrn',
-                         script=os.path.join(scripts_path, script),
-                         modules=modules,
-                         args=args,
-                         logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
-    job_ids.append(job_id)
+# printlog(f"\n{'   MEAN BRAINS   ':=^{width}}")
+# #files = ['functional_channel_1', 'functional_channel_2']
+# job_ids = []
+# for fly in flies:
+#     directory = os.path.join(dataset_path, fly)
+#     files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
+#     args = {'logfile': logfile, 'directory': directory, 'files': files}
+#     script = 'make_mean_brain.py'
+#     job_id = brainsss.sbatch(jobname='meanbrn',
+#                          script=os.path.join(scripts_path, script),
+#                          modules=modules,
+#                          args=args,
+#                          logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
+#     job_ids.append(job_id)
 
-for job_id in job_ids:
-    brainsss.wait_for_job(job_id, logfile, com_path)
+# for job_id in job_ids:
+#     brainsss.wait_for_job(job_id, logfile, com_path)
 
 
 # ###############
