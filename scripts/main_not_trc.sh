@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=brainsss_ash
-#SBATCH --time=3-00:00:00
+#SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=18
+#SBATCH --cpus-per-task=20
 #SBATCH --mem-per-cpu=8G
 #SBATCH --output=./logs/mainlog.out
 #SBATCH --open-mode=append
