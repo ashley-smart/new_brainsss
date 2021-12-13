@@ -3,7 +3,7 @@
 #SBATCH --time=1-12:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=15
-#SBATCH --partition=GPU
+#SBATCH --partition=gpu
 #SBATCH --mem-per-cpu=12G
 #SBATCH --output=./logs/mainlog.out
 #SBATCH --open-mode=append
