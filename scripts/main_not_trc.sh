@@ -2,8 +2,8 @@
 #SBATCH --job-name=brainsss_ash
 #SBATCH --time=1-12:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=15
-#SBATCH --partition=gpu
+#SBATCH --cpus-per-task=18
+#SBATCH --partition=bigmem
 #SBATCH --mem-per-cpu=12G
 #SBATCH --output=./logs/mainlog.out
 #SBATCH --open-mode=append
