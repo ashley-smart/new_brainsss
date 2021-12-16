@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=brainsss_ash
-#SBATCH --time=3-00:00:00
+#SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=24
 #SBATCH --partition=owners
