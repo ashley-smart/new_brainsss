@@ -1,8 +1,8 @@
 #!/bin/bash
 #SBATCH --job-name=brainsss_ash
-#SBATCH --time=1-00:00:00
+#SBATCH --time=4-00:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=22
+#SBATCH --cpus-per-task=24
 #SBATCH --partition=owners
 #SBATCH --mem-per-cpu=8G
 #SBATCH --output=./logs/mainlog.out
