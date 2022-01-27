@@ -1,10 +1,10 @@
 #!/bin/bash
 #SBATCH --job-name=stitch_nii
-#SBATCH --partition=owners
+#SBATCH --partition=trc
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=8
-#SBATCH --mem-per-cpu=12G
+#SBATCH --mem-per-cpu=4G
 #SBATCH --output=./logs/mainlog.out
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
