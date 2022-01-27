@@ -3,7 +3,7 @@
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=bigmem
-#SBATCH --mem 260000
+#SBATCH --mem 260G
 #SBATCH --output=./logs/mainlog.out
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
