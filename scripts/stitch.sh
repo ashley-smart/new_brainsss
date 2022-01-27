@@ -3,7 +3,7 @@
 #SBATCH --partition=owners
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=12
+#SBATCH --cpus-per-task=24
 #SBATCH --mem-per-cpu=8G
 #SBATCH --output=./logs/mainlog.out
 #SBATCH --open-mode=append
