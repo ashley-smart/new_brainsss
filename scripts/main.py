@@ -114,34 +114,34 @@ printlog("")
 
 
 
+## comment out for 7-19
+# ####################
+# ### Bleaching QC ###
+# ####################
 
-####################
-### Bleaching QC ###
-####################
-
-### This will make a figure of bleaching
+# ### This will make a figure of bleaching
 
     
-printlog(f"\n{'   BLEACHING QC   ':=^{width}}")
-job_ids = []
-for fly in flies:
-    directory = os.path.join(dataset_path, fly)
-    ### ADD FILES ARGUMENT TO BLEACHING AND FIND THE STITCHED BRAIN FILES TO RUN BLEACHING ON      
-    all_files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
-    files = []
-    for file in all_files:
-        if "stitched.nii" in file: #to get just stitched channels (to get mean brain stitched use "stitched_mean.nii")
-            files.append(file)
-    args = {'logfile': logfile, 'directory': directory, 'files': files}
-    script = 'bleaching.py'
-    job_id = brainsss.sbatch(jobname='bleachqc',
-                         script=os.path.join(scripts_path, script),
-                         modules=modules,
-                         args=args,
-                         logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
-    job_ids.append(job_id)
-for job_id in job_ids:
-    brainsss.wait_for_job(job_id, logfile, com_path)
+# printlog(f"\n{'   BLEACHING QC   ':=^{width}}")
+# job_ids = []
+# for fly in flies:
+#     directory = os.path.join(dataset_path, fly)
+#     ### ADD FILES ARGUMENT TO BLEACHING AND FIND THE STITCHED BRAIN FILES TO RUN BLEACHING ON      
+#     all_files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
+#     files = []
+#     for file in all_files:
+#         if "stitched.nii" in file: #to get just stitched channels (to get mean brain stitched use "stitched_mean.nii")
+#             files.append(file)
+#     args = {'logfile': logfile, 'directory': directory, 'files': files}
+#     script = 'bleaching.py'
+#     job_id = brainsss.sbatch(jobname='bleachqc',
+#                          script=os.path.join(scripts_path, script),
+#                          modules=modules,
+#                          args=args,
+#                          logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
+#     job_ids.append(job_id)
+# for job_id in job_ids:
+#     brainsss.wait_for_job(job_id, logfile, com_path)
 
 
 
