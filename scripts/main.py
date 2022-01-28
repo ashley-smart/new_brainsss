@@ -169,6 +169,7 @@ for fly in flies:
     starts = list(range(0,timepoints,step))
     stops = starts[1:] + [timepoints]
     
+    all_files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
     files = []
     for file in all_files:
         if "stitched" in file: #to get just stitched channels (mean and non-mean)
