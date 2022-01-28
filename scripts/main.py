@@ -35,6 +35,7 @@ sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 ###################
 ### Setup paths ###
 ###################
+##I want this to be the only place that there are filepaths
 
 #CHANGE THESE PATHS
 scripts_path = "/home/users/asmart/projects/brainsss_ash/scripts"
@@ -51,8 +52,17 @@ flies = []
 for i in flies_temp:
     if 'fly' in os.path.join(dataset_path, i):
         flies.append(i)
-    
 
+# if "stitched.nii" in file: 
+#     stitched_file = True
+
+stitched_string = 'stitched.nii'  #to find files that are stitched (used in bleaching)
+
+mean_stitched_string = "stitched_mean.nii" #to get mean stitched brain  (not used yet)
+
+any_stitched_string = 'stitched' #to find mean and non-mean (used in moco)
+
+#Note: zscore still has a colors argument
 
 ###################
 ### Print Title ###
@@ -66,29 +76,29 @@ time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
 printlog(F"{day_now+' | '+time_now:^{width}}")
 printlog("")
 
-##commenting out for 7-19 brains because I already ran this and it worked
-# #########################
-# ## Create mean brains ###
-# #########################
+
+#########################
+## Create mean brains ###
+#########################
 
 
-# printlog(f"\n{'   MEAN BRAINS   ':=^{width}}")
-# #files = ['functional_channel_1', 'functional_channel_2']
-# job_ids = []
-# for fly in flies:
-#     directory = os.path.join(dataset_path, fly)
-#     files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
-#     args = {'logfile': logfile, 'directory': directory, 'files': files}
-#     script = 'make_mean_brain.py'
-#     job_id = brainsss.sbatch(jobname='meanbrn',
-#                          script=os.path.join(scripts_path, script),
-#                          modules=modules,
-#                          args=args,
-#                          logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
-#     job_ids.append(job_id)
+printlog(f"\n{'   MEAN BRAINS   ':=^{width}}")
+#files = ['functional_channel_1', 'functional_channel_2']
+job_ids = []
+for fly in flies:
+    directory = os.path.join(dataset_path, fly)
+    files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
+    args = {'logfile': logfile, 'directory': directory, 'files': files}
+    script = 'make_mean_brain.py'
+    job_id = brainsss.sbatch(jobname='meanbrn',
+                         script=os.path.join(scripts_path, script),
+                         modules=modules,
+                         args=args,
+                         logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
+    job_ids.append(job_id)
 
-# for job_id in job_ids:
-#     brainsss.wait_for_job(job_id, logfile, com_path)
+for job_id in job_ids:
+    brainsss.wait_for_job(job_id, logfile, com_path)
 
 
 # ###############
@@ -114,34 +124,34 @@ printlog("")
 
 
 
-## comment out for 7-19
-# ####################
-# ### Bleaching QC ###
-# ####################
 
-# ### This will make a figure of bleaching
+####################
+### Bleaching QC ###
+####################
+
+### This will make a figure of bleaching
 
     
-# printlog(f"\n{'   BLEACHING QC   ':=^{width}}")
-# job_ids = []
-# for fly in flies:
-#     directory = os.path.join(dataset_path, fly)
-#     ### ADD FILES ARGUMENT TO BLEACHING AND FIND THE STITCHED BRAIN FILES TO RUN BLEACHING ON      
-#     all_files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
-#     files = []
-#     for file in all_files:
-#         if "stitched.nii" in file: #to get just stitched channels (to get mean brain stitched use "stitched_mean.nii")
-#             files.append(file)
-#     args = {'logfile': logfile, 'directory': directory, 'files': files}
-#     script = 'bleaching.py'
-#     job_id = brainsss.sbatch(jobname='bleachqc',
-#                          script=os.path.join(scripts_path, script),
-#                          modules=modules,
-#                          args=args,
-#                          logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
-#     job_ids.append(job_id)
-# for job_id in job_ids:
-#     brainsss.wait_for_job(job_id, logfile, com_path)
+printlog(f"\n{'   BLEACHING QC   ':=^{width}}")
+job_ids = []
+for fly in flies:
+    directory = os.path.join(dataset_path, fly)
+    ### ADD FILES ARGUMENT TO BLEACHING AND FIND THE STITCHED BRAIN FILES TO RUN BLEACHING ON      
+    all_files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
+    files = []
+    for file in all_files:
+        if str(stitched_string) in file: #to get just stitched channels (to get mean brain stitched use "stitched_mean.nii")
+            files.append(file)
+    args = {'logfile': logfile, 'directory': directory, 'files': files}
+    script = 'bleaching.py'
+    job_id = brainsss.sbatch(jobname='bleachqc',
+                         script=os.path.join(scripts_path, script),
+                         modules=modules,
+                         args=args,
+                         logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
+    job_ids.append(job_id)
+for job_id in job_ids:
+    brainsss.wait_for_job(job_id, logfile, com_path)
 
 
 
@@ -172,7 +182,7 @@ for fly in flies:
     all_files = os.listdir(os.path.join(dataset_path, fly)) #to get the name of the files in each fly folder
     files = []
     for file in all_files:
-        if "stitched" in file: #to get just stitched channels (mean and non-mean)
+        if str(any_stitched_string) in file: #to get just stitched channels (mean and non-mean)
             files.append(file)
     printlog("MOCO files: ")
     for file in files:
