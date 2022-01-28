@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=brainsss_ash
+#SBATCH --job-name=bm_brainsss_ash
 #SBATCH --time=1-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=bigmem
