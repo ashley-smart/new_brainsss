@@ -22,7 +22,16 @@ modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz
 
 width = 120 # width of print log
 nodes = 1 # 1 or 2
-nice = False #True # true to lower priority of jobs. ie, other users jobs go first
+nice = True #True # true to lower priority of jobs. ie, other users jobs go first
+mem = 20 # number of CPUs #used for moco and zscore currently
+mem_zscore = 20
+bleaching_mem = 1
+
+#moco parameters
+timepoints = 6761 #number of volumes  Try to unhard-code this to match my actual brains
+step = 10 #how many volumes one job will handle Luke recs 100 for functional and 10 for anatomical
+time_moco = 10 #time in hours before it times out
+time_zscore = 12 #time in hours before it times out
 
 #####################
 ### Setup logging ###
@@ -40,9 +49,6 @@ sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 #CHANGE THESE PATHS
 scripts_path = "/home/users/asmart/projects/brainsss_ash/scripts"
 com_path = "/home/users/asmart/projects/brainsss_ash/scripts/com"
-
-#change this path to your oak directory, something like /oak/stanford/groups/trc/data/Brezovec/data
-#dataset_path = "/home/users/asmart/projects/brainsss_ash/demo_data"
 
 date = '20210719'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
@@ -148,7 +154,7 @@ for fly in flies:
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
-                         logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
+                         logfile=logfile, time=1, mem=bleaching_mem, nice=nice, nodes=nodes)
     job_ids.append(job_id)
 for job_id in job_ids:
     brainsss.wait_for_job(job_id, logfile, com_path)
@@ -158,10 +164,7 @@ for job_id in job_ids:
 ##################
 ### Start MOCO ###
 ##################
-timepoints = 6761 #number of volumes  Try to unhard-code this to match my actual brains
-step = 10 #how many volumes one job will handle Luke recs 100 for functional and 10 for anatomical
-mem = 8 #luke recs 7 for anatomical (should write this in later to check which one it is)
-time_moco = 4 #no idea what this means
+
 
 printlog(f"\n{'   MOTION CORRECTION   ':=^{width}}")
 # This will immediately launch all partial mocos and their corresponding dependent moco stitchers
@@ -218,7 +221,7 @@ for fly in flies:
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
-                         logfile=logfile, time=2, mem=20, dep=job_ids_colons, nice=nice, nodes=nodes)
+                         logfile=logfile, time=time_moco, mem=mem, dep=job_ids_colons, nice=nice, nodes=nodes)
     stitcher_job_ids.append(job_id)
 
 if bool(progress_tracker): #if not empty
@@ -241,7 +244,7 @@ for fly in flies:
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
-                         logfile=logfile, time=2, mem=24, nice=nice, nodes=nodes)
+                         logfile=logfile, time=time_zscore, mem=mem_zscore, nice=nice, nodes=nodes)
     job_ids.append(job_id)
 
 for job_id in job_ids:
