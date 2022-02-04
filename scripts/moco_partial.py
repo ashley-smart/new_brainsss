@@ -5,6 +5,7 @@ import nibabel as nib
 import numpy as np
 import brainsss
 import warnings
+import ants
 warnings.filterwarnings("ignore")
 
 #sys.path.insert(0, '/home/users/brezovec/.local/lib/python3.6/site-packages/lib/python/')
@@ -54,6 +55,15 @@ def main(args):
                            printlog,
                            mean_brain,
                            suffix='_'+str(start))
+    
+def load_brain_by_volume(file):
+    proxy = nib.load(file) #low memory loading, doesn't actually load brain
+    dims = proxy.header.get_data_shape()
+    number_volumes = dims[-1] 
+    #motion correct each volume and save
+    for i in range(number_volumes):
+        ##in progress -- need to sort out if fixed brain should be mean or ch1?
+        
 
 def load_partial_brain(file, start, stop):
     brain = nib.load(file).dataobj[:,:,:,start:stop]
