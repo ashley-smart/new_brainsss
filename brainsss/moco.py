@@ -74,7 +74,7 @@ def motion_correction(brain_master,
 
     # Save motcorr brains
     save_motCorr_brain(motCorr_brain_master, motcorr_directory, suffix='red'+suffix)
-    if brain_moving:
+    if brain_moving is not None:
         save_motCorr_brain(motCorr_brain_moving, motcorr_directory, suffix='green'+suffix)
 
     # Save transforms
