@@ -79,12 +79,12 @@ def load_brain_by_volume(ch1_file, ch2_file, save_directory):
         ##in progress -- need to sort out if fixed brain should be mean or ch1? I think ch1 since master is ch1
         ch1_brain = ch1_proxy.dataobj[...,i] #one volume
         ch2_brain = ch2_proxy.dataobj[...,i]
-        master_brain = ants.from_numpy(np.asarray(ch1_brain, dtype = 'float32'))
+       #make this meanch1 master_brain = ants.from_numpy(np.asarray(ch1_brain, dtype = 'float32'))
         moving_brain = ants.from_numpy(np.asarray(ch2_brain, dtype = 'float32'))
-        moco_by_vol = ants.registration(master_brain, moving_brain, type_of_transfor, = 'SyN')
+        moco_by_vol = ants.registration(mean-tdtom, moving_brain, type_of_transfor, = 'SyN')
         #save each moco volume
         # ? how? I think it is a dictionary. Should I save the whole thing?
-        
+        #luke saves parts of the dictionary (warpedbrain (warpmoveout), warpedfixedout (what already put intothe ants--don't need to save this),parameters that it used to warp (warpparameters--need to apply these to channel 2)
         
 #         def save_motCorr_brain(brain, directory, suffix):
 #     brain = np.moveaxis(np.asarray(brain),0,3)
