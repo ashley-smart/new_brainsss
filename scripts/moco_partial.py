@@ -56,15 +56,6 @@ def main(args):
                            mean_brain,
                            suffix='_'+str(start))
     
-def load_brain_by_volume(file):
-    proxy = nib.load(file) #low memory loading, doesn't actually load brain
-    dims = proxy.header.get_data_shape()
-    number_volumes = dims[-1] 
-    #motion correct each volume and save
-    for i in range(number_volumes):
-        ##in progress -- need to sort out if fixed brain should be mean or ch1?
-        
-
 def load_partial_brain(file, start, stop):
     brain = nib.load(file).dataobj[:,:,:,start:stop]
     # for ants, supported_ntypes = {'uint8', 'uint32', 'float32', 'float64'}
@@ -73,6 +64,41 @@ def load_partial_brain(file, start, stop):
     if len(np.shape(brain)) == 3:
       brain = brain[:,:,:,np.newaxis]
     return brain
+    
+    
+    
+##### NEW STRATEGY ####    
+    
+def load_brain_by_volume(ch1_file, ch2_file, save_directory):
+    ch1_proxy = nib.load(ch1_file) #low memory loading, doesn't actually load brain
+    ch2_proxy = nib.load(ch2_file)
+    dims = ch1_proxy.header.get_data_shape()
+    number_volumes = dims[-1] 
+    #motion correct each volume and save
+    for i in range(number_volumes):
+        ##in progress -- need to sort out if fixed brain should be mean or ch1? I think ch1 since master is ch1
+        ch1_brain = ch1_proxy.dataobj[...,i] #one volume
+        ch2_brain = ch2_proxy.dataobj[...,i]
+        master_brain = ants.from_numpy(np.asarray(ch1_brain, dtype = 'float32'))
+        moving_brain = ants.from_numpy(np.asarray(ch2_brain, dtype = 'float32'))
+        moco_by_vol = ants.registration(master_brain, moving_brain, type_of_transfor, = 'SyN')
+        #save each moco volume
+        # ? how? I think it is a dictionary. Should I save the whole thing?
+        
+        
+#         def save_motCorr_brain(brain, directory, suffix):
+#     brain = np.moveaxis(np.asarray(brain),0,3)
+#     save_file = os.path.join(directory, 'motcorr_' + suffix + '.nii')
+#     aff = np.eye(4)
+#     img = nib.Nifti1Image(brain, aff)
+#     img.to_filename(save_file)
+
+        
+        
+        
+        
+        
+
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
