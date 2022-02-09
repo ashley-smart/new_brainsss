@@ -109,11 +109,11 @@ def main(args):
               f_ch1['data'].resize(new_num_vol,axis=3) # increase size by one volume
 
               # Append to hdf5 file
-              f_ch1['data'][...,-1] = vol #moco_out  ##how does this save stuff into the file?
+              f_ch1['data'][...,-1] = moco_out  ##
                                                   
           printlog(F'vol: {i}, time: {time()-t0}')
                                                   
-          # Append to hdf5 file for ch2
+          # Append to hdf5 file for ch2   ##Alternatively I could put them in the same file with different keys
           if ch2_brain_file is not None:
             with h5py.File(save_file_ch2, 'a') as f_ch2:
 
@@ -123,7 +123,7 @@ def main(args):
                 f_ch2['data'].resize(new_num_vol,axis=3) # increase size by one volume
 
                 # Append to hdf5 file
-                f_ch2['data'][...,-1] = vol #moco_out
+                f_ch2['data'][...,-1] = moco_ch2
             printlog(F'vol: {i}, time: {time()-t0}')
 
 if __name__ == '__main__':
