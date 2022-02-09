@@ -40,7 +40,7 @@ def main(args):
       elif 'ch2' in name:
         ch2_brain_file = os.path.join(directory, name)
       else:
-        printlog('No directory with ch1 or ch2 in it)
+        printlog('No directory with ch1 or ch2 in it')
                  
     if ch1_brain_file is not None:
       ch1_img = nib.load(directory) # this loads a proxy
