@@ -20,12 +20,15 @@ def main(args):
     logfile = args['logfile']
     directory = args['directory'] # full fly path 
     file_names = args['file_names'] ## should be ch2_stitched.nii and ch1_stitched.nii
+    save_path = args['save_path']
     # smooth = args['smooth']
     # colors = args['colors']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
-    save_file_ch1 = '/oak/stanford/groups/trc/data/Ashley2/moco_test/20220207_ch1.h5'
-    save_file_ch2 = '/oak/stanford/groups/trc/data/Ashley2/moco_test/20220207_ch2.h5'
+    save_file_ch1 = os.path.join(save_path, 'MOCO_ch1.h5')
+    save_file_ch2 = os.path.join(save_path, 'MOCO_ch2.h5')
+#     save_file_ch1 = '/oak/stanford/groups/trc/data/Ashley2/moco_test/20220207_ch1.h5'
+#     save_file_ch2 = '/oak/stanford/groups/trc/data/Ashley2/moco_test/20220207_ch2.h5'
 
     # Get brain shape
     #brain_file = '/oak/stanford/groups/trc/data/Ashley2/imports/20210802/fly1_40s-011/ch2_stitched.nii'
