@@ -66,7 +66,7 @@ def sbatch(jobname, script, modules, args, logfile, time=1, mem=1, dep='', nice=
         nice = 1000000
 
     if nodes == 1:
-        node_cmd = '-w sh02-07n34 '
+        node_cmd = '-w sh02-07n33 '   #other option is 34 or leave ''
     else:
         node_cmd = ''
 
