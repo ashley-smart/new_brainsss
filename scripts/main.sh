@@ -1,11 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=bm_brainsss_ash
-#SBATCH --time=1-00:00:00
+#SBATCH --job-name=AS_vol_test
+#SBATCH --time=4-00:00:00
 #SBATCH --ntasks=1
-#SBATCH --partition=bigmem
-#SBATCH --mem 260G
+#SBATCH --partition=trc
+## comment out #SBATCH --mem 260G
 #SBATCH --output=./logs/mainlog.out
 #SBATCH --open-mode=append
+#SBATCH --cpus-per-task=8
 #SBATCH --mail-type=ALL
 
 ml python/3.6.1
