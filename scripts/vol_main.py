@@ -17,7 +17,7 @@ logfile = './logs/' + time.strftime("%Y%m%d-%H%M%S") + '.txt'
 printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 
-scripts_path = "/home/users/asmart/projects/brainsss_ash/scripts"
+scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 
 date = '20210719'
 mem = 8
