@@ -17,7 +17,10 @@ logfile = './logs/' + time.strftime("%Y%m%d-%H%M%S") + '.txt'
 printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 
+scripts_path = "/home/users/asmart/projects/brainsss_ash/scripts"
+
 date = '20210719'
+mem = 8
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 flies_temp = os.listdir(dataset_path)  ## find directory names, they are the fly names
 #to sort out non-fly directories (issue if I ever label a file with fly but I can't get isdir to work.)
