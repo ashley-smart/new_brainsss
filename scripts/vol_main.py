@@ -20,7 +20,7 @@ sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 
 date = '20210719'
-mem = 6
+mem = 5
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 flies_temp = os.listdir(dataset_path)  ## find directory names, they are the fly names
 #to sort out non-fly directories (issue if I ever label a file with fly but I can't get isdir to work.)
