@@ -52,7 +52,7 @@ job_ids = []
 for fly in flies:
     directory = os.path.join(dataset_path, fly)
     save_path = directory  #could have it save in a different folder in the future
-    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': [ch1_stitched.nii, ch2_stitched.nii], 'save_path': save_path}
+    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
     script = 'vol_moco.py'
     job_id = brainsss.sbatch(jobname='voltest',
                          script=os.path.join(scripts_path, script),
