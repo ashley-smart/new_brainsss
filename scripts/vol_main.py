@@ -18,6 +18,7 @@ printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
+com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
 date = '20210719'
 
