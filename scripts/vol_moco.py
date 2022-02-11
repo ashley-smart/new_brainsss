@@ -83,7 +83,7 @@ def main(args):
           
           ##also make ch2 warped brain correction using transforms
           if ch2_brain_file is not None: 
-                 moco_ch2 = ants.apply_transforms(meanbrain, ants.from_numpy(moving, transformlist).numpy()
+                 moco_ch2 = ants.apply_transforms(meanbrain, ants.from_numpy(moving, transformlist)).numpy()
                  ##I'm going to need a different file to save this in
                  
                  
