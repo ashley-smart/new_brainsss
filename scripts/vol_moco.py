@@ -43,7 +43,7 @@ def main(args):
         printlog('No directory with ch1 or ch2 in it')
                  
     if ch1_brain_file is not None:
-      ch1_img = nib.load(directory) # this loads a proxy
+      ch1_img = nib.load(ch1_brain_file) # this loads a proxy
       brain_dims = ch1_img.header.get_data_shape()
 
       #calculate the meanbrain of channel 1, which will be fixed in moco
@@ -70,7 +70,7 @@ def main(args):
       for i in range(brain_dims[-1]):
           t0 = time()
           # Load a single brain volume
-          vol = img.dataobj[...,i]
+          vol = ch1_img.dataobj[...,i]
 
           ### Process vol (moco, zscore, etc) ###
           # Make ants image of ch1 brain
@@ -83,8 +83,11 @@ def main(args):
           
           ##also make ch2 warped brain correction using transforms
           if ch2_brain_file is not None: 
-                 moco_ch2 = ants.apply_transforms(meanbrain, ants.from_numpy(moving, transformlist)).numpy()
-                 ##I'm going to need a different file to save this in
+            ch2_img = nib.load(ch2_brain_file) # this loads a proxy
+            ch2_vol = ch2_img.dataobj[...,i]
+            ch2_moving = ants.from_numpy(np.asarray(ch2_vol, dtype='float32'))
+            moco_ch2 = ants.apply_transforms(meanbrain, ants.from_numpy(ch2_moving, transformlist)).numpy()
+            
                  
                  
                  
