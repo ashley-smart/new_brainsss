@@ -87,7 +87,9 @@ def main(args):
             ch2_vol = ch2_img.dataobj[...,i]
             ch2_moving = ants.from_numpy(np.asarray(ch2_vol, dtype='float32'))
             #moco_ch2 = ants.apply_transforms(meanbrain, ants.from_numpy(ch2_moving), transformlist).numpy()
-            moco_ch2 = ants.apply_transforms(meanbrain, ch2_moving, transformlist).numpy()
+            #moco_ch2 = ants.apply_transforms(meanbrain, ch2_moving, transformlist).numpy()
+            moco_ch2 = ants.apply_transforms(meanbrain, ch2_moving, transformlist)
+            mco_ch2 = moco_ch2.numpy()
             
                  
                  
