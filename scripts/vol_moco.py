@@ -89,7 +89,7 @@ def main(args):
             #moco_ch2 = ants.apply_transforms(meanbrain, ants.from_numpy(ch2_moving), transformlist).numpy()
             #moco_ch2 = ants.apply_transforms(meanbrain, ch2_moving, transformlist).numpy()
             moco_ch2 = ants.apply_transforms(meanbrain, ch2_moving, transformlist)
-            mco_ch2 = moco_ch2.numpy()
+            #moco_ch2 = moco_ch2.numpy()
             
                  
                  
