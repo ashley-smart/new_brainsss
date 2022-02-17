@@ -51,6 +51,7 @@ def main(args):
       meanbrain = np.zeros(brain_dims[:3])
       for i in range(brain_dims[-1]):
           meanbrain += ch1_img.dataobj[...,i]
+          
       meanbrain = meanbrain/brain_dims[-1] # divide by number of volumes
       fixed = ants.from_numpy(np.asarray(meanbrain, dtype='float32'))
       printlog('meanbrain DONE')
@@ -60,10 +61,11 @@ def main(args):
       with h5py.File(save_file_ch1, 'w') as f_ch1:
           dset_ch1 = f_ch1.create_dataset('data', (*brain_dims[:3],0), maxshape=(*brain_dims[:3],None), dtype='float32')
       printlog('created empty hdf5 file ch1')
-                 
-      with h5py.File(save_file_ch2, 'w') as f_ch2:
-          dset_ch2 = f_ch2.create_dataset('data', (*brain_dims[:3],0), maxshape=(*brain_dims[:3],None), dtype='float32')
-      printlog('created empty hdf5 file ch2')
+      
+      if ch2_brain_file is not None: 
+          with h5py.File(save_file_ch2, 'w') as f_ch2:
+              dset_ch2 = f_ch2.create_dataset('data', (*brain_dims[:3],0), maxshape=(*brain_dims[:3],None), dtype='float32')
+          printlog('created empty hdf5 file ch2')
 
       # loop over all brain vols, motion correcting each and append to growing hdf5 file on disk
       printlog('moco vol by vol')
