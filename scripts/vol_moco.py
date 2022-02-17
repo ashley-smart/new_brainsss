@@ -102,14 +102,14 @@ def main(args):
           for x in transformlist:
               if '.mat' not in x:
                   os.remove(x)
-                  printlog('Deleted inv: {}'.format(x))
+                  #printlog('Deleted inv: {}'.format(x))
 
           ### DELETE FORWARD TRANSFORMS
           transformlist = moco['fwdtransforms']
           for x in transformlist:
               if '.mat' not in x:
                   os.remove(x)
-                  printlog('Deleted fwd: {}'.format(x))
+                  #printlog('Deleted fwd: {}'.format(x))
 
           # Append to hdf5 file
           with h5py.File(save_file_ch1, 'a') as f_ch1:
