@@ -20,9 +20,9 @@ sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
-date = '20210719'
+date = '20210806'
 
-mem = 5
+mem = 8
 width = 120 # width of print log
 nodes = 1 # 1 or 2
 nice = True #True # true to lower priority of jobs. ie, other users jobs go first
