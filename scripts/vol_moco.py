@@ -88,10 +88,8 @@ def main(args):
             ch2_img = nib.load(ch2_brain_file) # this loads a proxy
             ch2_vol = ch2_img.dataobj[...,i]
             ch2_moving = ants.from_numpy(np.asarray(ch2_vol, dtype='float32'))
-            #moco_ch2 = ants.apply_transforms(meanbrain, ants.from_numpy(ch2_moving), transformlist).numpy()
-            #moco_ch2 = ants.apply_transforms(meanbrain, ch2_moving, transformlist).numpy()
-            moco_ch2 = ants.apply_transforms(meanbrain, ch2_moving, transformlist)
-            #moco_ch2 = moco_ch2.numpy()
+            moco_ch2 = ants.apply_transforms(fixed, ch2_moving, transformlist)
+            moco_ch2 = moco_ch2.numpy()
             
                  
                  
@@ -122,7 +120,7 @@ def main(args):
               # Append to hdf5 file
               f_ch1['data'][...,-1] = moco_out  ##
                                                   
-          printlog(F'vol: {i}, time: {time()-t0}')
+          printlog(F'vol ch1: {i}, time: {time()-t0}')
                                                   
           # Append to hdf5 file for ch2   ##Alternatively I could put them in the same file with different keys
           if ch2_brain_file is not None:
@@ -135,7 +133,7 @@ def main(args):
 
                 # Append to hdf5 file
                 f_ch2['data'][...,-1] = moco_ch2
-            printlog(F'vol: {i}, time: {time()-t0}')
+            printlog(F'vol ch2: {i}, time: {time()-t0}')
       printlog(F'MOCO DONE! Number of volumes completed: {i}')
 
 if __name__ == '__main__':
