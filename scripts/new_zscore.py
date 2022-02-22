@@ -18,19 +18,27 @@ def main(args):
 
     logfile = args['logfile']
     directory = args['directory'] # full fly path 
-    #file_names = args['file_names'] ## should be MOCO_ch1.h5 and MOCO_ch2.h5 change this later so I can just specify filenames in one place
+    file_names = args['file_names'] ## should be MOCO_ch1.h5 and MOCO_ch2.h5 as specified in vol_main.py
     save_path = args['save_path']
     # smooth = args['smooth']
     # colors = args['colors']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
     #can change the filenames to inputed files later and check if ch1 or ch2
-    ch1_filepath = os.path.join(save_path, 'MOCO_ch1.h5')
-    ch2_filepath = os.path.join(save_path, 'MOCO_ch2.h5')    
+#     ch1_filepath = os.path.join(save_path, 'MOCO_ch1.h5')
+#     ch2_filepath = os.path.join(save_path, 'MOCO_ch2.h5')    
     
-    ## I'm saving the zscore in the moco file
-    #     save_file_ch1_z = os.path.join(save_path, 'zscore_ch1.h5')
-    #     save_file_ch2_z = os.path.join(save_path, 'zscore_ch2.h5')
+    #note if savepath is ever not the directory for moco then this will not find the files
+    ch1_filepath = None
+    ch2_filepath = None
+    for name in file_names:
+      if 'ch1' in name:
+        ch1_filepath = os.path.join(directory, name)
+      elif 'ch2' in name:
+        ch2_filepath = os.path.join(directory, name)
+      else:
+        printlog('No file with ch1 or ch2 in it')
+    
     
     #open moco file for ch2 (add ch1 later if needed)
     with h5py.File(ch2_filepath, 'a') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
