@@ -23,7 +23,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 date = '20210806'
 
 mem = 8
-time = 240 #time in hours before it stops running
+time = 480 #time in hours before it stops running
 width = 120 # width of print log
 nodes = 1 # 1 or 2
 nice = True #True # true to lower priority of jobs. ie, other users jobs go first
