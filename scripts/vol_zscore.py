@@ -24,7 +24,7 @@ def main(args):
     # colors = args['colors']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
-    #can change the filenames to inputed files later and check if ch1 or ch2
+    
 #     ch1_filepath = os.path.join(save_path, 'MOCO_ch1.h5')
 #     ch2_filepath = os.path.join(save_path, 'MOCO_ch2.h5')    
     
