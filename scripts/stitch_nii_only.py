@@ -21,7 +21,7 @@ fly_folders = []
 for i in fly_files:
   if os.path.isdir(os.path.join(dataset_path, i)):
     fly_folders.append(i)
-print('found flies: ', len(fly_folders)
+print('found flies: ', len(fly_folders))
   
 
 for fly in fly_folders: 
