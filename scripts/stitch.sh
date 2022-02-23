@@ -3,8 +3,8 @@
 #SBATCH --partition=owners
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=20
-#SBATCH --mem-per-cpu=8G
+#SBATCH --cpus-per-task=24
+
 #SBATCH --output=./logs/stitchlog.out
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
