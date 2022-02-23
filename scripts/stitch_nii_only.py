@@ -39,8 +39,8 @@ for fly in fly_folders:
           channel_1_list.append(file)
       elif "channel_2" in file and "nii" in file:
           channel_2_list.append(file)
-      else:
-          print('File is not ch1 or ch2 raw nii', file)  #because there are other files in the folder
+#       else:
+#           print('File is not ch1 or ch2 raw nii', file)  #because there are other files in the folder
           
   #then sort the files Note: this will fail if there are more than 10 items
   sorted_channel_1_list = sorted(channel_1_list)  
