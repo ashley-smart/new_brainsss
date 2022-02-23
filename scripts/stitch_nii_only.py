@@ -33,6 +33,7 @@ for fly in fly_folders:
       ## stitch brain ##
       #append all appropriate nii files together
       if "channel_1" in file and "nii" in file: 
+          print('ch1 file: ', file)
           brain_ch1 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
           full_brain_ch1.append(brain_ch1)
 
@@ -56,6 +57,7 @@ for fly in fly_folders:
   for file in files:
       ## stitch brain ##
       if "channel_2" in file and "nii" in file: 
+          print('ch2 file: ', file)
           brain_ch2 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
           full_brain_ch2.append(brain_ch1)
           
