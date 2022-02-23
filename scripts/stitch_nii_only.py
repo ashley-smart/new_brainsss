@@ -34,6 +34,7 @@ for fly in fly_folders:
       #append all appropriate nii files together
       # these need to be appended in order so first make a list of ch specific files then sort later
       channel_1_list = []
+      channel_2_list = []
       if "channel_1" in file and "nii" in file: 
           channel_1_list.append(file)
       elif "channel_2" in file and "nii" in file:
@@ -41,16 +42,16 @@ for fly in fly_folders:
       else:
           print('File is not ch1 or ch2 raw nii', file)  #because there are other files in the folder
           
-      #then sort the files Note: this will fail if there are more than 10 items
-      sorted_channel_1_list = sorted(channel_1_list)  
-      sorted_channel_2_list = sorted(channel_2_list)
+  #then sort the files Note: this will fail if there are more than 10 items
+  sorted_channel_1_list = sorted(channel_1_list)  
+  sorted_channel_2_list = sorted(channel_2_list)
       
-      #iterate through sorted list and append files
-      for i in sorted_channel_1_list: 
-          print('ch1 file: ', i)
-          brain_ch1 = np.asarray(nib.load(os.path.join(directory, i)).get_data(), dtype='uint16')
-          print('shape of brain file: ', np.shape(brain_ch1))
-          full_brain_ch1.append(brain_ch1)
+  #iterate through sorted list and append files
+  for i in sorted_channel_1_list: 
+      print('ch1 file: ', i)
+      brain_ch1 = np.asarray(nib.load(os.path.join(directory, i)).get_data(), dtype='uint16')
+      print('shape of brain file: ', np.shape(brain_ch1))
+      full_brain_ch1.append(brain_ch1)
 
           
   #save files        
