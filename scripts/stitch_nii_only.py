@@ -13,7 +13,7 @@ import gc
 
 
 #get to files
-date = '2022.01.19'
+date = '20210806'
 #dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
 fly_files = os.listdir(dataset_path)  ## find directory names, they are the fly names
@@ -30,16 +30,16 @@ for fly in fly_folders:
   full_brain_ch2 = []
   for file in files:
       ## stitch brain ##
+      #append all appropriate nii files together
       if "channel_1" in file and "nii" in file: 
           brain_ch1 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
           full_brain_ch1.append(brain_ch1)
-#       elif "channel_2" in file and "nii" in file:
-#           brain_ch2 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
-#           full_brain_ch2.append(brain_ch2)
+
           
   #save files        
   if len(full_brain_ch1) > 0:       
       stitched_brain_ch1 = np.concatenate(full_brain_ch1, axis = -1)
+      print('concatenated ch1')
       #save stiched brain
       save_file = os.path.join(directory, 'ch1_stitched.nii')  #it is important this is saved as ch1 rather than channel so it doesn't try to get restitched if the code runs twice
       aff = np.eye(4)
@@ -48,7 +48,8 @@ for fly in fly_folders:
       del full_brain_ch1  #to delete from memory
       del stitched_brain_ch1 # to delete from memory
       gc.collect()  #extra delete from memory
-      
+  
+  # now running ch2
   ### splitting this up to help the memory (hopefully)
   
   for file in files:
@@ -59,6 +60,8 @@ for fly in fly_folders:
           
   if len(full_brain_ch2) > 0:
       stitched_brain_ch2 = np.concatenate(full_brain_ch2, axis = -1)
+      print('concatenated ch2')
+
       #save stitched brain
       save_file = os.path.join(directory, 'ch2_stitched.nii')
       aff = np.eye(4)
