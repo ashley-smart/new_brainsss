@@ -3,7 +3,7 @@
 #SBATCH --partition=owners
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=24
+#SBATCH --cpus-per-task=14
 
 #SBATCH --output=./logs/stitchlog.out
 #SBATCH --open-mode=append
