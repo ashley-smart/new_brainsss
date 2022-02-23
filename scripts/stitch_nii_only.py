@@ -32,9 +32,24 @@ for fly in fly_folders:
   for file in files:
       ## stitch brain ##
       #append all appropriate nii files together
+      # these need to be appended in order so first make a list of ch specific files then sort later
+      channel_1_list = []
       if "channel_1" in file and "nii" in file: 
-          print('ch1 file: ', file)
-          brain_ch1 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
+          channel_1_list.append(file)
+      elif "channel_2" in file and "nii" in file:
+          channel_2_list.append(file)
+      else:
+          print('File is not ch1 or ch2 raw nii', file)  #because there are other files in the folder
+          
+      #then sort the files Note: this will fail if there are more than 10 items
+      sorted_channel_1_list = sorted(channel_1_list)  
+      sorted_channel_2_list = sorted(channel_2_list)
+      
+      #iterate through sorted list and append files
+      for i in sorted_channel_1_list: 
+          print('ch1 file: ', i)
+          brain_ch1 = np.asarray(nib.load(os.path.join(directory, i)).get_data(), dtype='uint16')
+          print('shape of brain file: ', np.shape(brain_ch1))
           full_brain_ch1.append(brain_ch1)
 
           
@@ -54,12 +69,12 @@ for fly in fly_folders:
   # now running ch2
   ### splitting this up to help the memory (hopefully)
   
-  for file in files:
-      ## stitch brain ##
-      if "channel_2" in file and "nii" in file: 
-          print('ch2 file: ', file)
-          brain_ch2 = np.asarray(nib.load(os.path.join(directory, file)).get_data(), dtype='uint16')
-          full_brain_ch2.append(brain_ch1)
+  #iterate through sorted list and append files
+  for i in sorted_channel_2_list: 
+      print('ch2 file: ', i)
+      brain_ch2 = np.asarray(nib.load(os.path.join(directory, i)).get_data(), dtype='uint16')
+      print('shape of brain file: ', np.shape(brain_ch2))
+      full_brain_ch2.append(brain_ch2)
           
   if len(full_brain_ch2) > 0:
       stitched_brain_ch2 = np.concatenate(full_brain_ch2, axis = -1)
