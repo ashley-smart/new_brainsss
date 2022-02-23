@@ -12,4 +12,4 @@
 ml python/3.6.1
 # ml antspy/0.2.2
 date
-python3 -u /home/users/asmart/projects/brainsss_ash/scripts/stitch_nii.py
+python3 -u /home/users/asmart/projects/brainsss_ash/scripts/stitch_nii_only.py
