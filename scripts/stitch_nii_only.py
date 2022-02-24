@@ -29,12 +29,13 @@ for fly in fly_folders:
   files = os.listdir(directory)
   full_brain_ch1 = []
   full_brain_ch2 = []
+  channel_1_list = []
+  channel_2_list = []
   for file in files:
       ## stitch brain ##
       #append all appropriate nii files together
       # these need to be appended in order so first make a list of ch specific files then sort later
-      channel_1_list = []
-      channel_2_list = []
+      
       if "channel_1" in file and "nii" in file: 
           channel_1_list.append(file)
       elif "channel_2" in file and "nii" in file:
