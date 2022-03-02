@@ -61,7 +61,7 @@ def main(args):
       meanbrain += ch1_img.dataobj[...,i]    
   meanbrain = meanbrain/brain_dims[-1] # divide by number of volumes
   fixed = ants.from_numpy(np.asarray(meanbrain, dtype='float32'))
-  printlog('meanbrain DONE'Duration: {}'.format(time()-t0))
+  printlog('meanbrain DONE Duration: {}'.format(time()-t0))
 
   ### Load channel 2 proxy here ###
   if ch2_brain_file is not None:
