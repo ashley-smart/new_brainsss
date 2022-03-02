@@ -66,10 +66,10 @@ def main(args):
   ### Load channel 2 proxy here ###
   if ch2_brain_file is not None:
       img_ch2 = nib.load(ch2_brain_file) # this loads a proxy
-	# make sure channel 1 and 2 have same shape
-	ch2_shape = img_ch2.header.get_data_shape()
-	if ch1_shape != ch2_shape:
-		printlog("Channel 1 and 2 do not have the same shape! {} and {}".format(ch1_shape, ch2_shape))
+      # make sure channel 1 and 2 have same shape
+      ch2_shape = img_ch2.header.get_data_shape()
+      if ch1_shape != ch2_shape:
+          printlog("Channel 1 and 2 do not have the same shape! {} and {}".format(ch1_shape, ch2_shape))
   #####################################################################         
   # Make empty hdf5 file to append processed volumes to with matching shape
   ######################################################################
