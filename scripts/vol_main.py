@@ -22,7 +22,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
 date = '20210802'
 
-mem = 8
+mem = 4
 time = 144 #time in hours before it stops running
 width = 120 # width of print log
 nodes = 1 # 1 or 2
