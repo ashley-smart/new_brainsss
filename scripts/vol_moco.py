@@ -38,11 +38,11 @@ def main(args):
     elif 'ch2' in name:
         ch2_brain_file = os.path.join(directory, name)
     else:
-        printlog("Aborting moco - could not find ch1 or ch2)
+        printlog("Aborting moco - could not find ch1 or ch2")
         return
                    
   if ch1_brain_file is None:
-      printlog("Aborting moco - could not find ch1 or ch2)
+      printlog("Aborting moco - could not find ch1")
       return
         
   ### get brain dims
