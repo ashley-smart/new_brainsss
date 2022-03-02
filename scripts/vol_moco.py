@@ -1,3 +1,4 @@
+ 
 ## this will run moco on each volume independently and save to help with memory issues
 ## with Luke
 
@@ -105,86 +106,86 @@ def main(args):
            
   #for i in range(brain_dims[-1]):
   for j in range(len(steps)-1):
-	  printlog(F"j: {j}")
+    printlog(F"j: {j}")
            
-          ### LOAD A SINGLE BRAIN VOL ###
-	  moco_ch1_chunk = []
-	  moco_ch2_chunk = []
-	  for i in range(stepsize):
-              t0 = time()
-              index = steps[j] + i
-	      # for the very last j, adding the step size will go over the dim, so need to stop here
-	      if index == brain_dims[-1]:
-                  break
+    ### LOAD A SINGLE BRAIN VOL ###
+    moco_ch1_chunk = []
+    moco_ch2_chunk = []
+    for i in range(stepsize):
+      t0 = time()
+      index = steps[j] + i
+      # for the very last j, adding the step size will go over the dim, so need to stop here
+      if index == brain_dims[-1]:
+          break
            
-	      # Load a single brain volume
-	      vol = ch1_img.dataobj[...,index]
+      # Load a single brain volume
+      vol = ch1_img.dataobj[...,index]
 
-	      ### Process vol (moco, zscore, etc) ###
-	      # Make ants image of ch1 brain
-	      moving = ants.from_numpy(np.asarray(vol, dtype='float32'))
+      ### Process vol (moco, zscore, etc) ###
+      # Make ants image of ch1 brain
+      moving = ants.from_numpy(np.asarray(vol, dtype='float32'))
 
-	      # Motion correct
-	      moco = ants.registration(fixed, moving, type_of_transform='SyN')
-	      moco_ch1 = moco['warpedmovout'].numpy()
-	      moco_ch1_chunk.append(moco_ch1)
-	      transformlist = moco['fwdtransforms']
+      # Motion correct
+      moco = ants.registration(fixed, moving, type_of_transform='SyN')
+      moco_ch1 = moco['warpedmovout'].numpy()
+      moco_ch1_chunk.append(moco_ch1)
+      transformlist = moco['fwdtransforms']
 
-	      ##apply transforms to ch2 to make ch2 warped brain correction
-	      if ch2_brain_file is not None: 
-	          ch2_img = nib.load(ch2_brain_file) # this loads a proxy
-	          ch2_vol = ch2_img.dataobj[...,index]
-	          ch2_moving = ants.from_numpy(np.asarray(ch2_vol, dtype='float32'))
-	          moco_ch2 = ants.apply_transforms(fixed, ch2_moving, transformlist)
-	          moco_ch2 = moco_ch2.numpy()
-	          moco_ch2_chunk.append(moco_ch2)
-	          printlog(F'moco vol done: {index}, time: {time()-t0}')
+      ##apply transforms to ch2 to make ch2 warped brain correction
+      if ch2_brain_file is not None: 
+        ch2_img = nib.load(ch2_brain_file) # this loads a proxy
+        ch2_vol = ch2_img.dataobj[...,index]
+        ch2_moving = ants.from_numpy(np.asarray(ch2_vol, dtype='float32'))
+        moco_ch2 = ants.apply_transforms(fixed, ch2_moving, transformlist)
+        moco_ch2 = moco_ch2.numpy()
+        moco_ch2_chunk.append(moco_ch2)
+        printlog(F'moco vol done: {index}, time: {time()-t0}')
 
 
-	      ### DELETE INVERSE TRANSFORMS
-	      transformlist = moco['invtransforms']
-	      for x in transformlist:
-	          if '.mat' not in x:
-		      os.remove(x)
+      ### DELETE INVERSE TRANSFORMS
+      transformlist = moco['invtransforms']
+      for x in transformlist:
+        if '.mat' not in x:
+         os.remove(x)
 
-	      ### DELETE FORWARD TRANSFORMS
-	      transformlist = moco['fwdtransforms']
-	      for x in transformlist:
-	          if '.mat' not in x:
-		      os.remove(x)
+      ### DELETE FORWARD TRANSFORMS
+      transformlist = moco['fwdtransforms']
+      for x in transformlist:
+        if '.mat' not in x:
+         os.remove(x)
 
-	  moco_ch1_chunk = np.moveaxis(np.asarray(moco_ch1_chunk),0,-1)
-	  if ch2_brain_file is not None:
-	      moco_ch2_chunk = np.moveaxis(np.asarray(moco_ch2_chunk),0,-1)
+    moco_ch1_chunk = np.moveaxis(np.asarray(moco_ch1_chunk),0,-1)
+    if ch2_brain_file is not None:
+      moco_ch2_chunk = np.moveaxis(np.asarray(moco_ch2_chunk),0,-1)
            
-                 #################################     
-          # Append to hdf5 file
-          t0 = time()
-          ## ch1 
-          with h5py.File(save_file_ch1, 'a') as f_ch1:
-              f_ch1['data'][...,steps[j]:steps[j+1]] = moco_ch1_chunk																		
-	  printlog(F'Ch_1 append time: {time()-t0}')
+    #################################     
+    # Append to hdf5 file
+    t0 = time()
+    ## ch1 
+    with h5py.File(save_file_ch1, 'a') as f_ch1:
+      f_ch1['data'][...,steps[j]:steps[j+1]] = moco_ch1_chunk                                   
+    printlog(F'Ch_1 append time: {time()-t0}')
       
           ## ch2
-          t0 = time()
-	  if ch2_brain_file is not None:
-	      with h5py.File(save_file_ch2, 'a') as f_ch2:
-                  f_ch2['data'][...,steps[j]:steps[j+1]] = moco_ch2_chunk
-	      printlog(F'Ch_2 append time: {time()-t0}')
+    t0 = time()
+    if ch2_brain_file is not None:
+      with h5py.File(save_file_ch2, 'a') as f_ch2:
+        f_ch2['data'][...,steps[j]:steps[j+1]] = moco_ch2_chunk
+      printlog(F'Ch_2 append time: {time()-t0}')
            
 def make_empty_h5(directory, file, brain_dims):
-	savefile = os.path.join(directory, file)
-	with h5py.File(savefile, 'w') as f:
-		dset = f.create_dataset('data', brain_dims, dtype='float32', chunks=True)
-	return savefile
+  savefile = os.path.join(directory, file)
+  with h5py.File(savefile, 'w') as f:
+    dset = f.create_dataset('data', brain_dims, dtype='float32', chunks=True)
+  return savefile
 
 ## not currently used, but could be added in beginning
 def check_for_file(file, directory):
-	filepath = os.path.join(directory, file)
-	if os.path.exists(filepath):
-		return filepath
-	else:
-		return None
+  filepath = os.path.join(directory, file)
+  if os.path.exists(filepath):
+    return filepath
+  else:
+    return None
            
            
            
