@@ -169,7 +169,7 @@ def main(args):
           t0 = time()
 	  if ch2_brain_file is not None:
 	      with h5py.File(save_file_ch2, 'a') as f_ch2:
-		      f_ch2['data'][...,steps[j]:steps[j+1]] = moco_ch2_chunk
+                  f_ch2['data'][...,steps[j]:steps[j+1]] = moco_ch2_chunk
 	      printlog(F'Ch_2 append time: {time()-t0}')
            
 def make_empty_h5(directory, file, brain_dims):
