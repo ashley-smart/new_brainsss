@@ -108,7 +108,7 @@ def main(args):
           index = steps[j] + i
 		  # for the very last j, adding the step size will go over the dim, so need to stop here
 		  if index == brain_dims[-1]:
-              break
+                      break
            
           # Load a single brain volume
           vol = ch1_img.dataobj[...,index]
@@ -131,7 +131,7 @@ def main(args):
               moco_ch2 = ants.apply_transforms(fixed, ch2_moving, transformlist)
               moco_ch2 = moco_ch2.numpy()
               moco_ch2_chunk.append(moco_ch2)
-			  printlog(F'moco vol done: {index}, time: {time()-t0}')
+	  printlog(F'moco vol done: {index}, time: {time()-t0}')
 
 
           ### DELETE INVERSE TRANSFORMS
@@ -146,7 +146,7 @@ def main(args):
               if '.mat' not in x:
                   os.remove(x)
 
-      moco_ch1_chunk = np.moveaxis(np.asarray(moco_ch1_chunk),0,-1)
+          moco_ch1_chunk = np.moveaxis(np.asarray(moco_ch1_chunk),0,-1)
 	  if filepath_ch2 is not None:
 	      moco_ch2_chunk = np.moveaxis(np.asarray(moco_ch2_chunk),0,-1)
            
