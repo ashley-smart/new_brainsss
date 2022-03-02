@@ -56,7 +56,7 @@ for fly in flies:
     save_path = directory  #could have it save in a different folder in the future
     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
     script = 'vol_moco.py'
-    job_id = brainsss.sbatch(jobname='voltest',
+    job_id = brainsss.sbatch(jobname='volmoco',
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
