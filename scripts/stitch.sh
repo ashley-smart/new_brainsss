@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=stitch_nii_av
+#SBATCH --job-name=stitch_nii
 #SBATCH --partition=owners
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
