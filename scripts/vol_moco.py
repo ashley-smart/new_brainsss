@@ -83,11 +83,11 @@ def main(args):
 #       printlog('created empty hdf5 file ch2')
   
   save_file_ch1 = make_empty_h5(directory, "moco_ch1.h5", brain_dims)
-  printlog('created empty hdf5 file: {}'.format("moco_ch1.h5"))
+  printlog('created empty hdf5 file  #: {}'.format("moco_ch1.h5"))
 
   if ch2_brain_file is not None:
       save_file_ch2 = make_empty_h5(directory, "moco_ch2.h5", brain_dims)
-	  printlog('created empty hdf5 file: {}'.format("moco_ch2.h5"))
+      printlog('created empty hdf5 file #: {}'.format("moco_ch2.h5"))
            
            
   ####################################################################3
