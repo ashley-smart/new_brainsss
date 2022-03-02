@@ -35,7 +35,7 @@ def main(args):
   for name in file_names:
     if 'ch1' in name:
         ch1_brain_file = os.path.join(directory, name)
-     elif 'ch2' in name:
+    elif 'ch2' in name:
         ch2_brain_file = os.path.join(directory, name)
     else:
         printlog("Aborting moco - could not find ch1 or ch2)
