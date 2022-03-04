@@ -13,9 +13,9 @@ import gc
 
 
 #get to files
-date = '20210702'
-dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
-#dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
+date = '2022.01.19'
+#dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
 fly_files = os.listdir(dataset_path)  ## find directory names, they are the fly names
 fly_folders = []
 for i in fly_files:
