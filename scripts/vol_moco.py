@@ -139,7 +139,7 @@ def main(args):
         moco_ch2 = ants.apply_transforms(fixed, ch2_moving, transformlist)
         moco_ch2 = moco_ch2.numpy()
         moco_ch2_chunk.append(moco_ch2)
-        printlog(F'moco vol done: {index}, time: {time()-t0}')
+        #printlog(F'moco vol done: {index}, time: {time()-t0}')
 
 
       ### DELETE INVERSE TRANSFORMS
