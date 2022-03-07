@@ -21,6 +21,7 @@ dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 flies_temp = os.listdir(dataset_path)
 print(flies_temp)
 
+flies = []
 for i in flies_temp:
     if 'fly' in os.path.join(dataset_path, i):
         flies.append(i)
