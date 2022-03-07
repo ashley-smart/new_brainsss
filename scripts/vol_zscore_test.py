@@ -54,7 +54,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
 for fly in flies:
     directory = os.path.join(dataset_path, fly)
-    file_names: ['MOCO_ch1.h5', 'MOCO_ch2.h5']
+    file_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']
 
     save_path = directory
     
