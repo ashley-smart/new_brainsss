@@ -75,7 +75,7 @@ job_ids = []
 for fly in flies:
     directory = os.path.join(dataset_path, fly)
     save_path = directory  #could have it save in a different folder in the future
-    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['MOCO_ch1.h5', 'MOCO_ch1.h5'], 'save_path': save_path}
+    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['MOCO_ch1.h5', 'MOCO_ch2.h5'], 'save_path': save_path}
     script = 'vol_zscore.py'
     job_id = brainsss.sbatch(jobname='vol zscore',
                          script=os.path.join(scripts_path, script),
