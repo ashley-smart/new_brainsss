@@ -104,7 +104,7 @@ for fly in flies:
 
             # Append to hdf5 file
             hf['zscore'][...,-1] = each_zscore
-       printlog('ZSCORE complete')
+       #printlog('ZSCORE complete')
         
 
     
