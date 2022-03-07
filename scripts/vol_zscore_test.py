@@ -25,9 +25,7 @@ for i in flies_temp:
     if 'fly' in os.path.join(dataset_path, i):
         flies.append(i)
 
-file_names: ['MOCO_ch1.h5', 'MOCO_ch2.h5']
-directory = os.path.join(dataset_path, fly)
-save_path = directory
+
 
 logfile = './logs/' + time.strftime("%Y%m%d-%H%M%S") + '.txt'
 printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
@@ -54,6 +52,9 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
 for fly in flies:
     directory = os.path.join(dataset_path, fly)
+    file_names: ['MOCO_ch1.h5', 'MOCO_ch2.h5']
+
+    save_path = directory
     
     #note if savepath is ever not the directory for moco then this will not find the files
     ch1_filepath = None
