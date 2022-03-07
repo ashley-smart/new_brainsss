@@ -84,6 +84,7 @@ for fly in flies:
         print('created zscore key')
         
         #find meanbrain 
+        meanbrain = 0
         for i in range(dims[-1]):  #dims[-1] gives number of timepoints => number of volumes
             meanbrain += data_ch2[:,:,:,i]
         meanbrain = meanbrain/dims[-1]
