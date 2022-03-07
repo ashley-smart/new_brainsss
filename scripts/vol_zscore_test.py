@@ -19,11 +19,12 @@ date = '20210802'
 
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 flies_temp = os.listdir(dataset_path)
-printlog(flies_temp)
+print(flies_temp)
 
 for i in flies_temp:
     if 'fly' in os.path.join(dataset_path, i):
         flies.append(i)
+print((flies))
 
 
 
@@ -62,12 +63,12 @@ for fly in flies:
     for name in file_names:
       if 'ch1' in name:
         ch1_filepath = os.path.join(directory, name)
-        printlog(ch1_filepath) 
+        print(ch1_filepath) 
       elif 'ch2' in name:
         ch2_filepath = os.path.join(directory, name)
-        printlog(ch2_filepath)
+        print(ch2_filepath)
       else:
-        printlog('No file with ch1 or ch2 in it')
+        print('No file with ch1 or ch2 in it')
     
     
     #open moco file for ch2 (add ch1 later if needed)
@@ -79,7 +80,7 @@ for fly in flies:
         #make file to save zscore data to (this will error if it is run more than once and attempts to make the file again--could check to see if key exists to make it more robust later)
         ##I had it make a new key in the existing file so I didn't have to mess with having multiple h5 files open at once
         zscore_ch2 = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
-        printlog('created zscore key')
+        print('created zscore key')
         
         #find meanbrain 
         for i in range(dims[-1]):  #dims[-1] gives number of timepoints => number of volumes
