@@ -19,6 +19,7 @@ date = '20210802'
 
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 flies_temp = os.listdir(dataset_path)
+printlog(flies_temp)
 
 for i in flies_temp:
     if 'fly' in os.path.join(dataset_path, i):
