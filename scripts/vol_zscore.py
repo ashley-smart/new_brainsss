@@ -34,8 +34,10 @@ def main(args):
     for name in file_names:
       if 'ch1' in name:
         ch1_filepath = os.path.join(directory, name)
+        printlog(ch1_filepath) 
       elif 'ch2' in name:
         ch2_filepath = os.path.join(directory, name)
+        printlog(ch2_filepath)
       else:
         printlog('No file with ch1 or ch2 in it')
     
@@ -49,6 +51,7 @@ def main(args):
         #make file to save zscore data to (this will error if it is run more than once and attempts to make the file again--could check to see if key exists to make it more robust later)
         ##I had it make a new key in the existing file so I didn't have to mess with having multiple h5 files open at once
         zscore_ch2 = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
+        printlog('created zscore key')
         
         #find meanbrain 
         for i in range(dims[-1]):  #dims[-1] gives number of timepoints => number of volumes
@@ -75,6 +78,7 @@ def main(args):
 
             # Append to hdf5 file
             hf['zscore'][...,-1] = each_zscore
+       printlog('ZSCORE complete')
         
 
     
