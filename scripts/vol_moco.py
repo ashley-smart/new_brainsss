@@ -26,8 +26,8 @@ def main(args):
   # colors = args['colors']
   printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
-  save_file_ch1 = os.path.join(save_path, 'MOCO_ch1.h5')
-  save_file_ch2 = os.path.join(save_path, 'MOCO_ch2.h5')
+  #save_file_ch1 = os.path.join(save_path, 'MOCO_ch1.h5')
+  #save_file_ch2 = os.path.join(save_path, 'MOCO_ch2.h5')
 
   ########################################3
   # Get brain shape
@@ -83,12 +83,12 @@ def main(args):
 #           dset_ch2 = f_ch2.create_dataset('data', (*brain_dims[:3],0), maxshape=(*brain_dims[:3],None), dtype='float32')
 #       printlog('created empty hdf5 file ch2')
   
-  save_file_ch1 = make_empty_h5(directory, "moco_ch1.h5", brain_dims)
-  printlog('created empty hdf5 file  #: {}'.format("moco_ch1.h5"))
+  save_file_ch1 = make_empty_h5(directory, "MOCO_ch1.h5", brain_dims)
+  printlog('created empty hdf5 file  #: {}'.format("MOCO_ch1.h5"))
 
   if ch2_brain_file is not None:
-      save_file_ch2 = make_empty_h5(directory, "moco_ch2.h5", brain_dims)
-      printlog('created empty hdf5 file #: {}'.format("moco_ch2.h5"))
+      save_file_ch2 = make_empty_h5(directory, "MOCO_ch2.h5", brain_dims)
+      printlog('created empty hdf5 file #: {}'.format("MOCO_ch2.h5"))
            
            
   ####################################################################3
