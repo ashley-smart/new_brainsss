@@ -86,6 +86,7 @@ def main(args):
 
             # Append to hdf5 file
             hf['zscore'][...,-1] = each_zscore
+            printlog(str(i) + " volume complete")
         printlog('ZSCORE complete')
         
 
