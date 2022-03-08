@@ -50,10 +50,16 @@ def main(args):
         
         #make file to save zscore data to (this will error if it is run more than once and attempts to make the file again--could check to see if key exists to make it more robust later)
         ##I had it make a new key in the existing file so I didn't have to mess with having multiple h5 files open at once
-        zscore_ch2 = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
-        printlog('created zscore key')
+         # check if zscore dataset already created
+        if 'zscore' in hf.keys():
+            print('zscore key-dataset already exists')
+        else:
+            zscore_ch2 = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
+            print('created zscore key')
+        
         
         #find meanbrain 
+        meanbrain = 0
         for i in range(dims[-1]):  #dims[-1] gives number of timepoints => number of volumes
             meanbrain += data_ch2[:,:,:,i]
         meanbrain = meanbrain/dims[-1]
