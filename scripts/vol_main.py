@@ -47,25 +47,25 @@ printlog(F"{day_now+' | '+time_now:^{width}}")
 printlog("")
 
 
-######################
-### Test vol moco ####
-#######################
-printlog(f"\n{'   vol by vol test   ':=^{width}}")
-job_ids = []
-for fly in flies:
-    directory = os.path.join(dataset_path, fly)
-    save_path = directory  #could have it save in a different folder in the future
-    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
-    script = 'vol_moco.py'
-    job_id = brainsss.sbatch(jobname='volmoco',
-                         script=os.path.join(scripts_path, script),
-                         modules=modules,
-                         args=args,
-                         logfile=logfile, time=time, mem=mem, nice=nice, nodes=nodes)
-    job_ids.append(job_id)
+# ######################
+# ### Test vol moco ####
+# #######################
+# printlog(f"\n{'   vol by vol test   ':=^{width}}")
+# job_ids = []
+# for fly in flies:
+#     directory = os.path.join(dataset_path, fly)
+#     save_path = directory  #could have it save in a different folder in the future
+#     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
+#     script = 'vol_moco.py'
+#     job_id = brainsss.sbatch(jobname='volmoco',
+#                          script=os.path.join(scripts_path, script),
+#                          modules=modules,
+#                          args=args,
+#                          logfile=logfile, time=time, mem=mem, nice=nice, nodes=nodes)
+#     job_ids.append(job_id)
 
-for job_id in job_ids:
-    brainsss.wait_for_job(job_id, logfile, com_path)
+# for job_id in job_ids:
+#     brainsss.wait_for_job(job_id, logfile, com_path)
     
     
 ######################
