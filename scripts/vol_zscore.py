@@ -91,3 +91,5 @@ def main(args):
         
 
     
+if __name__ == '__main__':
+    main(json.loads(sys.argv[1]))
