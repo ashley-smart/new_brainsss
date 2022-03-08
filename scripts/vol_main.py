@@ -35,6 +35,7 @@ flies = []
 for i in flies_temp:
     if 'fly' in os.path.join(dataset_path, i):
         flies.append(i)
+printlog(flies)
 
         
 title = pyfiglet.figlet_format("Brainsss", font="cyberlarge" ) #28 #shimrod
@@ -77,6 +78,7 @@ for fly in flies:
     save_path = directory  #could have it save in a different folder in the future
     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['MOCO_ch1.h5', 'MOCO_ch2.h5'], 'save_path': save_path}
     script = 'vol_zscore.py'
+    printlog(os.path.join(scripts_path, script)
     job_id = brainsss.sbatch(jobname='vol zscore',
                          script=os.path.join(scripts_path, script),
                          modules=modules,
