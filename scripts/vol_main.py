@@ -7,7 +7,7 @@ import sys
 import os
 import re
 import json
-import datetime
+from datetime import datetime
 import pyfiglet
 import textwrap
 import brainsss
@@ -26,7 +26,7 @@ date = '20210806'
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 
 mem = 4
-time = 144 #time in hours before it stops running
+runtime = 144 #time in hours before it stops running
 width = 120 # width of print log
 nodes = 1 # 1 or 2
 nice = True #True # true to lower priority of jobs. ie, other users jobs go first
@@ -78,7 +78,7 @@ printlog("")
 #                          script=os.path.join(scripts_path, script),
 #                          modules=modules,
 #                          args=args,
-#                          logfile=logfile, time=time, mem=mem, nice=nice, nodes=nodes)
+#                          logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
 #     job_ids.append(job_id)
 
 # for job_id in job_ids:
@@ -101,7 +101,7 @@ for fly in flies:
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
-                         logfile=logfile, time=time, mem=mem, nice=nice, nodes=nodes)
+                         logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
     job_ids.append(job_id)
     printlog("fly started")
 
