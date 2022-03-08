@@ -29,6 +29,7 @@ def main(args):
 #     ch2_filepath = os.path.join(save_path, 'MOCO_ch2.h5')    
     
     #note if savepath is ever not the directory for moco then this will not find the files
+    printlog("looking for ch1 and ch2 moco")
     ch1_filepath = None
     ch2_filepath = None
     for name in file_names:
@@ -44,6 +45,7 @@ def main(args):
     
     #open moco file for ch2 (add ch1 later if needed)
     with h5py.File(ch2_filepath, 'a') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
+        printlog("opened moco 2 file")
         data_ch2 = hf['data']  #I believe this syntax shouldn't load the whole thing in memory
         #get the dimension of the data
         dims = np.shape(data_ch2)
