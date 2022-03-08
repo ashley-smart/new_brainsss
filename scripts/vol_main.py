@@ -7,7 +7,7 @@ import sys
 import os
 import re
 import json
-from datetime import datetime
+import datetime
 import pyfiglet
 import textwrap
 import brainsss
