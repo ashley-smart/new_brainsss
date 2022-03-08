@@ -1,5 +1,7 @@
 ## to be sure I'm running just vol_moco
 
+
+
 import time
 import sys
 import os
@@ -91,7 +93,7 @@ for job_id in job_ids:
     
     
     
-time.sleep(30) # to allow any final printing
+#time.sleep(30) # to allow any final printing
 day_now = datetime.datetime.now().strftime("%B %d, %Y")
 time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
 printlog("="*width)
