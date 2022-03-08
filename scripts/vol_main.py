@@ -35,7 +35,7 @@ flies = []
 for i in flies_temp:
     if 'fly' in os.path.join(dataset_path, i):
         flies.append(i)
-printlog(flies)
+printlog(str(flies))
 
         
 title = pyfiglet.figlet_format("Brainsss", font="cyberlarge" ) #28 #shimrod
