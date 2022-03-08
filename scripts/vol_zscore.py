@@ -8,7 +8,7 @@ import numpy as np
 import argparse
 import subprocess
 import json
-from time import time
+import time
 import nibabel as nib
 import brainsss
 import h5py
