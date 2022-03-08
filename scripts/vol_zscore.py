@@ -15,7 +15,7 @@ import h5py
 import ants
 
 def main(args):
-
+    printlog("zscore started")
     logfile = args['logfile']
     directory = args['directory'] # full fly path 
     file_names = args['file_names'] ## should be MOCO_ch1.h5 and MOCO_ch2.h5 as specified in vol_main.py
