@@ -79,7 +79,7 @@ for fly in flies:
     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['MOCO_ch1.h5', 'MOCO_ch2.h5'], 'save_path': save_path}
     script = 'vol_zscore.py'
     printlog(os.path.join(scripts_path, script)
-    job_id = brainsss.sbatch(jobname='vol zscore',
+    job_id = brainsss.sbatch(jobname='volzscore',
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
