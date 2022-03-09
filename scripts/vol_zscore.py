@@ -86,7 +86,8 @@ def main(args):
 
             # Append to hdf5 file
             hf['zscore'][...,-1] = each_zscore
-            printlog(str(i) + " volume complete")
+            if i % 1000 == 0:  #to just report every 1000 volumes so file isn't so big
+                printlog(str(i) + " volume complete")
         printlog('ZSCORE complete')
         
 
