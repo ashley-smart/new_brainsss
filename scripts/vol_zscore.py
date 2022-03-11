@@ -1,4 +1,4 @@
-## take moco h5py file and run zscore on it and output another h5py file
+## take moco h5py file and run zscore on it and add to h5py file in a new dataset/key
 ##currently adding the zscore data to the appropriate h5 file as a key called 'zscore'
 ## this is currently set to run each volume independently
 
@@ -25,11 +25,7 @@ def main(args):
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
     
-#     ch1_filepath = os.path.join(save_path, 'MOCO_ch1.h5')
-#     ch2_filepath = os.path.join(save_path, 'MOCO_ch2.h5')    
-    
-    #note if savepath is ever not the directory for moco then this will not find the files
-    printlog("looking for ch1 and ch2 moco")
+  
     ch1_filepath = None
     ch2_filepath = None
     for name in file_names:
@@ -46,13 +42,13 @@ def main(args):
     #open moco file for ch2 (add ch1 later if needed)
     with h5py.File(ch2_filepath, 'a') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
         printlog("opened moco 2 file")
-        data_ch2 = hf['data']  #I believe this syntax shouldn't load the whole thing in memory
+        data_ch2 = hf['data']  #this syntax shouldn't load the whole thing in memory
         #get the dimension of the data
         dims = np.shape(data_ch2)
         
-        #make file to save zscore data to (this will error if it is run more than once and attempts to make the file again--could check to see if key exists to make it more robust later)
+        #make file to save zscore data to 
         ##I had it make a new key in the existing file so I didn't have to mess with having multiple h5 files open at once
-         # check if zscore dataset already created
+        # check if zscore dataset already created
         if 'zscore' in hf.keys():
             print('zscore key-dataset already exists')
         else:
