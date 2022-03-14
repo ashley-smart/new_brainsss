@@ -21,7 +21,7 @@ modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
-date = '20210719'
+date = '20210716'
 
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 
