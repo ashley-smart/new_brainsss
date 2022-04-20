@@ -21,9 +21,11 @@ modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
-date = '20210716'
+date = '20220112'
 
-dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+#dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
+
 
 mem = 4
 runtime = 144 #time in hours before it stops running
@@ -65,7 +67,7 @@ printlog("")
 
 
 ######################
-### Test vol moco ####
+### vol moco ####
 #######################
 printlog(f"\n{'   vol by vol moco test   ':=^{width}}")
 job_ids = []
@@ -86,7 +88,7 @@ for job_id in job_ids:
     
     
 ######################
-### Test vol zscore ####
+### vol zscore ####
 #######################
 printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
 moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
