@@ -52,7 +52,8 @@ flies_temp = os.listdir(dataset_path)  ## find directory names, they are the fly
 #to sort out non-fly directories (issue if I ever label a file with fly but I can't get isdir to work.)
 flies = []
 for i in flies_temp:
-    if 'fly' in os.path.join(dataset_path, i):
+    #if 'fly' in os.path.join(dataset_path, i):
+    if 'fly' in os.path.join(dataset_path, i) and 'anat' not in os.path.join(dataset_path, i): #to avoid anat
         flies.append(i)
 printlog(str(flies))
 
