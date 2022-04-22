@@ -28,63 +28,67 @@ def main(args):
   
     ch1_filepath = None
     ch2_filepath = None
+    files = []
     for name in file_names:
       if 'ch1' in name:
         ch1_filepath = os.path.join(directory, name)
         printlog(ch1_filepath) 
+        files.append(ch1_filepath)
       elif 'ch2' in name:
         ch2_filepath = os.path.join(directory, name)
         printlog(ch2_filepath)
+        files.append(ch2_filepath)
       else:
         printlog('No file with ch1 or ch2 in it')
     
     
-    #open moco file for ch2 (add ch1 later if needed)
-    with h5py.File(ch2_filepath, 'a') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
-        printlog("opened moco 2 file")
-        data_ch2 = hf['data']  #this syntax shouldn't load the whole thing in memory
-        #get the dimension of the data
-        dims = np.shape(data_ch2)
-        
-        #make file to save zscore data to 
-        ##I had it make a new key in the existing file so I didn't have to mess with having multiple h5 files open at once
-        # check if zscore dataset already created
-        if 'zscore' in hf.keys():
-            print('zscore key-dataset already exists')
-        else:
-            zscore_ch2 = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
-            print('created zscore key')
-        
-        
-        #find meanbrain 
-        meanbrain = 0
-        for i in range(dims[-1]):  #dims[-1] gives number of timepoints => number of volumes
-            meanbrain += data_ch2[:,:,:,i]
-        meanbrain = meanbrain/dims[-1]
-        
-        #find std
-        total = 0
-        for i in range(dims[-1]):
-            s = (data_ch2[:,:,:,i] - meanbrain)**2
-            total = s + total
-        final_std = np.sqrt(total/len(data_ch2[-1]))
+    #open moco file for all files in files (should be ch1 and ch2
+    for file in files:
+        with h5py.File(file, 'a') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
+            printlog("opened moco 2 file")
+            data = hf['data']  #this syntax shouldn't load the whole thing in memory
+            #get the dimension of the data
+            dims = np.shape(data)
+
+            #make file to save zscore data to 
+            ##I had it make a new key in the existing file so I didn't have to mess with having multiple h5 files open at once
+            # check if zscore dataset already created
+            if 'zscore' in hf.keys():
+                print('zscore key-dataset already exists')
+            else:
+                zscore = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
+                print('created zscore key')
 
 
-        #calculate zscore
-        for i in range(dims[-1]):
-            each_zscore = (data_ch2[:,:,:,i] - meanbrain)/final_std
+            #find meanbrain 
+            meanbrain = 0
+            for i in range(dims[-1]):  #dims[-1] gives number of timepoints => number of volumes
+                meanbrain += data[:,:,:,i]
+            meanbrain = meanbrain/dims[-1]
 
-            #save zscore
-            # Increase hdf5 size by one brain volume
-            current_num_vol = hf['zscore'].shape[-1] # this is the last axis, which is time
-            new_num_vol = current_num_vol + 1 # will want one more volume
-            hf['zscore'].resize(new_num_vol,axis=3) # increase size by one volume
+            #find std
+            total = 0
+            for i in range(dims[-1]):
+                s = (data[:,:,:,i] - meanbrain)**2
+                total = s + total
+            final_std = np.sqrt(total/len(data[-1]))
 
-            # Append to hdf5 file
-            hf['zscore'][...,-1] = each_zscore
-            if i % 1000 == 0:  #to just report every 1000 volumes so file isn't so big
-                printlog(str(i) + " volume complete")
-        printlog('ZSCORE complete')
+
+            #calculate zscore
+            for i in range(dims[-1]):
+                each_zscore = (data[:,:,:,i] - meanbrain)/final_std
+
+                #save zscore
+                # Increase hdf5 size by one brain volume
+                current_num_vol = hf['zscore'].shape[-1] # this is the last axis, which is time
+                new_num_vol = current_num_vol + 1 # will want one more volume
+                hf['zscore'].resize(new_num_vol,axis=3) # increase size by one volume
+
+                # Append to hdf5 file
+                hf['zscore'][...,-1] = each_zscore
+                if i % 1000 == 0:  #to just report every 1000 volumes so file isn't so big
+                    printlog(str(i) + " volume complete")
+            printlog('ZSCORE complete')
         
 
     
