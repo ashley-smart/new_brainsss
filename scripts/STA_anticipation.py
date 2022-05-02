@@ -229,10 +229,8 @@ for fly in fly_names:
             #all_average_bins = []
             anticipatory_difference = np.zeros(shape = (dims[0], dims[1]))
             light_response_difference = np.zeros(shape = (dims[0], dims[1]))
-            #for x in range(dims[0]):
-            for x in range(2):
-                #for y in range(dims[1]):
-                for y in range(2):
+            for x in range(dims[0]):
+                for y in range(dims[1]):
                     ##get zscore
                     ch2_zscore = np.array(zscore_data[x,y,z,:])
 
