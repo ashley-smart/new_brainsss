@@ -184,7 +184,7 @@ for fly in fly_names:
     directory = os.path.join(dataset_path, fly)
     timestamps = load_timestamps(directory, xml_file)
 
-    for i in range(len(fly_zscore_file):
+    for i in range(len(fly_zscore_file)):
         if '2' in fly_zscore_file[i]:
             ch2zscore = fly_zscore_file[i]
     
