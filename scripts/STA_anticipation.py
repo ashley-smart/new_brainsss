@@ -30,12 +30,12 @@ import psutil
 
 ##data files
 
-date = '20210806'
+date = '20210802'
 folder_path = "/oak/stanford/groups/trc/data/Ashley2/imports/"
 
 dataset_path = os.path.join(folder_path, date)
 
-window = 20  #may want to change this to be specific for the length of the interval
+#window = 20  #may want to change this to be specific for the length of the interval
 
 #################FUNCTIONS ######################
 ## get data out of voltage file     
