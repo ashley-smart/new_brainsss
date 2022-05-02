@@ -183,7 +183,7 @@ for fly in fly_names:
     #this will give me a window that should equal the length of the interval
     window = int(np.median(light_peaks_adjusted[1:]-light_peaks_adjusted[:-1]))
 
-    xml_file = str(fly_names[0]) + '.xml'
+    xml_file = str(fly) + '.xml'
     directory = os.path.join(dataset_path, fly)
     timestamps = load_timestamps(directory, xml_file)
 
@@ -208,9 +208,7 @@ for fly in fly_names:
         dset_average = f.create_dataset('average bins', [dims[0], dims[1], dims[2],window])
         print(np.shape(dset_average))
         
-    #for z in range(dims[2]):
-    for z in range(1):
-        print(z)
+    for z in range(dims[2]):
         z_timestamps = get_z_timestamps(timestamps, z)
         
         z_time_mean = np.mean(z_timestamps[1:] - z_timestamps[:-1])
