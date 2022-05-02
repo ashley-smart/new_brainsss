@@ -286,8 +286,8 @@ for fly in fly_names:
                     light_response_difference[x,y] = np.mean(average_bins[:5]) - np.mean(average_bins[5:10])
                     
                     all_average_bins[x,y] = np.array(average_bins)
-            print(all_average_bins)
-            print(np.shape(all_average_bins))
+#             print(all_average_bins)
+#             print(np.shape(all_average_bins))
             #append the z anticipatory data
             with h5py.File(save_file, 'a') as f:
                 f['anticipatory difference'][:,:,z] = anticipatory_difference
