@@ -178,7 +178,10 @@ for fly in fly_names:
     voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
     light_peaks_adjusted = light_peaks/voltage_framerate
 
-
+    ##get averge distance between peaks to find interval time
+    print('light difference--should be interval', int(np.median(light_peaks_adjusted[1:]-light_peaks_adjusted[:-1]))
+    #this will give me a window that should equal the length of the interval
+    window = int(np.median(light_peaks_adjusted[1:]-light_peaks_adjusted[:-1]))
 
     xml_file = str(fly_names[0]) + '.xml'
     directory = os.path.join(dataset_path, fly)
