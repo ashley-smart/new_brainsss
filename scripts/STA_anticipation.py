@@ -196,12 +196,13 @@ for fly in fly_names:
     #get dims
     with h5py.File(ch2_filepath, 'r') as hf:   
         #moco = hf['data']
-        zscore_data = hf['zscore']
+        #zscore_data = hf['zscore']
+        zscore_data = hf['data'] #this is moco data
         dims = np.shape(zscore_data) #dims are (x,y,z,t)
 
         
     #initialize h5 file
-    save_file = os.path.join(save_filepath, "STA.h5")
+    save_file = os.path.join(save_filepath, "STA_moco.h5")
     with h5py.File(save_file, 'w') as f:
         dset_anticipatory = f.create_dataset('anticipatory difference', dims[:3])  #I will want the dataset to hold anticipatory differences shape = (x,y,z) and I append on z
         dset_light_response = f.create_dataset('light response difference', dims[:3])
@@ -221,7 +222,8 @@ for fly in fly_names:
         ## this is for one z
         with h5py.File(ch2_filepath, 'r') as hf:   
             #moco = hf['data']
-            zscore_data = hf['zscore']
+            zscore_data = hf['data'] #this is moco data
+            #zscore_data = hf['zscore']
             dims = np.shape(zscore_data) #dims are (x,y,z,t)
             anticipatory_xy = []
             light_response_xy = []
