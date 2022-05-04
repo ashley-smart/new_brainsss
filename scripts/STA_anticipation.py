@@ -156,7 +156,7 @@ for fly in fly_names:
     #get voltage file
     data_reducer = 100
     light_data = []
-    fly_voltage_path = os.path.join(dataset_path, fly, fly_voltage_file)  #this isn't the right way to do this--redo after testing
+    fly_voltage_path = os.path.join(dataset_path, fly, fly_voltage_file)  
     with open(fly_voltage_path, 'r') as rawfile:
         reader = csv.reader(rawfile)
         data_single = []
