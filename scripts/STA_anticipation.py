@@ -197,8 +197,8 @@ for fly in fly_names:
     with h5py.File(ch2_filepath, 'r') as hf:   
         #moco = hf['data']
         #zscore_data = hf['zscore']
-        zscore_data = hf['data'] #this is moco data
-        dims = np.shape(zscore_data) #dims are (x,y,z,t)
+        data = hf['data'] #this is moco data
+        dims = np.shape(data) #dims are (x,y,z,t)
 
         
     #initialize h5 file
@@ -222,9 +222,9 @@ for fly in fly_names:
         ## this is for one z
         with h5py.File(ch2_filepath, 'r') as hf:   
             #moco = hf['data']
-            zscore_data = hf['data'] #this is moco data
+            data = hf['data'] #this is moco data
             #zscore_data = hf['zscore']
-            dims = np.shape(zscore_data) #dims are (x,y,z,t)
+            dims = np.shape(data) #dims are (x,y,z,t)
             anticipatory_xy = []
             light_response_xy = []
             all_average_bins = np.zeros(shape = (dims[0], dims[1], window))
@@ -234,18 +234,18 @@ for fly in fly_names:
             light_response_difference = np.zeros(shape = (dims[0], dims[1]))
             for x in range(dims[0]):
                 for y in range(dims[1]):
-                    ##get zscore
-                    ch2_zscore = np.array(zscore_data[x,y,z,:])
+                    ##get zscore or moco
+                    ch2_data = np.array(data[x,y,z,:])
 
                     #adjust timestamps so they are the same length as data (still don't know why this happened)
-                    time_since_pulse_vector = np.array(time_since_pulse_vector[:len(ch2_zscore)])
+                    time_since_pulse_vector = np.array(time_since_pulse_vector[:len(ch2_data)])
 
                     ## get average bins
                     average_bins = [] 
                     for bin_index in range(window):
                         bin_start = bin_index + 0.0
                         bin_end = bin_index + 1.0
-                        data_value_vector = ch2_zscore #ch2_test
+                        data_value_vector = ch2_data #ch2_test
                         bin_value = np.nanmean(data_value_vector[np.logical_and(time_since_pulse_vector >= bin_start, time_since_pulse_vector < bin_end)])
                         average_bins.append(bin_value)
                     #all_average_bins.append(average_bins)
@@ -256,7 +256,6 @@ for fly in fly_names:
                         if np.mean(average_bins[13:]) > np.mean(average_bins[6:13]):
                             xy = [x,y]
                             anticipatory_xy.append(xy)
-                            #I should probably store these in a dictionary...
                     elif window == 40:
                         if np.mean(average_bins[26:]) > np.mean(average_bins[12:26]):
                             xy = [x,y]
