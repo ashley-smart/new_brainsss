@@ -30,7 +30,7 @@ import psutil
 
 ##data files
 
-date = '20210719'
+date = '20210716'
 folder_path = "/oak/stanford/groups/trc/data/Ashley2/imports/"
 print('DATE RUNNING: ', date)
 
