@@ -32,6 +32,7 @@ import psutil
 
 date = '20210719'
 folder_path = "/oak/stanford/groups/trc/data/Ashley2/imports/"
+print('DATE RUNNING: ', date)
 
 dataset_path = os.path.join(folder_path, date)
 
@@ -131,7 +132,7 @@ def get_time_since_pulse(z_timestamps_s, light_peaks_adjusted):
 fly_names = []
 files = os.listdir(dataset_path)
 for i in range(len(files)):
-    if '.txt' not in files[i] and 'nii' not in files[i]: #get rid of non-directory things
+    if '.txt' not in files[i] and 'nii' not in files[i] and "fly" in files[i]: #get rid of non-directory things
         fly_names.append(files[i])
         print (files[i])
 print('file name list', fly_names)
@@ -173,6 +174,11 @@ for fly in fly_names:
     light_median = np.median(light_column)
     early_light_max = max(light_column[0:2000])
     light_peaks, properties = scipy.signal.find_peaks(light_column, height = early_light_max +.001, prominence = .1, distance = 10)
+    
+    if len(light_peaks) == 0:
+        print("There are no light peaks for " + str(date) + " " + str(fly))
+        print("Continuing to next fly")
+        continue
        
     ## convert to seconds
     voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
