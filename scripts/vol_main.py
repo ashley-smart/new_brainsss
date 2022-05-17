@@ -21,10 +21,10 @@ modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
-date = '20211215'
+date = '20210714'
 
-#dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
-dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
+dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+#dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
 
 
 mem = 4
@@ -88,28 +88,28 @@ for job_id in job_ids:
     brainsss.wait_for_job(job_id, logfile, com_path)
     
     
-######################
-### vol zscore ####
-#######################
-printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
-moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
-job_ids = []
-for fly in flies:
-    directory = os.path.join(dataset_path, fly)
-    save_path = directory  #could have it save in a different folder in the future
-    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': moco_names, 'save_path': save_path}
-    script = 'vol_zscore.py'
-    printlog(os.path.join(scripts_path, script))
-    job_id = brainsss.sbatch(jobname='volzscore',
-                         script=os.path.join(scripts_path, script),
-                         modules=modules,
-                         args=args,
-                         logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
-    job_ids.append(job_id)
-    printlog("fly started")
+# ######################
+# ### vol zscore ####
+# #######################
+# printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
+# moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+# job_ids = []
+# for fly in flies:
+#     directory = os.path.join(dataset_path, fly)
+#     save_path = directory  #could have it save in a different folder in the future
+#     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': moco_names, 'save_path': save_path}
+#     script = 'vol_zscore.py'
+#     printlog(os.path.join(scripts_path, script))
+#     job_id = brainsss.sbatch(jobname='volzscore',
+#                          script=os.path.join(scripts_path, script),
+#                          modules=modules,
+#                          args=args,
+#                          logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+#     job_ids.append(job_id)
+#     printlog("fly started")
 
-for job_id in job_ids:
-    brainsss.wait_for_job(job_id, logfile, com_path)
+# for job_id in job_ids:
+#     brainsss.wait_for_job(job_id, logfile, com_path)
 
 ############
 ### Done ###
