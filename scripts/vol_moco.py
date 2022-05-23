@@ -106,7 +106,7 @@ def main(args):
            
   #for i in range(brain_dims[-1]):
   for j in range(len(steps)-1):
-    printlog(F"j: {j}")
+    #printlog(F"j: {j}")
            
     ### LOAD A SINGLE BRAIN VOL ###
     moco_ch1_chunk = []
