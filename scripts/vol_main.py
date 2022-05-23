@@ -21,7 +21,7 @@ modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
-date = '20210604'
+date = '20210802'
 
 dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
@@ -67,25 +67,25 @@ printlog(F"{day_now+' | '+time_now:^{width}}")
 printlog("")
 
 
-######################
-### vol moco ####
-#######################
-printlog(f"\n{'   vol by vol moco test   ':=^{width}}")
-job_ids = []
-for fly in flies:
-    directory = os.path.join(dataset_path, fly)
-    save_path = directory  #could have it save in a different folder in the future
-    args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
-    script = 'vol_moco.py'
-    job_id = brainsss.sbatch(jobname='volmoco',
-                         script=os.path.join(scripts_path, script),
-                         modules=modules,
-                         args=args,
-                         logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
-    job_ids.append(job_id)
+# ######################
+# ### vol moco ####
+# #######################
+# printlog(f"\n{'   vol by vol moco test   ':=^{width}}")
+# job_ids = []
+# for fly in flies:
+#     directory = os.path.join(dataset_path, fly)
+#     save_path = directory  #could have it save in a different folder in the future
+#     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
+#     script = 'vol_moco.py'
+#     job_id = brainsss.sbatch(jobname='volmoco',
+#                          script=os.path.join(scripts_path, script),
+#                          modules=modules,
+#                          args=args,
+#                          logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+#     job_ids.append(job_id)
 
-for job_id in job_ids:
-    brainsss.wait_for_job(job_id, logfile, com_path)
+# for job_id in job_ids:
+#     brainsss.wait_for_job(job_id, logfile, com_path)
     
     
 # ######################
