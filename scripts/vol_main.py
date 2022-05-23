@@ -55,6 +55,7 @@ for i in flies_temp:
     #if 'fly' in os.path.join(dataset_path, i):
     if 'fly' in os.path.join(dataset_path, i) and 'anat' not in os.path.join(dataset_path, i): #to avoid anat
         flies.append(i)
+printlog(str(date))
 printlog(str(flies))
 
         
