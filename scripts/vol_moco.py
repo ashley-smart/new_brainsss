@@ -164,14 +164,16 @@ def main(args):
     ## ch1 
     with h5py.File(save_file_ch1, 'a') as f_ch1:
       f_ch1['data'][...,steps[j]:steps[j+1]] = moco_ch1_chunk                                   
-    printlog(F'Ch_1 append time: {time()-t0}')
+    #printlog(F'Ch_1 append time: {time()-t0}')
       
           ## ch2
     t0 = time()
     if ch2_brain_file is not None:
       with h5py.File(save_file_ch2, 'a') as f_ch2:
         f_ch2['data'][...,steps[j]:steps[j+1]] = moco_ch2_chunk
-      printlog(F'Ch_2 append time: {time()-t0}')
+      #printlog(F'Ch_2 append time: {time()-t0}')
+      
+  printlog("DONE with moco")
            
 def make_empty_h5(directory, file, brain_dims):
   savefile = os.path.join(directory, file)
