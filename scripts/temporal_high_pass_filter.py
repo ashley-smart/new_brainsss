@@ -39,6 +39,7 @@ def main(args):
     #################
 
     printlog("Beginning high pass")
+    printlog(str(load_directory))
     with h5py.File(full_load_path, 'r') as hf:
         data = hf['data'] # this doesn't actually LOAD the data - it is just a proxy
         dims = np.shape(data)
