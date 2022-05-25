@@ -290,7 +290,8 @@ for fly in fly_names:
             with h5py.File(save_file, 'a') as f:
                 f['average bins window = 1s'][:,:,z,:] = all_average_bins
                 f['average bins window = 500ms'][:,:,z,:] = all_average_bins_500
-            print('z slice done, z = : ', z)
+            #print('z slice done, z = : ', z)
+    print(f:'fly {fly} DONE with STA' 
 
 
 
