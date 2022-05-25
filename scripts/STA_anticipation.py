@@ -285,7 +285,7 @@ for fly in fly_names:
                     all_average_bins[x,y] = np.array(average_bins)
                     all_average_bins_500[x,y] = np.array(average_bins_500)
             #print(all_average_bins)
-            print(np.shape(all_average_bins))
+            #print(np.shape(all_average_bins))
             #append the z anticipatory data
             with h5py.File(save_file, 'a') as f:
                 f['average bins window = 1s'][:,:,z,:] = all_average_bins
