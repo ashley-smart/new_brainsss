@@ -33,10 +33,10 @@ import psutil
 
 ##data files
 
-date = '20210714'
+date = '20210802'
 folder_path = "/oak/stanford/groups/trc/data/Ashley2/imports/"
 dataset_path = os.path.join(folder_path, date)
-
+moco_filename = 'MOCO_ch2_highpass.h5' #'MOCO.h5'
 
 print('starting STA for: ', date)
 
@@ -153,7 +153,7 @@ for fly in fly_names:
     fly_path = os.path.join(dataset_path, fly)
     fly_zscore_list = [] #should reset for every fly
     for name in os.listdir(fly_path):
-        if 'MOCO' in name:
+        if moco_filename in name:
             fly_zscore_list.append(name)
             fly_zscore_file = name
         elif 'Voltage' in name and '.csv' in name:
