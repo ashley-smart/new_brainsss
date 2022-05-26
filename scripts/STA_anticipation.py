@@ -230,8 +230,13 @@ for fly in fly_names:
     with h5py.File(save_file, 'w') as f:
 #         dset_anticipatory = f.create_dataset('anticipatory difference', dims[:3])  #I will want the dataset to hold anticipatory differences shape = (x,y,z) and I append on z
 #         dset_light_response = f.create_dataset('light response difference', dims[:3])
-        dset_average = f.create_dataset('average bins window = 1s', [dims[0], dims[1], dims[2],window])
-        dset_average = f.create_dataset('average bins window = 500ms', [dims[0], dims[1], dims[2],window*2])
+        
+        if 'high' in moco_filename:
+            dset_average = f.create_dataset('average bins window = 1s', [dims[0], dims[1], dims[2],window])
+            dset_average_500 = f.create_dataset('average bins window = 500ms', [dims[0], dims[1], dims[2],window*2])
+        else:
+            dset_average = f.create_dataset('average bins window = 1s', [dims[0], dims[1], dims[2],window])
+            dset_average_500 = f.create_dataset('average bins window = 500ms', [dims[0], dims[1], dims[2],window*2])
         print(np.shape(dset_average))
 
     for z in range(dims[2]):
