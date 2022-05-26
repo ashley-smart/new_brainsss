@@ -284,14 +284,19 @@ for fly in fly_names:
                         bin_value = np.nanmean(data_value_vector[np.logical_and(time_since_pulse_vector >= bin_start, time_since_pulse_vector < bin_end)])
                         average_bins_500.append(bin_value)
 
+            
                     all_average_bins[x,y] = np.array(average_bins)
                     all_average_bins_500[x,y] = np.array(average_bins_500)
             #print(all_average_bins)
             #print(np.shape(all_average_bins))
             #append the z anticipatory data
             with h5py.File(save_file, 'a') as f:
-                f['average bins window = 1s'][:,:,z,:] = all_average_bins
-                f['average bins window = 500ms'][:,:,z,:] = all_average_bins_500
+                if 'high' in moco_filename:
+                    f['average bins window = 1s hpf'][:,:,z,:] = all_average_bins
+                    f['average bins window = 500ms hpf'][:,:,z,:] = all_average_bins_500
+                else:
+                    f['average bins window = 1s'][:,:,z,:] = all_average_bins
+                    f['average bins window = 500ms'][:,:,z,:] = all_average_bins_500
             #print('z slice done, z = : ', z)
     print(f'fly {fly} DONE with STA' )
 
