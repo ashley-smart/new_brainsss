@@ -69,7 +69,7 @@ def main(args):
 
                     ### Save ###
                     t0 = time()
-                    f['high pass filter data'][:,:,chunkstart:chunkend,:] = chunk_high_pass
+                    f['data'][:,:,chunkstart:chunkend,:] = chunk_high_pass
 
     printlog("high pass done")
 
