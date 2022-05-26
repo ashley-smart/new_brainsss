@@ -219,8 +219,9 @@ for fly in fly_names:
 
     #get dims
     with h5py.File(ch2_filepath, 'r') as hf:   
-        #moco = hf['data']
-        moco_data = hf['data']
+        
+        #moco_data = hf['data']
+        moco_data = hf['high pass filter data']
         dims = np.shape(moco_data) #dims are (x,y,z,t)
 
 
