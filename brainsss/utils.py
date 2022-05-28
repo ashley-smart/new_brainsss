@@ -70,7 +70,7 @@ def sbatch(jobname, script, modules, args, logfile, time=1, mem=1, dep='', nice=
         #node_cmd = '-w sh02-07n33 '   #other option is 34 or leave ''
     else:
         node_cmd = ''
-    sbatch_command = "sbatch -J {} -o ./com/%j.out -e {} -t {}:00:00 --nice={} --open-mode=append --cpus-per-task={} --begin={} --wrap='{}' {}".format(jobname, logfile, time, nice, node_cmd, mem, begin, command, dep)
+    sbatch_command = "sbatch -J {} -o ./com/%j.out -e {} -t {}:00:00 --nice={} --open-mode=append --cpus-per-task=2 --begin={} --wrap='{}' {}".format(jobname, logfile, time, nice, node_cmd, mem, begin, command, dep)
     #sbatch_command = "sbatch -J {} -o ./com/%j.out -e {} -t {}:00:00 --nice={} --partition= {}--open-mode=append --cpus-per-task={} --begin={} --wrap='{}' {}".format(jobname, logfile, time, nice, node_cmd, mem, begin, command, dep)
     sbatch_response = subprocess.getoutput(sbatch_command)
     width = 120
