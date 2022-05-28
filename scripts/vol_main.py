@@ -10,9 +10,11 @@ import json
 import datetime
 import pyfiglet
 import textwrap
-import brainsss
 import gc
 
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+print(sys.path)
+import brainsss
 
 modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz py-scikit-learn/0.19.1_py36' 
 
