@@ -7,7 +7,6 @@ import argparse
 import subprocess
 import json
 import nibabel as nib
-import brainsss
 import h5py
 import datetime
 import matplotlib.pyplot as plt
@@ -15,6 +14,9 @@ from time import time
 from time import strftime
 from time import sleep
 from scipy.ndimage import gaussian_filter1d
+
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+import brainsss
 
 def main(args):
     
