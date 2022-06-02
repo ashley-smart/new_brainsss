@@ -2,7 +2,7 @@
 #SBATCH --job-name=AS_vol
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
-## #SBATCH --partition=trc
+#SBATCH --partition=trc
 ## comment out #SBATCH --mem 260G
 #SBATCH --output=./logs/mainlog.out
 #SBATCH --open-mode=append
