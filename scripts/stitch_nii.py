@@ -27,11 +27,10 @@ for date in dates:
 
   for fly in fly_folders: 
   def main(args):
-    directory = args['directory']
-    logfile = args['logfile']
-
-
+    #directory = args['directory']
+    #logfile = args['logfile']
     directory = os.path.join(dataset_path, fly)
+    print('CURRENT PATH:', str(directory))
     files = os.listdir(directory)
     full_brain_ch1 = []
     full_brain_ch2 = []
@@ -55,7 +54,7 @@ for date in dates:
         del full_brain_ch1  #to delete from memory
         del stitched_brain_ch1 # to delete from memory
         gc.collect()  #extra delete from memory
-
+    print('CHANNEL 1 COMPLETE for: ', str(directory))
     ### splitting this up to help the memory (hopefully)
 
     for file in files:
@@ -74,3 +73,4 @@ for date in dates:
         del full_brain_ch2  #to delete from memory
         del stitched_brain_ch2 # to delete from memory
         gc.collect()
+    print('CHANNEL 2 COMPLETE for: ', str(directory))
