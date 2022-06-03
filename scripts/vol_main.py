@@ -30,6 +30,7 @@ dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 
 
 mem = 4
+high_pass_mem = 6
 runtime = 144 #time in hours before it stops running
 width = 120 # width of print log
 nodes = 1 # 1 or 2
@@ -130,7 +131,7 @@ for fly in flies:
                          script=os.path.join(scripts_path, script),
                          modules=modules,
                          args=args,
-                         logfile=logfile, time=4, mem=mem, nice=nice, nodes=nodes)
+                         logfile=logfile, time=4, mem=high_pass_mem, nice=nice, nodes=nodes)
     brainsss.wait_for_job(job_id, logfile, com_path)
 
 ############
