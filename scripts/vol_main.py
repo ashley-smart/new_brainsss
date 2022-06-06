@@ -24,16 +24,17 @@ scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
 #date = '20210709'
-dates = ['20210702']
+#dates = ['20210702']
+dates = ['20211217', '20211210', '20211208', '20211115']
 for date in dates:
 
-    dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
-    #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
+    #dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+    dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
 
 
     mem = 4
     high_pass_mem = 6
-    runtime = 48 #144 #time in hours before it stops running
+    runtime = 144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log
     nodes = 1 # 1 or 2
     nice = True #True # true to lower priority of jobs. ie, other users jobs go first
