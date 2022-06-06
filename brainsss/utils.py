@@ -72,7 +72,7 @@ def sbatch(jobname, script, modules, args, logfile, time=1, mem=1, dep='', nice=
         node_cmd = ''
     #sbatch_command = "sbatch -J {} -o ./com/%j.out -e {} -t {}:00:00 --nice={} --open-mode=append --cpus-per-task=2 --begin={} --wrap='{}' {}".format(jobname, logfile, time, nice, node_cmd, mem, begin, command, dep)
     # to change the partition used change parition=trc to partition=normal or partition=owners
-    sbatch_command = "sbatch -J {} -o ./com/%j.out -e {} -t {}:00:00 --nice={} --partition=trc {}--open-mode=append --cpus-per-task={} --begin={} --wrap='{}' {}".format(jobname, logfile, time, nice, node_cmd, mem, begin, command, dep)
+    sbatch_command = "sbatch -J {} -o ./com/%j.out -e {} -t {}:00:00 --nice={} --partition=normal {}--open-mode=append --cpus-per-task={} --begin={} --wrap='{}' {}".format(jobname, logfile, time, nice, node_cmd, mem, begin, command, dep)
     sbatch_response = subprocess.getoutput(sbatch_command)
     width = 120
     if not silence_print:
