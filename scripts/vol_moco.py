@@ -11,9 +11,11 @@ import subprocess
 import json
 from time import time
 import nibabel as nib
-import brainsss
 import h5py
 import ants
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+import brainsss
+
 
 
 def main(args):
