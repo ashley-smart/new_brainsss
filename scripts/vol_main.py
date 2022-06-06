@@ -23,13 +23,13 @@ modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
-#date = '20210709'
-#dates = ['20210702']
-dates = ['20211217', '20211210', '20211208', '20211115']
+
+dates = ['20210702']
+#dates = ['20211217', '20211210', '20211208', '20211115']
 for date in dates:
 
-    #dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
-    dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
+    dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+    #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
 
 
     mem = 4
