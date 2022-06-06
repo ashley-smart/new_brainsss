@@ -33,7 +33,7 @@ for date in dates:
 
     mem = 4
     high_pass_mem = 6
-    runtime = 144 #time in hours before it stops running
+    runtime = 48 #144 #time in hours before it stops running
     width = 120 # width of print log
     nodes = 1 # 1 or 2
     nice = True #True # true to lower priority of jobs. ie, other users jobs go first
