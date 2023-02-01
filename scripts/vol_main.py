@@ -24,7 +24,7 @@ scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
 
-dates = ['20210702']
+dates = ['20230130']
 #dates = ['20211217', '20211210', '20211208', '20211115']
 for date in dates:
 
