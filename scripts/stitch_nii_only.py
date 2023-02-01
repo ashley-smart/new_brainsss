@@ -14,7 +14,7 @@ import gc
 
 #get to files
 #date = '20211215'
-dates = ['20230130'] 
+dates = ['20230127'] 
 for date in dates:
   print('STARTING DATE:', str(date))
   dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
