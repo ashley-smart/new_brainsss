@@ -59,7 +59,8 @@ for date in dates:
     flies = []
     for i in flies_temp:
         #if 'fly' in os.path.join(dataset_path, i):
-        if 'fly' in os.path.join(dataset_path, i) and 'anat' not in os.path.join(dataset_path, i): #to avoid anat
+        fly_path = os.path.join(dataset_path, i)
+        if 'fly' in fly_path and 'anat' not in fly_path and 'json' not in fly_path: #to avoid anat
             flies.append(i)
     printlog(str(date))
     printlog(str(flies))
