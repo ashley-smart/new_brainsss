@@ -26,6 +26,11 @@ def main(args):
     # colors = args['colors']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
+    #brain_id = directory.split('/')[-1]
+    brain_file = 'MOCO_ch2.h5'
+    
+   
+    
     
   ##don't run zscore on ch1. waste of time. just run on ch2 highpass
 #     ch1_filepath = None
@@ -44,7 +49,7 @@ def main(args):
 #       else:
 #         printlog('No file with ch1 or ch2 in it')
     
-    files = file_names
+    files =  brain_file.split('.')[0] + '_highpass.h5'
     #open moco file for all files in files (should be ch1 and ch2
     for file in files:
         with h5py.File(file, 'a') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
