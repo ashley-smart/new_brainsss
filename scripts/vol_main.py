@@ -119,12 +119,14 @@ for date in dates:
     ### vol zscore ####
     #######################
     printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
-    moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+    #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+    ##run zscore on high pass filtered moco files
+    file_id = ['_highpass.h5']
     job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': moco_names, 'save_path': save_path}
+        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': file_id, 'save_path': save_path}
         script = 'vol_zscore.py'
         printlog(os.path.join(scripts_path, script))
         job_id = brainsss.sbatch(jobname='volzscore',
