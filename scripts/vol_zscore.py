@@ -20,29 +20,31 @@ def main(args):
     logfile = args['logfile']
     directory = args['directory'] # full fly path 
     file_names = args['file_names'] ## should be MOCO_ch1.h5 and MOCO_ch2.h5 as specified in vol_main.py
+    ##filenames should be _highpass.h5 now to run zscore on h5 files
     save_path = args['save_path']
     # smooth = args['smooth']
     # colors = args['colors']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
     
-  
-    ch1_filepath = None
-    ch2_filepath = None
-    files = []
-    for name in file_names:
-      if 'ch1' in name:
-        ch1_filepath = os.path.join(directory, name)
-        printlog(ch1_filepath) 
-        files.append(ch1_filepath)
-      elif 'ch2' in name:
-        ch2_filepath = os.path.join(directory, name)
-        printlog(ch2_filepath)
-        files.append(ch2_filepath)
-      else:
-        printlog('No file with ch1 or ch2 in it')
+  ##don't run zscore on ch1. waste of time. just run on ch2 highpass
+#     ch1_filepath = None
+#     ch2_filepath = None
     
+#     files = []
+#     for name in file_names:
+#       if 'ch1' in name:
+#         ch1_filepath = os.path.join(directory, name)
+#         printlog(ch1_filepath) 
+#         files.append(ch1_filepath)
+#       elif 'ch2' in name:
+#         ch2_filepath = os.path.join(directory, name)
+#         printlog(ch2_filepath)
+#         files.append(ch2_filepath)
+#       else:
+#         printlog('No file with ch1 or ch2 in it')
     
+    files = file_names
     #open moco file for all files in files (should be ch1 and ch2
     for file in files:
         with h5py.File(file, 'a') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
