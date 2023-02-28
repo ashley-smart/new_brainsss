@@ -121,7 +121,7 @@ for date in dates:
     printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
     #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
     ##run zscore on high pass filtered moco files
-    file_id = ['_highpass.h5']
+    file_id = ['_highpass.h5']  ##WARNING! not currently using this, but am running on highpass. need to see what it outputs to organize better
     job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
