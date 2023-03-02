@@ -30,7 +30,7 @@ def main(args):
     brain_file = 'MOCO_ch2.h5'
     files =  brain_file.split('.')[0] + '_highpass.h5'
     
-    stepsize = 2
+    stepsize = 25
     
     save_file = os.path.koin(save_path, 'ch2_zscore_hp.h5')
     
