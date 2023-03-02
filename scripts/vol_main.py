@@ -24,7 +24,7 @@ scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
 
-dates = ['20230130_stitch', '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
+dates = ['20230130_stitch'] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = ['20211217', '20211210', '20211208', '20211115']
 for date in dates:
 
@@ -75,25 +75,25 @@ for date in dates:
     printlog("")
 
 
-    ######################
-    ### vol moco ####
-    #######################
-    printlog(f"\n{'   vol by vol moco test   ':=^{width}}")
-    job_ids = []
-    for fly in flies:
-        directory = os.path.join(dataset_path, fly)
-        save_path = directory  #could have it save in a different folder in the future
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
-        script = 'vol_moco.py'
-        job_id = brainsss.sbatch(jobname='volmoco',
-                             script=os.path.join(scripts_path, script),
-                             modules=modules,
-                             args=args,
-                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
-        job_ids.append(job_id)
+#     ######################
+#     ### vol moco ####
+#     #######################
+#     printlog(f"\n{'   vol by vol moco test   ':=^{width}}")
+#     job_ids = []
+#     for fly in flies:
+#         directory = os.path.join(dataset_path, fly)
+#         save_path = directory  #could have it save in a different folder in the future
+#         args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
+#         script = 'vol_moco.py'
+#         job_id = brainsss.sbatch(jobname='volmoco',
+#                              script=os.path.join(scripts_path, script),
+#                              modules=modules,
+#                              args=args,
+#                              logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+#         job_ids.append(job_id)
 
-    for job_id in job_ids:
-        brainsss.wait_for_job(job_id, logfile, com_path)
+#     for job_id in job_ids:
+#         brainsss.wait_for_job(job_id, logfile, com_path)
         
     ###############################
     ## high pass temporal filter ##
