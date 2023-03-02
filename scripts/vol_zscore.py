@@ -69,7 +69,10 @@ def main(args):
             with h5py.File(save_file, 'w') as f:
                 # check if zscore key already exists
                 if 'zscore' in hf.keys():
-                    print('zscore key-dataset already exists')
+                    print('zscore key-dataset already exists--overwriting')
+                    del hf['zscore]
+                    dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)
+                
                 else:
                     #zscore = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
                     dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)
