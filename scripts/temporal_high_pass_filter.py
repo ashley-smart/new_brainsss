@@ -54,25 +54,25 @@ def main(args):
         with h5py.File(save_file, 'w') as f:
             dset = f.create_dataset('high pass filter data', dims, dtype='float32', chunks=True) 
             
-            for chunk_num in range(len(steps)):
+            for chunk_num in range(len(steps) - 1):
                 t0 = time()
-                if chunk_num + 1 <= len(steps)-1:
-                    chunkstart = steps[chunk_num]
-                    chunkend = steps[chunk_num + 1]
-                    chunk = data[:,:,chunkstart:chunkend,:]
-                    chunk_mean = np.mean(chunk,axis=-1)
+                #if chunk_num + 1 <= len(steps)-1:
+                chunkstart = steps[chunk_num]
+                chunkend = steps[chunk_num + 1]
+                chunk = data[:,:,chunkstart:chunkend,:]
+#                 chunk_mean = np.mean(chunk,axis=-1)
 
-                    ### SMOOTH ###
-                    t0 = time()
-                    smoothed_chunk = gaussian_filter1d(chunk,sigma=200,axis=-1,truncate=1)
+                ### SMOOTH ###
+                t0 = time()
+                smoothed_chunk = gaussian_filter1d(chunk,sigma=200,axis=-1,truncate=1)
 
-                    ### Apply Smooth Correction ###
-                    t0 = time()
-                    chunk_high_pass = chunk - smoothed_chunk + chunk_mean[:,:,:,None] #need to add back in mean to preserve offset
+                ### Apply Smooth Correction ###
+                t0 = time()
+                chunk_high_pass = chunk - smoothed_chunk 
 
-                    ### Save ###
-                    t0 = time()
-                    f['high pass filter data'][:,:,chunkstart:chunkend,:] = chunk_high_pass
+                ### Save ###
+                t0 = time()
+                f['high pass filter data'][:,:,chunkstart:chunkend,:] = chunk_high_pass
 
     printlog("high pass done")
 
