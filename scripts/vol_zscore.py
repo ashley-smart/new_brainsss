@@ -70,7 +70,7 @@ def main(args):
                 # check if zscore key already exists
                 if 'zscore' in hf.keys():
                     print('zscore key-dataset already exists--overwriting')
-                    del hf['zscore]
+                    del hf['zscore']
                     dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)
                 
                 else:
