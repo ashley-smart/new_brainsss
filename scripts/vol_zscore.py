@@ -32,7 +32,7 @@ def main(args):
     
     stepsize = 25
     
-    save_file = os.path.koin(save_path, 'ch2_zscore_hp.h5')
+    save_file = os.path.join(save_path, 'ch2_zscore_hp.h5')
     
     
   ##don't run zscore on ch1. waste of time. just run on ch2 highpass
