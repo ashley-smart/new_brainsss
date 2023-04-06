@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=stitch_nii
-#SBATCH --partition=owners
+#SBATCH --partition=trc
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=24
