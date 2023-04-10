@@ -22,59 +22,59 @@ def main(args):
     
     load_directory = args['load_directory']
     save_directory = args['save_directory']
-    brain_file = args['brain_file']
+    brain_files = args['brain_file']
     stepsize = 2
+    for brain_file in brain_files:
+        full_load_path = os.path.join(load_directory, brain_file)
+        save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_highpass.h5')
 
-    full_load_path = os.path.join(load_directory, brain_file)
-    save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_highpass.h5')
+        #####################
+        ### SETUP LOGGING ###
+        #####################
 
-    #####################
-    ### SETUP LOGGING ###
-    #####################
+        width = 120
+        logfile = args['logfile']
+        printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 
-    width = 120
-    logfile = args['logfile']
-    printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
+        #################
+        ### HIGH PASS ###
+        #################
 
-    #################
-    ### HIGH PASS ###
-    #################
+        printlog("Beginning high pass")
+        printlog("this should be the full path")
+        printlog(str(full_load_path))
+        with h5py.File(full_load_path, 'r') as hf:
+            data = hf['data'] # this doesn't actually LOAD the data - it is just a proxy
+            dims = np.shape(data)
+            printlog("Data shape is {}".format(dims))
 
-    printlog("Beginning high pass")
-    printlog("this should be the full path")
-    printlog(str(full_load_path))
-    with h5py.File(full_load_path, 'r') as hf:
-        data = hf['data'] # this doesn't actually LOAD the data - it is just a proxy
-        dims = np.shape(data)
-        printlog("Data shape is {}".format(dims))
-        
-        steps = list(range(0,dims[-1],stepsize))
-        steps.append(dims[-1])
+            steps = list(range(0,dims[-1],stepsize))
+            steps.append(dims[-1])
 
-        with h5py.File(save_file, 'w') as f:
-            dset = f.create_dataset('high pass filter data', dims, dtype='float32', chunks=True) 
-            
-            for chunk_num in range(len(steps) - 1):
-                t0 = time()
-                #if chunk_num + 1 <= len(steps)-1:
-                chunkstart = steps[chunk_num]
-                chunkend = steps[chunk_num + 1]
-                chunk = data[:,:,chunkstart:chunkend,:]
-#                 chunk_mean = np.mean(chunk,axis=-1)
+            with h5py.File(save_file, 'w') as f:
+                dset = f.create_dataset('high pass filter data', dims, dtype='float32', chunks=True) 
 
-                ### SMOOTH ###
-                t0 = time()
-                smoothed_chunk = gaussian_filter1d(chunk,sigma=200,axis=-1,truncate=1)
+                for chunk_num in range(len(steps) - 1):
+                    t0 = time()
+                    #if chunk_num + 1 <= len(steps)-1:
+                    chunkstart = steps[chunk_num]
+                    chunkend = steps[chunk_num + 1]
+                    chunk = data[:,:,chunkstart:chunkend,:]
+    #                 chunk_mean = np.mean(chunk,axis=-1)
 
-                ### Apply Smooth Correction ###
-                t0 = time()
-                chunk_high_pass = chunk - smoothed_chunk 
+                    ### SMOOTH ###
+                    t0 = time()
+                    smoothed_chunk = gaussian_filter1d(chunk,sigma=200,axis=-1,truncate=1)
 
-                ### Save ###
-                t0 = time()
-                f['high pass filter data'][:,:,chunkstart:chunkend,:] = chunk_high_pass
+                    ### Apply Smooth Correction ###
+                    t0 = time()
+                    chunk_high_pass = chunk - smoothed_chunk 
 
-    printlog("high pass done")
+                    ### Save ###
+                    t0 = time()
+                    f['high pass filter data'][:,:,chunkstart:chunkend,:] = chunk_high_pass
+
+        printlog("high pass done")
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
