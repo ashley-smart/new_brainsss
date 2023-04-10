@@ -19,23 +19,24 @@ def main(args):
     
     logfile = args['logfile']
     directory = args['directory'] # full fly path 
-    file_names = args['file_names'] ## should be MOCO_ch1.h5 and MOCO_ch2.h5 as specified in vol_main.py
-    ##filenames should be _highpass.h5 now to run zscore on h5 files
-    save_path = args['save_path']
-    # smooth = args['smooth']
-    # colors = args['colors']
+    file_names = args['file_names'] ## should be  _highpass.h5 now to run zscore on h5 files
+    save_directory = args['save_path']
+
+    
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
     #brain_id = directory.split('/')[-1]
-    brain_file = 'MOCO_ch2.h5'
-    files =  brain_file.split('.')[0] + '_highpass.h5'
+#     brain_file = 'MOCO_ch2.h5'
+#     files =  brain_file.split('.')[0] + '_highpass.h5'
     
     stepsize = 25
     
-    save_file = os.path.join(save_path, 'ch2_zscore_hp.h5')
     
     
-  ##don't run zscore on ch1. waste of time. just run on ch2 highpass
+    #save_file = os.path.join(save_path, 'ch2_zscore_hp.h5')
+    
+    
+#   #running on ch1 is a good idea to compare the red to green
 #     ch1_filepath = None
 #     ch2_filepath = None
     
@@ -53,8 +54,10 @@ def main(args):
 #         printlog('No file with ch1 or ch2 in it')
     
     
-    for file in files:
-        with h5py.File(file, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
+    for brain_file in files:
+        full_load_path = os.path.join(directory, brain_file)
+        save_file = os.path.join(save_directory, brain_file.split(.)[0] + 'hp_zscore.h5')
+        with h5py.File(full_load_path, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
             printlog("opened moco 2 file")
             ##data = hf['data']  #this syntax shouldn't load the whole thing in memory  ##THIS NEEDS TO CHANGE TO HIGH PASS FILTER 
             data = hf['high pass filter data']
@@ -71,13 +74,11 @@ def main(args):
                 if 'zscore' in hf.keys():
                     print('zscore key-dataset already exists--overwriting')
                     del hf['zscore']
-                    dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)
-                
+                    dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)  
                 else:
                     #zscore = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
                     dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)
                     print('created zscore key')
-
 
                 #find meanbrain 
                 meanbrain = 0
@@ -85,7 +86,6 @@ def main(args):
 #                     meanbrain += data[:,:,:,i]   # replaces this with chunks just like in HighPass filtering. After high pass filtering, this should be okay to sum. Otherwise you would have needed the mean of means, which is safe
 #                 meanbrain = meanbrain/dims[-1]
                 
-                ##not totally sure this is right
                 for chunk_num in range(len(steps)) - 1:  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
@@ -93,12 +93,6 @@ def main(args):
                     meanbrain += chunk   # replaces this with chunks just like in HighPass filtering. After high pass filtering, this should be okay to sum. Otherwise you would have needed the mean of means, which is safe
                 meanbrain = meanbrain/dims[-1]  #this calculates the mean by dividing by total timepoints
 
-#                 #find std
-#                 total = 0
-#                 for i in range(dims[-1]):
-#                     s = (data[:,:,:,i] - meanbrain)**2   # this also needs to be computed in chunks but since there are only 6k points, it's probably fine after high-pass filter.
-#                     total = s + total
-#                 final_std = np.sqrt(total/len(data[-1]))
 
                 #find STD
                 for chunk_num in range(len(steps)) - 1:  
@@ -111,12 +105,6 @@ def main(args):
 
 
                 #calculate zscore
-                # use this syntax to create a dataset with the right dims first rather than constantly reshaping:
-                # dset = f.create_dataset('high pass filter data', dims, dtype='float32', chunks=True)   # from highpass filter code
-
-#                 for i in range(dims[-1]):
-#                     each_zscore = (data[:,:,:,i] - meanbrain)/final_std   # again, this needs to be chunked.
-
                 for chunk_num in range(len(steps)) - 1:  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
@@ -125,17 +113,7 @@ def main(args):
                                     
                     f['zscore'][:,:,chunkstart:chunkend,:] = each_zscore
                                     
-                                    
-                    #save zscore
-    #                 # Increase hdf5 size by one brain volume    <- DON'T DO THIS!
-    #                 current_num_vol = hf['zscore'].shape[-1] # this is the last axis, which is time
-    #                 new_num_vol = current_num_vol + 1 # will want one more volume
-    #                 hf['zscore'].resize(new_num_vol,axis=3) # increase size by one volume
 
-                    # Append to hdf5 file
-                    #hf['zscore'][...,-1] = each_zscore
-#                     if i % 1000 == 0:  #to just report every 1000 volumes so file isn't so big
-#                         printlog(str(i) + " volume complete")
             printlog('ZSCORE complete')
         
 
