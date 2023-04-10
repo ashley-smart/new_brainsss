@@ -103,7 +103,7 @@ for date in dates:
         save_path = directory  #could have it save in a different folder in the future
     #     load_directory = os.path.join(func)
     #     save_directory = os.path.join(func)
-        brain_file = 'MOCO_ch2.h5'
+        brain_file = ['MOCO_ch2.h5', 'MOCO_ch1.h5']
 
         args = {'logfile': logfile, 'load_directory': directory, 'save_directory': save_path, 'brain_file': brain_file}
         script = 'temporal_high_pass_filter.py'
@@ -121,12 +121,14 @@ for date in dates:
     printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
     #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
     ##run zscore on high pass filtered moco files
-    file_id = ['_highpass.h5']  ##WARNING! not currently using this, but am running on highpass. need to see what it outputs to organize better
+    file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
     job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': file_id, 'save_path': save_path}
+        all_files = os.listdir(directory)
+        filenames = [file for file in all_files if file_id in file]
+        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
         script = 'vol_zscore.py'
         printlog(os.path.join(scripts_path, script))
         job_id = brainsss.sbatch(jobname='volzscore',
