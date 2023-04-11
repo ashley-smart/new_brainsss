@@ -37,9 +37,9 @@ def main():
             print(f'found fly! running on {file}')
             fly_name = file
             fly_path = os.path.join(directory, fly_name)
-            save_plots = '/oak/stanford/groups/trc/data/Ashley2/imports/' + str(date) + "_PLOTS/" + str(fly_name)
-            if not os.path.exists(save_plots):
-                os.makedirs(save_plots)
+            # save_plots = '/oak/stanford/groups/trc/data/Ashley2/imports/' + str(date) + "_PLOTS/" + str(fly_name)
+            # if not os.path.exists(save_plots):  #I'm getting a permission denied error in sherlock. Not sure why. maybe weird permission issues?
+            #     os.makedirs(save_plots)
 
             #check for high pass filter data (or later zscore)
         
@@ -70,7 +70,7 @@ def main():
             fig1 = plt.figure()
             plt.scatter(light_peaks_adjusted, np.ones(len(light_peaks_adjusted)))
             plt.title('light peaks')
-            fig1.savefig(os.path.join(save_plots, 'light peaks check.png'))
+            fig1.savefig(os.path.join(fly_path, 'light peaks check.png'))
             plt.show()
 
             abr_components_shape_plotting = np.concatenate([reshaped_components[:, :, :, i] for i in range(0, reshaped_components.shape[3], 5)], axis=2) #5 is take every 5th z slice
