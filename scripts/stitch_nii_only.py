@@ -4,7 +4,6 @@ import os
 import re
 import json
 import datetime
-import pyfiglet
 import textwrap
 import numpy as np
 import nibabel as nib
@@ -48,7 +47,9 @@ for date in dates:
     #then sort the files Note: this will fail if there are more than 10 items
 #     print('channel_1_list', channel_1_list)
 #     print('channel_2_list', channel_2_list)
-
+    if len(channel_1_list) >= 10:
+       print("ERROR: There are too many nii files to sort")
+       break
     sorted_channel_1_list = sorted(channel_1_list)  
     sorted_channel_2_list = sorted(channel_2_list)
     print('sorted_channel_1_list', sorted_channel_1_list)
