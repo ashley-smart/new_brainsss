@@ -1,7 +1,3 @@
-## to be sure I'm running just vol_moco
-
-
-
 import time
 import sys
 import os

@@ -58,7 +58,7 @@ def main():
             print(f"PCA COMPLETED FOR {fly_name}")
             #save PCA info
             save_file = os.path.join(fly_directory, "PCA_HP.h5")
-            with h5py.File(save_file, 'a') as f:
+            with h5py.File(save_file, 'w') as f:
                 add_to_h5(save_file, 'scores', loadings)
                 add_to_h5(save_file, 'components', reshaped_components)
                 print(f'SAVED PCA loadings and components')
