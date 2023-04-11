@@ -23,7 +23,7 @@ import math
 
 
 
-def main(args):
+def main():
     date = sys.argv[1]
 
     key_to_run_PCA = 'high pass filter data' ##alternatively zscore data
