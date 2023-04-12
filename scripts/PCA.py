@@ -261,11 +261,13 @@ def add_to_h5(Path, key, value):
     does overwrite"""
     with h5py.File(Path, 'a') as f:
         if key not in f.keys(): #check if key already in file
-            f[key] = value
+            #f[key] = value
+            f.create_dataset(key, data = value)
         else:
             del f[key]
             #print('deleting old key and OVERWRITING')
-            f[key] = value
+            #f[key] = value
+            f.create_dataset(key, data = value)
             
             
             
