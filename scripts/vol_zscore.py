@@ -54,7 +54,7 @@ def main(args):
 #         printlog('No file with ch1 or ch2 in it')
     
     
-    for brain_file in files:
+    for brain_file in file_names:
         full_load_path = os.path.join(directory, brain_file)
         save_file = os.path.join(save_directory, brain_file.split('.')[0] + 'hp_zscore.h5')
         with h5py.File(full_load_path, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
@@ -89,7 +89,7 @@ def main(args):
                 for chunk_num in range(len(steps) - 1):  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
-                    chunk = data[:,:,:,chunkstart:chunkend] #I'm doing chunks on t
+                    chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
                     meanbrain += chunk   # replaces this with chunks just like in HighPass filtering. After high pass filtering, this should be okay to sum. Otherwise you would have needed the mean of means, which is safe
                 meanbrain = meanbrain/dims[-1]  #this calculates the mean by dividing by total timepoints
 
@@ -98,7 +98,7 @@ def main(args):
                 for chunk_num in range(len(steps) - 1):  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
-                    chunk = data[:,:,:,chunkstart:chunkend] #I'm doing chunks on t
+                    chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
                     s = (chunk - meanbrain)**2
                     total = s + total
                 final_std = np.sqrt(total/len(dims[-1]))
@@ -108,10 +108,10 @@ def main(args):
                 for chunk_num in range(len(steps) - 1):  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
-                    chunk = data[:,:,:,chunkstart:chunkend] #I'm doing chunks on t
+                    chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
                     each_zscore = (chunk - meanbrain)/final_std
                                     
-                    f['zscore'][:,:,chunkstart:chunkend,:] = each_zscore
+                    f['zscore'][:,:,chunk_start:chunk_end,:] = each_zscore
                                     
 
             printlog('ZSCORE complete')
