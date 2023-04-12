@@ -56,7 +56,7 @@ def main(args):
     
     for brain_file in files:
         full_load_path = os.path.join(directory, brain_file)
-        save_file = os.path.join(save_directory, brain_file.split(.)[0] + 'hp_zscore.h5')
+        save_file = os.path.join(save_directory, brain_file.split('.')[0] + 'hp_zscore.h5')
         with h5py.File(full_load_path, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
             printlog("opened moco 2 file")
             ##data = hf['data']  #this syntax shouldn't load the whole thing in memory  ##THIS NEEDS TO CHANGE TO HIGH PASS FILTER 
