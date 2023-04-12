@@ -86,7 +86,7 @@ def main(args):
 #                     meanbrain += data[:,:,:,i]   # replaces this with chunks just like in HighPass filtering. After high pass filtering, this should be okay to sum. Otherwise you would have needed the mean of means, which is safe
 #                 meanbrain = meanbrain/dims[-1]
                 
-                for chunk_num in range(len(steps)) - 1:  
+                for chunk_num in range(len(steps) - 1):  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
                     chunk = data[:,:,:,chunkstart:chunkend] #I'm doing chunks on t
@@ -95,17 +95,17 @@ def main(args):
 
 
                 #find STD
-                for chunk_num in range(len(steps)) - 1:  
+                for chunk_num in range(len(steps) - 1):  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
                     chunk = data[:,:,:,chunkstart:chunkend] #I'm doing chunks on t
                     s = (chunk - meanbrain)**2
                     total = s + total
-                final_std = np.sqrt(total/len(dims[-1])
+                final_std = np.sqrt(total/len(dims[-1]))
 
 
                 #calculate zscore
-                for chunk_num in range(len(steps)) - 1:  
+                for chunk_num in range(len(steps) - 1):  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
                     chunk = data[:,:,:,chunkstart:chunkend] #I'm doing chunks on t
