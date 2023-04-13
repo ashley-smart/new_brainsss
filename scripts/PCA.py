@@ -26,6 +26,8 @@ import math
 def main():
     date = sys.argv[1]
 
+    rerun_PCA = False
+
     key_to_run_PCA = 'high pass filter data' ##alternatively zscore data
     print(f'Starting PCA on date: {date}')
     directory = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
@@ -53,20 +55,41 @@ def main():
                     print(f'ERROR: no {key_to_run_PCA} for this fly {fly_name}')
                     break
 
-            ## run PCA
-            loadings, reshaped_components = run_PCA(fly_path, 100, key_to_run_PCA)
-            print(f"PCA COMPLETED FOR {fly_name}")
-            #save PCA info
+            ##check if shoudl run PCA or already ran
             save_file = os.path.join(fly_directory, "PCA_HP.h5")
-            with h5py.File(save_file, 'w') as f:
-                add_to_h5(save_file, 'scores', loadings)
-                add_to_h5(save_file, 'components', reshaped_components)
-                print(f'SAVED PCA loadings and components')
+            fly_files = os.listdir(fly_directory)
+            if rerun_PCA == False and "PCA_HP.h5" in fly_files:
+                #also check that there is something in the PC file
+                with h5py.File(save_file, 'r') as c:
+                    if 'scores' in c.keys():
+                        print('PCA already exists ---> opening loadings and components for STA')
+                        #open loadings and components
+                        loadings = c['loadings'][()]
+                        reshaped_components = c['components'][()]
+                    else:
+                        print('PCA file exists but no loadings key => runing again')
+                        ## run PCA
+                        loadings, reshaped_components = run_PCA(fly_path, 100, key_to_run_PCA)
+                        print(f"PCA COMPLETED FOR {fly_name}")
+                        #save PCA info
+                        with h5py.File(save_file, 'w') as f:
+                            add_to_h5(save_file, 'scores', loadings)
+                            add_to_h5(save_file, 'components', reshaped_components)
+                            print(f'SAVED PCA loadings and components')
+            else:
+                ## run PCA
+                loadings, reshaped_components = run_PCA(fly_path, 100, key_to_run_PCA)
+                print(f"PCA COMPLETED FOR {fly_name}")
+                #save PCA info
+                with h5py.File(save_file, 'w') as f:
+                    add_to_h5(save_file, 'scores', loadings)
+                    add_to_h5(save_file, 'components', reshaped_components)
+                    print(f'SAVED PCA loadings and components')
 
             ##run peaks and make plots
             ##get light_peaks!
-            light_peaks_adjusted = get_light_peaks(fly_path)
-            bruker_framerate = get_Bruker_framerate(fly_path)
+            light_peaks_adjusted = get_light_peaks(fly_directory)
+            bruker_framerate = get_Bruker_framerate(fly_directory)
 
             #plot light peaks and save just to double check its ok
             fig1 = plt.figure()
