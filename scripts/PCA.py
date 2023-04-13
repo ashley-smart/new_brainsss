@@ -26,9 +26,10 @@ import math
 def main():
     date = sys.argv[1]
 
-    rerun_PCA = False
-
+    rerun_PCA = False #will look to see if PCA has already been run 
     key_to_run_PCA = 'high pass filter data' ##alternatively zscore data
+    save_name = "PCA_HP.h5" #change this if run zscore to keep track
+
     print(f'Starting PCA on date: {date}')
     directory = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
 
@@ -56,9 +57,9 @@ def main():
                     break
 
             ##check if shoudl run PCA or already ran
-            save_file = os.path.join(fly_directory, "PCA_HP.h5")
+            save_file = os.path.join(fly_directory, save_name)
             fly_files = os.listdir(fly_directory)
-            if rerun_PCA == False and "PCA_HP.h5" in fly_files:
+            if rerun_PCA == False and save_name in fly_files:
                 #also check that there is something in the PC file
                 with h5py.File(save_file, 'r') as c:
                     if 'scores' in c.keys():
