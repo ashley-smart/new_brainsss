@@ -91,19 +91,21 @@ def main(args):
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
                     chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
-                    meanbrain += chunk   # replaces this with chunks just like in HighPass filtering. After high pass filtering, this should be okay to sum. Otherwise you would have needed the mean of means, which is safe
-                    ##can I sum across chunk so I dont get summing error when it doesnt divide evenly?
+                    #below used to be just += chunk but I think summing over time is right since I'm dividing by # timepoints to get mean
+                    meanbrain += np.sum(chunk, axis = 3, keepdims = True)   # replaces this with chunks just like in HighPass filtering. After high pass filtering, this should be okay to sum. Otherwise you would have needed the mean of means, which is safe
+                    ##can I sum across chunk so I dont get summing error when it doesnt divide evenly? I think I can 
                 meanbrain = meanbrain/dims[-1]  #this calculates the mean by dividing by total timepoints
 
 
                 #find STD
+                total = 0
                 for chunk_num in range(len(steps) - 1):  
                     chunk_start = steps[chunk_num]
                     chunk_end = steps[chunk_num + 1]
                     chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
-                    s = (chunk - meanbrain)**2
+                    s = np.sum((chunk - meanbrain)**2, axis = 3, keepdims = True) #changed to sum of chunk
                     total = s + total
-                final_std = np.sqrt(total/len(dims[-1]))
+                final_std = np.sqrt(total/dims[-1]) #fix this from len
 
 
                 #calculate zscore
