@@ -56,7 +56,7 @@ def main(args):
     
     for brain_file in file_names:
         full_load_path = os.path.join(directory, brain_file)
-        save_file = os.path.join(save_directory, brain_file.split('.')[0] + 'hp_zscore.h5')
+        save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_zscore.h5')
         with h5py.File(full_load_path, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
             printlog("opened moco 2 file")
             ##data = hf['data']  #this syntax shouldn't load the whole thing in memory  ##THIS NEEDS TO CHANGE TO HIGH PASS FILTER 
@@ -73,6 +73,7 @@ def main(args):
                 # check if zscore key already exists
                 if 'zscore' in hf.keys():
                     print('zscore key-dataset already exists--overwriting')
+                    # Note: I may want to change this later so it doesn't redo the zscore calculations
                     del hf['zscore']
                     dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)  
                 else:
@@ -91,6 +92,7 @@ def main(args):
                     chunk_end = steps[chunk_num + 1]
                     chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
                     meanbrain += chunk   # replaces this with chunks just like in HighPass filtering. After high pass filtering, this should be okay to sum. Otherwise you would have needed the mean of means, which is safe
+                    ##can I sum across chunk so I dont get summing error when it doesnt divide evenly?
                 meanbrain = meanbrain/dims[-1]  #this calculates the mean by dividing by total timepoints
 
 

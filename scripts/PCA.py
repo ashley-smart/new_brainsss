@@ -65,7 +65,7 @@ def main():
                     if 'scores' in c.keys():
                         print('PCA already exists ---> opening loadings and components for STA')
                         #open loadings and components
-                        loadings = c['loadings'][()]
+                        loadings = c['scores'][()]
                         reshaped_components = c['components'][()]
                     else:
                         print('PCA file exists but no loadings key => runing again')
