@@ -92,32 +92,33 @@ def main():
             light_peaks_adjusted = get_light_peaks(fly_directory)
             bruker_framerate = get_Bruker_framerate(fly_directory)
 
-            #plot light peaks and save just to double check its ok
-            fig1 = plt.figure()
-            plt.scatter(light_peaks_adjusted, np.ones(len(light_peaks_adjusted)))
-            plt.title('light peaks')
-            fig1.savefig(os.path.join(fly_path, 'light peaks check.png'))
-            plt.show()
+            if light_peaks_adjusted: #if its not None
+                #plot light peaks and save just to double check its ok
+                fig1 = plt.figure()
+                plt.scatter(light_peaks_adjusted, np.ones(len(light_peaks_adjusted)))
+                plt.title('light peaks')
+                fig1.savefig(os.path.join(fly_directory, 'light peaks check.png'))
+                plt.show()
 
-            abr_components_shape_plotting = np.concatenate([reshaped_components[:, :, :, i] for i in range(0, reshaped_components.shape[3], 5)], axis=2) #5 is take every 5th z slice
-            components_shape_plotting = np.concatenate([reshaped_components[:, :, :, i] for i in range(0, reshaped_components.shape[3])], axis=2) #all z slices
+                abr_components_shape_plotting = np.concatenate([reshaped_components[:, :, :, i] for i in range(0, reshaped_components.shape[3], 5)], axis=2) #5 is take every 5th z slice
+                components_shape_plotting = np.concatenate([reshaped_components[:, :, :, i] for i in range(0, reshaped_components.shape[3])], axis=2) #all z slices
 
-            ## run STA on all loadings (don't actually need to have run light_peaks)
-            ##reconsider bryans way of doing this to run on all loadings at once rather than in for loop. need to sort out shape
-            all_loadings_trialed = []
-            for loading_index in range(len(loadings[1])): #need it to run through n_components number of laodings 
-                STA_trials = run_STA(fly_path, loadings[:,loading_index])
-                all_loadings_trialed.append(STA_trials)
+                ## run STA on all loadings (don't actually need to have run light_peaks)
+                ##reconsider bryans way of doing this to run on all loadings at once rather than in for loop. need to sort out shape
+                all_loadings_trialed = []
+                for loading_index in range(len(loadings[1])): #need it to run through n_components number of laodings 
+                    STA_trials = run_STA(fly_directory, loadings[:,loading_index])
+                    all_loadings_trialed.append(STA_trials)
 
-            #save plotting components shape and light on times
-            with h5py.File(save_file, 'a') as f:
-                add_to_h5(save_file, 'abreviated components for plots', abr_components_shape_plotting)
-                add_to_h5(save_file, 'all components for plots', components_shape_plotting)
-                add_to_h5(save_file, 'bruker framerate', bruker_framerate)
-                add_to_h5(save_file, 'light on times (s)', light_peaks_adjusted)
+                #save plotting components shape and light on times
+                with h5py.File(save_file, 'a') as f:
+                    add_to_h5(save_file, 'abreviated components for plots', abr_components_shape_plotting)
+                    add_to_h5(save_file, 'all components for plots', components_shape_plotting)
+                    add_to_h5(save_file, 'bruker framerate', bruker_framerate)
+                    add_to_h5(save_file, 'light on times (s)', light_peaks_adjusted)
 
 
-            ## add other plots later! (for now run in jupyter notebook)
+                ## add other plots later! (for now run in jupyter notebook)
 
 
 ## get light peaks
@@ -254,12 +255,17 @@ def get_light_peaks (Path):
             fly_name = Path.split('/')[0]
             print("There are still no light peaks after correction attempt for " + str(fly_name))
             print("skipping this fly--no light peaks")
+            light_peaks = None ##this could be the case for control flies
             
     
     ## convert to seconds
-    voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
-    light_peaks_adjusted = light_peaks/voltage_framerate
-    
+    if light_peaks:
+        voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
+        light_peaks_adjusted = light_peaks/voltage_framerate
+    else:
+        light_peaks_adjusted = None
+        print("NO LIGHT PEAKS DATA")
+
     return light_peaks_adjusted
 
 
@@ -281,7 +287,8 @@ def find_voltage_file(Path):
 
 
 def add_to_h5(Path, key, value):
-    """adds new key value to h5 file and checks if it already exists
+    """should be h5file as path.
+    adds new key value to h5 file and checks if it already exists
     does overwrite"""
     with h5py.File(Path, 'a') as f:
         if key not in f.keys(): #check if key already in file
@@ -296,7 +303,7 @@ def add_to_h5(Path, key, value):
             
             
 def run_PCA (Path, n_components, key = 'data'):
-    """input path to moco file. will default to do non-zscore data, but can specify another key (i.e. 'zscore'). 
+    """input path to h5 file. will default to do non-zscore data, but can specify another key (i.e. 'zscore'). 
     Returns loadings and components reshaped back to n_components, x, y, z"""
     
     t_batch = 200 #number of timepoints to run
