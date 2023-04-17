@@ -72,14 +72,14 @@ def main(args):
             with h5py.File(save_file, 'w') as f:
                 # check if zscore key already exists
                 if 'zscore' in hf.keys():
-                    print('zscore key-dataset already exists--overwriting')
+                    printlog('zscore key-dataset already exists--overwriting')
                     # Note: I may want to change this later so it doesn't redo the zscore calculations
                     del hf['zscore']
                     dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)  
                 else:
                     #zscore = hf.create_dataset('zscore', (*dims[:3],0), maxshape=(*dims[:3],None), dtype='float32')
                     dset = f.create_dataset('zscore', dims, dtype='float32', chunks=True)
-                    print('created zscore key')
+                    printlog('created zscore key')
 
                 #find meanbrain 
                 meanbrain = 0
@@ -114,7 +114,7 @@ def main(args):
                     chunk_end = steps[chunk_num + 1]
                     chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
                     each_zscore = (chunk - meanbrain)/final_std
-                    printlog(f'{np.shape(each_zscore)} is the zscore shape for chunk # {chunk_num}')
+                    #printlog(f'{np.shape(each_zscore)} is the zscore shape for chunk # {chunk_num}')
                     f['zscore'][:,:,:, chunk_start:chunk_end] = each_zscore
                                     
 
