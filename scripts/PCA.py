@@ -319,12 +319,25 @@ def run_PCA (Path, n_components, key = 'data'):
         windows = np.arange(0,dims[-1], t_batch)
         transformer = IncrementalPCA(n_components = n_components)
 
-        for window_index in range(len(windows)):
+        # for window_index in range(len(windows)):
+        #     #find out if it is the last window OR if the last batch will be too small and have it go to the end
+        #     if windows[window_index] == windows[-1] or dims[3] - windows[window_index] < t_batch + minimum: #last case go to end of dims (dims[-1])
+        #         moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:dims[-1]])
+        #         moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
+        #         transformer.partial_fit(moco_data_reshaped)
+        #     else:
+        #         moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:windows[window_index + 1]])
+        #         moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
+        #         transformer.partial_fit(moco_data_reshaped)
+
+        for window_index in range(len(windows)-1):
             #find out if it is the last window OR if the last batch will be too small and have it go to the end
-            if windows[window_index] == windows[-1] or dims[3] - windows[window_index] < t_batch + minimum: #last case go to end of dims (dims[-1])
+            if windows[window_index] == windows[-2]: # or dims[3] - windows[window_index] < t_batch + minimum: #last case go to end of dims (dims[-1])
                 moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:dims[-1]])
                 moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
                 transformer.partial_fit(moco_data_reshaped)
+            elif windows[window_index] == windows[-1]:  #just skip the last one because second to last should do both
+                print(f'last batch size = {dims[3] - windows[window_index]}')
             else:
                 moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:windows[window_index + 1]])
                 moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
