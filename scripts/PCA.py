@@ -92,7 +92,7 @@ def main():
             light_peaks_adjusted = get_light_peaks(fly_directory)
             bruker_framerate = get_Bruker_framerate(fly_directory)
 
-            if light_peaks_adjusted: #if its not None
+            if light_peaks_adjusted is not None: #if its not None
                 #plot light peaks and save just to double check its ok
                 fig1 = plt.figure()
                 plt.scatter(light_peaks_adjusted, np.ones(len(light_peaks_adjusted)))
@@ -259,7 +259,7 @@ def get_light_peaks (Path):
             
     
     ## convert to seconds
-    if light_peaks:
+    if light_peaks is not None:
         voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
         light_peaks_adjusted = light_peaks/voltage_framerate
     else:
