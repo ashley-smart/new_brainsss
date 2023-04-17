@@ -306,8 +306,8 @@ def run_PCA (Path, n_components, key = 'data'):
     """input path to h5 file. will default to do non-zscore data, but can specify another key (i.e. 'zscore'). 
     Returns loadings and components reshaped back to n_components, x, y, z"""
     
-    t_batch = 200 #number of timepoints to run
-
+    t_batch = 200 #number of timepoints to run (this used to be 200, but I'm dropping to try to not get small batch errors?)
+    minimum = 100
     with h5py.File(Path, 'r') as hf:  
         moco_data = hf[key]  
         dims = np.shape(moco_data) #x,y,z,t
@@ -320,7 +320,8 @@ def run_PCA (Path, n_components, key = 'data'):
         transformer = IncrementalPCA(n_components = n_components)
 
         for window_index in range(len(windows)):
-            if windows[window_index] == windows[-1]: #last case go to end of dims (dims[-1])
+            #find out if it is the last window OR if the last batch will be too small and have it go to the end
+            if windows[window_index] == windows[-1] or dims[3] - windows[window_index] < t_batch + minimum: #last case go to end of dims (dims[-1])
                 moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:dims[-1]])
                 moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
                 transformer.partial_fit(moco_data_reshaped)
