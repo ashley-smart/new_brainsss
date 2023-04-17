@@ -13,7 +13,7 @@ import gc
 
 #get to files
 #date = '20211215'
-dates = ['20230407__queue__'] 
+dates = ['20230414__queue__'] 
 for date in dates:
   print('STARTING DATE:', str(date))
   dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
