@@ -58,7 +58,7 @@ def main(args):
         full_load_path = os.path.join(directory, brain_file)
         save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_zscore.h5')
         with h5py.File(full_load_path, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
-            printlog("opened moco 2 file")
+            printlog(f"opened {brain_file}")
             ##data = hf['data']  #this syntax shouldn't load the whole thing in memory  ##THIS NEEDS TO CHANGE TO HIGH PASS FILTER 
             data = hf['high pass filter data']
             #get the dimension of the data
@@ -114,8 +114,8 @@ def main(args):
                     chunk_end = steps[chunk_num + 1]
                     chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
                     each_zscore = (chunk - meanbrain)/final_std
-                                    
-                    f['zscore'][:,:,chunk_start:chunk_end,:] = each_zscore
+                    printlog(f'{np.shape(each_zscore)} is the zscore shape for chunk # {chunk_num}')
+                    f['zscore'][:,:,:, chunk_start:chunk_end] = each_zscore
                                     
 
             printlog('ZSCORE complete')
