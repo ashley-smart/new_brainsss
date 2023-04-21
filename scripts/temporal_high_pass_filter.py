@@ -24,6 +24,7 @@ def main(args):
     save_directory = args['save_directory']
     brain_files = args['brain_file']
     stepsize = 2
+    rerun_hpass = False #if false will check if hp files already exist. 
     for brain_file in brain_files:
         full_load_path = os.path.join(load_directory, brain_file)
         save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_highpass.h5')

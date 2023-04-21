@@ -28,10 +28,19 @@ def main(args):
   # colors = args['colors']
   printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
+  rerun_moco = False #will rerun moco even if it exists. Change to true if somethign wrong with moco 
+
   #save_file_ch1 = os.path.join(save_path, 'MOCO_ch1.h5')
   #save_file_ch2 = os.path.join(save_path, 'MOCO_ch2.h5')
 
   ########################################3
+  ## see if already moco file
+  if rerun_moco == False:
+    for name in file_names:
+      if 'MOCO' in name:
+          printlog(f'MOCO FILE ALREADY EXISTS {name} => aborting')
+          return
+  
   # Get brain shape
   ch1_brain_file = None
   ch2_brain_file = None
@@ -48,6 +57,7 @@ def main(args):
       printlog("Aborting moco - could not find ch1")
       return
         
+  
   ### get brain dims
   ch1_img = nib.load(ch1_brain_file) # this loads a proxy
   ch1_shape = ch1_img.header.get_data_shape()
