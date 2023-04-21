@@ -27,12 +27,16 @@ def main():
     date = sys.argv[1]
 
     rerun_PCA = True #will look to see if PCA has already been run if False and not rerun. if true will rerun
-    #key_to_run_PCA = 'high pass filter data' ##alternatively zscore data
-    key_to_run_PCA = 'zscore'
-    file_to_run_PCA = "MOCO_ch2_highpass.h5"
-    file_to_run_PCA = "MOCO_ch2_highpass_zscore.h5"
-    #save_name = "PCA_HP.h5" #change this if run zscore to keep track
-    save_name = "PCA_zscore.h5"
+    run_zscore = True #if true will run on zscore data and save as zscore pca otherwise will run on high pass
+
+    if run_zscore == False:
+        key_to_run_PCA = 'high pass filter data' ##alternatively zscore data
+        file_to_run_PCA = "MOCO_ch2_highpass.h5"
+        save_name = "PCA_HP.h5" #change this if run zscore to keep track
+    else:
+        file_to_run_PCA = "MOCO_ch2_highpass_zscore.h5"
+        key_to_run_PCA = 'zscore'
+        save_name = "PCA_zscore.h5"
     
 
     print(f'Starting PCA on date: {date}')
