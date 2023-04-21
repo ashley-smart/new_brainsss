@@ -26,9 +26,14 @@ import math
 def main():
     date = sys.argv[1]
 
-    rerun_PCA = False #will look to see if PCA has already been run 
-    key_to_run_PCA = 'high pass filter data' ##alternatively zscore data
-    save_name = "PCA_HP.h5" #change this if run zscore to keep track
+    rerun_PCA = True #will look to see if PCA has already been run if False and not rerun. if true will rerun
+    #key_to_run_PCA = 'high pass filter data' ##alternatively zscore data
+    key_to_run_PCA = 'zscore'
+    file_to_run_PCA = "MOCO_ch2_highpass.h5"
+    file_to_run_PCA = "MOCO_ch2_highpass_zscore.h5"
+    #save_name = "PCA_HP.h5" #change this if run zscore to keep track
+    save_name = "PCA_zscore.h5"
+    
 
     print(f'Starting PCA on date: {date}')
     directory = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
@@ -46,7 +51,7 @@ def main():
 
             #check for high pass filter data (or later zscore)
 
-            fly_path = os.path.join(fly_directory, "MOCO_ch2_highpass.h5")
+            fly_path = os.path.join(fly_directory, file_to_run_PCA)
         
             with h5py.File(fly_path, 'r') as hf:
                 keys = hf.keys()
