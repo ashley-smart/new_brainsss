@@ -162,7 +162,7 @@ def load_timestamps(directory, file='functional.xml'):
     timestamps: [t,z] numpy array of times (in ms) of Bruker imaging frames.
     """
     try:
-        print('Trying to load timestamp data from hdf5 file.')
+        #print('Trying to load timestamp data from hdf5 file.')
         with h5py.File(os.path.join(directory, 'timestamps.h5'), 'r') as hf:
             timestamps = hf['timestamps'][:]
 
@@ -191,7 +191,7 @@ def load_timestamps(directory, file='functional.xml'):
         with h5py.File(os.path.join(directory, 'timestamps.h5'), 'w') as hf:
             hf.create_dataset("timestamps", data=timestamps)
     
-    print('Success.')
+    #print('Success.')
     return timestamps
 
 
