@@ -23,7 +23,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = ['20230405__queue__', '20230330__queue__' ] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
-dates = ['20230414', '20230407']
+dates = ['20230217']
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
@@ -140,6 +140,31 @@ for date in dates:
     for job_id in job_ids:
         brainsss.wait_for_job(job_id, logfile, com_path)
 
+
+    ########################
+    ###### PCA   ##########
+    ###########################
+    printlog(f"\n{'   PCA   ':=^{width}}")
+    file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
+    job_ids = []
+    for fly in flies:
+        directory = os.path.join(dataset_path, fly)
+        save_path = directory  #could have it save in a different folder in the future
+        all_files = os.listdir(directory)
+        filenames = [file for file in all_files if file_id in file]
+        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+        script = 'PCA_main.py'
+        printlog(os.path.join(scripts_path, script))
+        job_id = brainsss.sbatch(jobname='PCA',
+                             script=os.path.join(scripts_path, script),
+                             modules=modules,
+                             args=args,
+                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+        job_ids.append(job_id)
+        printlog("fly started")
+
+    for job_id in job_ids:
+        brainsss.wait_for_job(job_id, logfile, com_path)
     
 
     ############
