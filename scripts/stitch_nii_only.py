@@ -53,7 +53,7 @@ for date in dates:
 
     #new way of splitting causes problems for sort. need to find the number must have format 's###.nii' and will find ###
     values = []
-    for nii in sorted_channel_1_list:
+    for nii in channel_1_list:
        start = nii.find('s') + 1 #+1 to get indexing right (want to start with number)
        end = nii.find('.') #should end just before file extension
        values.append(int(nii[start:end]))
