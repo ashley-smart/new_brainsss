@@ -62,8 +62,8 @@ for date in dates:
     sorted_channel_1_list = []
     sorted_channel_2_list = []
     for number in values_sorted:
-       sorted_channel_1_list.append([file for file in channel_1_list if 's' + str(number) + 'nii' in file])
-       sorted_channel_2_list.append([file for file in channel_2_list if 's' + str(number) + 'nii' in file])
+       sorted_channel_1_list.append([file for file in channel_1_list if 's' + str(number) + '.nii' in file])
+       sorted_channel_2_list.append([file for file in channel_2_list if 's' + str(number) + '.nii' in file])
     
     print('sorted_channel_1_list', sorted_channel_1_list)
     print('sorted_channel_2_list', sorted_channel_2_list)

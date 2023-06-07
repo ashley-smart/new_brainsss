@@ -5,7 +5,7 @@
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=24
 
-#SBATCH --output=./logs/stitchlog2.out
+#SBATCH --output=./logs/stitchlog3.out
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
 
