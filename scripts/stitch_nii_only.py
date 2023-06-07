@@ -64,13 +64,14 @@ for date in dates:
     for number in values_sorted:
        sorted_channel_1_list.append([file for file in channel_1_list if 's' + str(number) + '.nii' in file])
        sorted_channel_2_list.append([file for file in channel_2_list if 's' + str(number) + '.nii' in file])
-    
+    sorted_channel_1_list = sorted_channel_1_list[0] #nested list
+    sorted_channel_2_list = sorted_channel_2_list[0]
     print('sorted_channel_1_list', sorted_channel_1_list)
     print('sorted_channel_2_list', sorted_channel_2_list)
 
     #iterate through sorted list and append files
     for i in sorted_channel_1_list: 
-        #print('ch1 file: ', i)
+        print('ch1 file: ', i)
         brain_ch1 = np.asarray(nib.load(os.path.join(directory, i)).get_data(), dtype='uint16')
         #print('shape of brain file: ', np.shape(brain_ch1))
         full_brain_ch1.append(brain_ch1)
