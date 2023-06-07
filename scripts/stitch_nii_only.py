@@ -47,11 +47,24 @@ for date in dates:
     #then sort the files Note: this will fail if there are more than 10 items
 #     print('channel_1_list', channel_1_list)
 #     print('channel_2_list', channel_2_list)
-    if len(channel_1_list) >= 10:
-       print("ERROR: There are too many nii files to sort")
-       break
-    sorted_channel_1_list = sorted(channel_1_list)  
-    sorted_channel_2_list = sorted(channel_2_list)
+    # if len(channel_1_list) >= 10:
+    #    print("ERROR: There are too many nii files to sort")
+    #    break
+
+    #new way of splitting causes problems for sort. need to find the number must have format 's###.nii' and will find ###
+    values = []
+    for nii in sorted_channel_1_list:
+       start = nii.find('s') + 1 #+1 to get indexing right (want to start with number)
+       end = nii.find('.') #should end just before file extension
+       values.append(int(nii[start:end]))
+    values_sorted = sorted(values)
+
+    sorted_channel_1_list = []
+    sorted_channel_2_list = []
+    for number in values_sorted:
+       sorted_channel_1_list.append([file for file in channel_1_list if 's' + str(number) + 'nii' in file])
+       sorted_channel_2_list.append([file for file in channel_2_list if 's' + str(number) + 'nii' in file])
+    
     print('sorted_channel_1_list', sorted_channel_1_list)
     print('sorted_channel_2_list', sorted_channel_2_list)
 
