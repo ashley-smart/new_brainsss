@@ -2,9 +2,9 @@
 #SBATCH --job-name=stitch_nii
 #SBATCH --partition=trc
 #SBATCH --time=2-00:00:00
-#SBATCH --ntasks=2
+#SBATCH --ntasks=
 #SBATCH --cpus-per-task=24
-#SBATCH --mem 260G
+#SBATCH --mem 26G
 
 #SBATCH --output=./logs/stitchlog3.out
 #SBATCH --open-mode=append
