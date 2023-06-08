@@ -9,4 +9,4 @@
 
 ml python/3.6
 date
-python3 -u ./quick_ashley_mean.py
+python3 -u /home/users/asmart/projects/new_brainsss/scripts/quick_ashley_mean.py
