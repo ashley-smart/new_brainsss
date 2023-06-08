@@ -1,9 +1,9 @@
 #!/bin/bash
 #SBATCH --job-name=stitch_nii
-#SBATCH --partition=trc
+#SBATCH --partition=owners
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
-#SBATCH --cpus-per-task=24
+#SBATCH --cpus-per-task=48 
 #SBATCH --output=./logs/stitchlog3.out
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
