@@ -29,7 +29,7 @@ nice = True # true to lower priority of jobs. ie, other users jobs go first
 logfile = './logs/' + time.strftime("%Y%m%d-%H%M%S") + '.txt'
 printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
-brainsss.print_title(logfile, width)
+#brainsss.print_title(logfile, width)
 scripts_path = '/home/users/asmart/projects/new_brainsss/scripts'
 com_path = os.path.join(scripts_path, 'com')
 

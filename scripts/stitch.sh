@@ -4,8 +4,6 @@
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --cpus-per-task=24
-#SBATCH --mem 26G
-
 #SBATCH --output=./logs/stitchlog3.out
 #SBATCH --open-mode=append
 #SBATCH --mail-type=ALL
