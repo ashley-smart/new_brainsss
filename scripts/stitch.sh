@@ -2,8 +2,8 @@
 #SBATCH --job-name=stitch_nii
 #SBATCH --partition=trc
 #SBATCH --time=2-00:00:00
-#SBATCH --ntasks=1
-#SBATCH --cpus-per-task=36
+#SBATCH --ntasks=2
+#SBATCH --cpus-per-task=24
 
 #SBATCH --output=./logs/stitchlog3.out
 #SBATCH --open-mode=append
