@@ -3,10 +3,12 @@ import sys
 import json
 from time import sleep
 import datetime
-import brainsss
 import numpy as np
 import nibabel as nib
 import h5py
+
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+import brainsss
 
 def main(args):
 
