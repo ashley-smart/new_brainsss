@@ -4,7 +4,7 @@
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
 ## comment out #SBATCH --mem 260G
-#SBATCH --output=./logs/mainlog.out
+#SBATCH --output=./logs/2023mainlog.out
 #SBATCH --open-mode=append
 #SBATCH --cpus-per-task=1
 #SBATCH --mail-type=ALL
