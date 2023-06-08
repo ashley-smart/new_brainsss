@@ -97,7 +97,7 @@ for date in dates:
     #iterate through sorted list and append files
     for i in sorted_channel_2_list: 
         #print('ch2 file: ', i)
-        brain_ch2 = np.asarray(nib.load(os.path.join(directory, i)).get_data(), dtype='uint16')
+        brain_ch2 = np.asarray(nib.load(os.path.join(directory, i[0])).get_data(), dtype='uint16')
         #print('shape of brain file: ', np.shape(brain_ch2))
         full_brain_ch2.append(brain_ch2)
 
