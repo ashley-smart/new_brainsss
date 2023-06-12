@@ -149,7 +149,7 @@ for date in dates:
     func_flies = []
     for file in all_files:
         fly_path = os.path.join(dataset_path, file)
-        if 'anat' in fly_path:
+        if 'anat' in fly_path and 'txt' not in fly_path:
             anat_flies.append(file)
         elif 'func' in fly_path:
             func_flies.append(file)
