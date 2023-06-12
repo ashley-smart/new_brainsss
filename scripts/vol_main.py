@@ -155,6 +155,7 @@ for date in dates:
             func_flies.append(file)
 
     ##for now just making anat means
+    job_ids = []
     for fly in anat_flies:
         directory = os.path.join(dataset_path, fly)
         files = os.listdir(directory)
@@ -166,7 +167,8 @@ for date in dates:
                             args=args,
                             logfile=logfile, time=5, mem=18, nice=nice, nodes=nodes)
         brainsss.wait_for_job(job_id, logfile, com_path)
-
+        job_ids.append(job_id)
+        printlog("fly started")
 
     # ########################
     # ###### PCA   ##########
