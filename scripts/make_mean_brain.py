@@ -22,12 +22,14 @@ def main(args):
     # Check if files is just a single file path string
     if type(files) is str:
         files = [files]
+        printlog(files)
 
     
 
     for file in files:
         try:
             ### make mean ###
+            printlog(f'current file attempting: {file}')
             full_path = os.path.join(directory, file)
             if full_path.endswith('.nii'):
                 brain = np.asarray(nib.load(full_path).get_data(), dtype='uint16')
