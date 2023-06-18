@@ -88,11 +88,16 @@ for date in dates:
         img.to_filename(save_file)
         del full_brain_ch1  #to delete from memory
         del stitched_brain_ch1 # to delete from memory
+        del img
         gc.collect()  #extra delete from memory
+        time.sleep(30)  ##to give to time to delete
+
     print('CH1 COMPLETE for: ', str(directory))
 
     # now running ch2
     ### splitting this up to help the memory (hopefully)
+
+    
 
     #iterate through sorted list and append files
     for i in sorted_channel_2_list: 
@@ -112,5 +117,6 @@ for date in dates:
         img.to_filename(save_file)
         del full_brain_ch2  #to delete from memory
         del stitched_brain_ch2 # to delete from memory
+        del img
         gc.collect()
     print('CH2 COMPLETE for: ', str(directory))
