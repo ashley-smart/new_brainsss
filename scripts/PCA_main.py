@@ -24,9 +24,10 @@ import math
 
 
 def main():
-    load_directory = args['load_directory']
-    save_directory = args['save_directory']
-    brain_files = args['brain_file']
+    #load_directory = args['load_directory']
+    directory = args['directory']
+    #save_directory = args['save_directory']
+    #brain_files = args['brain_file']
 
     rerun_PCA = True #will look to see if PCA has already been run if False and not rerun. if true will rerun
     run_zscore = True #if true will run on zscore data and save as zscore pca otherwise will run on high pass
@@ -42,7 +43,6 @@ def main():
     
 
     print(f'Starting PCA on date: {date}')
-    directory = load_directory
 
     #find fly
     all_files = os.listdir(directory)

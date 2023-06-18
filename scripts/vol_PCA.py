@@ -25,7 +25,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = ['20230405__queue__', '20230330__queue__' ] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
-dates = ['20230505', '20230504', '20230512', '20230428', '20230414', '20230407', '20230405']
+dates = ['20230504', '20230428', '20230330'] #, '20230512', '20230414', '20230407', '20230405']
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
@@ -182,7 +182,7 @@ for date in dates:
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future
         all_files = os.listdir(directory)
-        filenames = [file for file in all_files if file_id in file]
+        filenames = [file for file in all_files if file_id in file]  ###I'm not using this arg
         args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
         script = 'PCA_main.py'
         printlog(os.path.join(scripts_path, script))
