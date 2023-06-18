@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=full_vol
-#SBATCH --time=7-00:00:00
+#SBATCH --time=4-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
 ## comment out #SBATCH --mem 260G
