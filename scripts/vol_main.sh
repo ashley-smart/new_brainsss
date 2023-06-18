@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=AS_vol
+#SBATCH --job-name=full_vol
 #SBATCH --time=7-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
