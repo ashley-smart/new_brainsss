@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=PCA_only
-#SBATCH --time=4-00:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
 ## comment out #SBATCH --mem 260G
