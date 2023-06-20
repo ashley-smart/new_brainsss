@@ -23,7 +23,7 @@ import math
 
 
 
-def main():
+def main(args):
     #load_directory = args['load_directory']
     directory = args['directory']
     #save_directory = args['save_directory']
