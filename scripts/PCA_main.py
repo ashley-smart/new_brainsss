@@ -422,5 +422,5 @@ def run_STA (Path, loading):
 
 
 if __name__=='__main__':
-  main()
+    main(json.loads(sys.argv[1]))
             
