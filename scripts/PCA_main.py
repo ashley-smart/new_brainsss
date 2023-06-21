@@ -23,14 +23,14 @@ import math
 
 
 
-def main():
+def main(args):
     #load_directory = args['load_directory']
     directory = args['directory']
     #save_directory = args['save_directory']
     #brain_files = args['brain_file']
 
     rerun_PCA = True #will look to see if PCA has already been run if False and not rerun. if true will rerun
-    run_zscore = True #if true will run on zscore data and save as zscore pca otherwise will run on high pass
+    run_zscore = False #if true will run on zscore data and save as zscore pca otherwise will run on high pass
 
     if run_zscore == False:
         key_to_run_PCA = 'high pass filter data' ##alternatively zscore data

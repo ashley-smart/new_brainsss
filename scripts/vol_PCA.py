@@ -45,7 +45,7 @@ for date in dates:
     ### Setup logging ###
     #####################
 
-    logfile = './logs/' + time.strftime("%Y%m%d-%H%M%S") + '.txt'
+    logfile = './logs/PCA_' + time.strftime("%Y%m%d-%H%M%S") + '.txt'
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 
