@@ -42,13 +42,12 @@ def main(args):
         save_name = "PCA_zscore.h5"
     
 
-    print(f'Starting PCA on date: {date}')
-
+    
     #find fly
     all_files = os.listdir(directory)
     for file in all_files:
         if 'fly' in file and 'func' in file:  ##Note: won't find flies that don't have func in name of folder
-            print(f'found fly! running on {file}')
+            printlog(f'found fly! running on {file}')
             fly_name = file
             fly_directory = os.path.join(directory, fly_name)
             # save_plots = '/oak/stanford/groups/trc/data/Ashley2/imports/' + str(date) + "_PLOTS/" + str(fly_name)
@@ -62,9 +61,9 @@ def main(args):
             with h5py.File(fly_path, 'r') as hf:
                 keys = hf.keys()
                 if key_to_run_PCA in keys:
-                    print(f'Found {key_to_run_PCA} key!')
+                    printlog(f'Found {key_to_run_PCA} key!')
                 else:
-                    print(f'ERROR: no {key_to_run_PCA} for this fly {fly_name}')
+                    printlog(f'ERROR: no {key_to_run_PCA} for this fly {fly_name}')
                     break
 
             ##check if shoudl run PCA or already ran
@@ -74,29 +73,29 @@ def main(args):
                 #also check that there is something in the PC file
                 with h5py.File(save_file, 'r') as c:
                     if 'scores' in c.keys():
-                        print('PCA already exists ---> opening loadings and components for STA')
+                        printlog('PCA already exists ---> opening loadings and components for STA')
                         #open loadings and components
                         loadings = c['scores'][()]
                         reshaped_components = c['components'][()]
                     else:
-                        print('PCA file exists but no loadings key => runing again')
+                        printlog('PCA file exists but no loadings key => runing again')
                         ## run PCA
                         loadings, reshaped_components = run_PCA(fly_path, 100, key_to_run_PCA)
-                        print(f"PCA COMPLETED FOR {fly_name}")
+                        printlog(f"PCA COMPLETED FOR {fly_name}")
                         #save PCA info
                         with h5py.File(save_file, 'w') as f:
                             add_to_h5(save_file, 'scores', loadings)
                             add_to_h5(save_file, 'components', reshaped_components)
-                            print(f'SAVED PCA loadings and components')
+                            printlog(f'SAVED PCA loadings and components')
             else:
                 ## run PCA
                 loadings, reshaped_components = run_PCA(fly_path, 100, key_to_run_PCA)
-                print(f"PCA COMPLETED FOR {fly_name}")
+                printlog(f"PCA COMPLETED FOR {fly_name}")
                 #save PCA info
                 with h5py.File(save_file, 'w') as f:
                     add_to_h5(save_file, 'scores', loadings)
                     add_to_h5(save_file, 'components', reshaped_components)
-                    print(f'SAVED PCA loadings and components')
+                    printlog(f'SAVED PCA loadings and components')
 
             ##run peaks and make plots
             ##get light_peaks!
@@ -258,14 +257,14 @@ def get_light_peaks (Path):
     #there is a condition that requires this, but I can't remember exactly what the data looked like
     if len(light_peaks) == 0:
         #print("There are no light peaks for " + str(date) + " " + str(fly))
-        print("attempting new early_light_max, because no light peaks")
+        printlog("attempting new early_light_max, because no light peaks")
         early_light_max = max(light_column[0:100])
         light_peaks, properties = scipy.signal.find_peaks(light_column, height = early_light_max +.001, prominence = .1, distance = 10)
         
         if len(light_peaks) == 0:
             fly_name = Path.split('/')[0]
-            print("There are still no light peaks after correction attempt for " + str(fly_name))
-            print("skipping this fly--no light peaks")
+            printlog("There are still no light peaks after correction attempt for " + str(fly_name))
+            printlog("skipping this fly--no light peaks")
             light_peaks = None ##this could be the case for control flies
             
     
@@ -275,7 +274,7 @@ def get_light_peaks (Path):
         light_peaks_adjusted = light_peaks/voltage_framerate
     else:
         light_peaks_adjusted = None
-        print("NO LIGHT PEAKS DATA")
+        printlog("NO LIGHT PEAKS DATA")
 
     return light_peaks_adjusted
 
@@ -348,7 +347,7 @@ def run_PCA (Path, n_components, key = 'data'):
                 moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
                 transformer.partial_fit(moco_data_reshaped)
             elif windows[window_index] == windows[-1]:  #just skip the last one because second to last should do both
-                print(f'last batch size = {dims[3] - windows[window_index]}')
+                printlog(f'last batch size = {dims[3] - windows[window_index]}')
             else:
                 moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:windows[window_index + 1]])
                 moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
