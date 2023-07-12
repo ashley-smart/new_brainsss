@@ -42,11 +42,11 @@ def main(args):
         full_load_path = os.path.join(directory, brain_file)
         save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_switch_zscore.h5')
         with h5py.File(full_load_path, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
-            printlog(f"opened {brain_file}")
+            print(f"opened {brain_file}")
             data = hf['high pass filter data']
             #get the dimension of the data
             dims = np.shape(data)
-            printlog('data acquired')
+            print('data acquired')
                      
             exp_length1 = int(exp_types[0])
             exp_length2 = int(exp_types[1])
@@ -60,24 +60,24 @@ def main(args):
                     zscore_key = str(exp) + ' zscore'
                     ##make empty zscore dataset h5py
                     if zscore_key in f.keys():
-                        printlog(f'{zscore_key}-dataset already exists--overwriting')
+                        print(f'{zscore_key}-dataset already exists--overwriting')
                         if overwrite == True:
                             del hf[zscore_key]
                             dset = f.create_dataset(zscore_key, dims, dtype='float32', chunks=True)  
                         elif overwrite == False:
-                            printlog(f'ZSCORE {zscore_key}already exists and no overwrite selected => ending {brain_file}')            
+                            print(f'ZSCORE {zscore_key}already exists and no overwrite selected => ending {brain_file}')            
                             break
                     else:
                         #the dims will be smaller than the actual zscore data...is that ok?
                         dset = f.create_dataset(zscore_key, dims, dtype='float32', chunks=True)
-                        printlog(f'created {zscore_key} key')
+                        print(f'created {zscore_key} key')
 
 
                     #find switch set
-                    if exp in exp_length1:
-                        printlog(f'first experiment {exp}')
+                    if int(exp) == exp_length1:
+                        print(f'first experiment {exp}')
                         switch_set_t = exp1_switch_set_t
-                    elif exp in exp_length2:
+                    elif int(exp) == exp_length2:
                         switch_set_t = exp2_switch_set_t
                     elif exp == 'dark': #this is a special case
                         switch_set_t = None
@@ -88,14 +88,14 @@ def main(args):
                         total_timepoints = 0 #this will count the number of timepoints for the all the blocks of the same exp type
                         for switch_i in range(len(switch_set_t)):
                             switch = switch_set_t[switch_i]
-                            printlog('starting new switch set')
+                            print('starting new switch set')
                             start = switch[0]
                             end = switch[1] #because set up as pairs in an array to be start and end
                             steps = list(range(start, end, stepsize))
                             steps.append(end) #to amke sure it goes to the end inclusively
                             number_timepoints = end - start
                             total_timepoints += number_timepoints
-                            printlog(f'steps {steps}')
+                            print(f'steps {steps}')
 
                             #make meanbrain per block
                             meanbrain = fun.make_meanbrain(steps, data)
@@ -114,7 +114,7 @@ def main(args):
                                 chunk_end = steps[chunk_num + 1]
                                 chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
                                 each_zscore = (chunk - meanbrain)/stdbrain
-                                printlog(f'{np.shape(each_zscore)} is the {exp} expt zscore shape for chunk # {chunk_num}')
+                                print(f'{np.shape(each_zscore)} is the {exp} expt zscore shape for chunk # {chunk_num}')
                                 #printlog(f'{np.shape(each_zscore)} is the 20 expt zscore shape for chunk # {chunk_num}')
                                 f['20 zscore'][:,:,:, chunk_start:chunk_end] = each_zscore
                     
@@ -122,19 +122,19 @@ def main(args):
                         dark_total_timepoints = 0
                         dark_meanbrain = 0
                         if exp1_switch_set_t[0][0] < exp2_switch_set_t[0][0]:
-                            printlog('twenty is first switch set')
+                            print('twenty is first switch set')
                             end = exp1_switch_set_t[0][0] - 1 # -1 to not do same timepoint twice
                         else:
                             end = exp2_switch_set_t[0][0] - 1 # -1 to not do same timepoint twice
-                            printlog('forty is the first switch set')
+                            print('forty is the first switch set')
 
                         start = 0
                         dark_steps = list(range(start, end, stepsize))
                         dark_steps.append(end) #to make sure it goes to the end of the set inclusively
                         number_timepoints = end - start
                         dark_total_timepoints += number_timepoints #to add each switch set
-                        printlog('dark steps', dark_steps)
-                        printlog(len(dark_steps))
+                        print('dark steps', dark_steps)
+                        print(len(dark_steps))
 
                         #make meanbrain
                         meanbrain = fun.make_meanbrain(dark_steps, data)
@@ -153,11 +153,11 @@ def main(args):
                             chunk_end = dark_steps[chunk_num + 1]
                             chunk = data[:,:,:,chunk_start:chunk_end] #I'm doing chunks on t
                             each_zscore = (chunk - meanbrain)/stdbrain
-                            printlog(f'{np.shape(each_zscore)} is the {exp} expt zscore shape for chunk # {chunk_num}')
+                            print(f'{np.shape(each_zscore)} is the {exp} expt zscore shape for chunk # {chunk_num}')
                             #printlog(f'{np.shape(each_zscore)} is the 20 expt zscore shape for chunk # {chunk_num}')
                             f['dark zscore'][:,:,:, chunk_start:chunk_end] = each_zscore
 
-            printlog(f'ZSCORE complete for {brain_file}')
+            print(f'ZSCORE complete for {brain_file}')
         
 
     

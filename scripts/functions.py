@@ -150,6 +150,8 @@ def load_timestamps(directory, file='functional.xml'):
             timestamps = hf['timestamps'][:]
 
     except:
+        fly_name = get_fly_name_from_path(directory)
+        file = str(fly_name) + '.xml'
         print('Failed. Extracting frame timestamps from bruker xml file.')
         xml_file = os.path.join(directory, file)
         tree = ET.parse(xml_file)
