@@ -58,7 +58,7 @@ def main(args):
                             del hf[zscore_key]
                             dset = f.create_dataset(zscore_key, dims, dtype='float32', chunks=True)  
                         elif overwrite == False:
-                            printlog(f'ZSCORE {zscore_key}already exists and no overwrite selected => ending {brain_file}')            else:
+                            printlog(f'ZSCORE {zscore_key}already exists and no overwrite selected => ending {brain_file}')            
                             break
                     else:
                         #the dims will be smaller than the actual zscore data...is that ok?
