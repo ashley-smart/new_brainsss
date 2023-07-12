@@ -116,7 +116,7 @@ def main(args):
                                 each_zscore = (chunk - meanbrain)/stdbrain
                                 print(f'{np.shape(each_zscore)} is the {exp} expt zscore shape for chunk # {chunk_num}')
                                 #printlog(f'{np.shape(each_zscore)} is the 20 expt zscore shape for chunk # {chunk_num}')
-                                f['20 zscore'][:,:,:, chunk_start:chunk_end] = each_zscore
+                                f[zscore_key][:,:,:, chunk_start:chunk_end] = each_zscore
                     
                     elif switch_set_t == None and exp == 'dark':
                         dark_total_timepoints = 0
