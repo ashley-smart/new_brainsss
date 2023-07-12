@@ -63,7 +63,7 @@ def main(args):
                     else:
                         #the dims will be smaller than the actual zscore data...is that ok?
                         dset = f.create_dataset(zscore_key, dims, dtype='float32', chunks=True)
-                        printlog(f'created {zscore key} key')
+                        printlog(f'created {zscore_key} key')
 
 
                     #find switch set
