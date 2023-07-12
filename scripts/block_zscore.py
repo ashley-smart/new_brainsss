@@ -43,7 +43,7 @@ def main(args):
                      
             exp_length1 = int(exp_types[0])
             exp_length2 = int(exp_types[1])
-            exp1_switch_set_t, exp2_switch_set_t = fun.get_brain_t_switch_set(dataset_path, exp_length1 = exp_length1, exp_length2 = exp_length2)
+            exp1_switch_set_t, exp2_switch_set_t = fun.get_brain_t_switch_set(directory, exp_length1 = exp_length1, exp_length2 = exp_length2)
 
             #make new file so if it does somethign weird it doesn't corrupt the high pass data
             with h5py.File(save_file, 'w') as f:
