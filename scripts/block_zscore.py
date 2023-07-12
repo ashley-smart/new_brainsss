@@ -74,10 +74,10 @@ def main(args):
 
 
                     #find switch set
-                    if int(exp) == exp_length1:
+                    if exp != 'dark' and int(exp) == exp_length1:
                         print(f'first experiment {exp}')
                         switch_set_t = exp1_switch_set_t
-                    elif int(exp) == exp_length2:
+                    elif exp != 'dark' and int(exp) == exp_length2:
                         switch_set_t = exp2_switch_set_t
                     elif exp == 'dark': #this is a special case
                         switch_set_t = None
