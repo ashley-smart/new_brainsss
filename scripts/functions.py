@@ -154,30 +154,39 @@ def load_timestamps(directory, file='functional.xml'):
         file = str(fly_name) + '.xml'
         print('Failed. Extracting frame timestamps from bruker xml file.')
         xml_file = os.path.join(directory, file)
+        print(f'getting timestamps from {xml_file}')
         tree = ET.parse(xml_file)
         root = tree.getroot()
         timestamps = []
-        
+
         sequences = root.findall('Sequence')
-        for sequence in sequences:
+        first_frame_len = len(sequences[0].findall('Frame'))
+        for sequence_i in range(len(sequences)):
+            sequence = sequences[sequence_i]
             frames = sequence.findall('Frame')
-            for frame in frames:
-                filename = frame.findall('File')[0].get('filename')
-                time = float(frame.get('relativeTime'))
-                timestamps.append(time)
+            #skip remaining sequences if ended early
+            if len(frames) != first_frame_len:
+                print(f'sequence # {sequence_i} did not complete z-series => ending')
+                sequence_length = sequence_i #want it to be length to previous sequence value since that was the last complete one => 0 indexing helps
+            else:
+                for frame in frames:
+                    filename = frame.findall('File')[0].get('filename')
+                    time = float(frame.get('relativeTime'))
+                    timestamps.append(time)
+                sequence_length = len(sequences)
         timestamps = np.multiply(timestamps, 1000)
 
         if len(sequences) > 1:
-            timestamps = np.reshape(timestamps, (len(sequences), len(frames)))
+            timestamps = np.reshape(timestamps, (sequence_length, first_frame_len))
         else:
-            timestamps = np.reshape(timestamps, (len(frames), len(sequences)))
+            timestamps = np.reshape(timestamps, (first_frame_len, sequence_length))
 
-        ### Save h5py file ###
-        with h5py.File(os.path.join(directory, 'timestamps.h5'), 'w') as hf:
-            hf.create_dataset("timestamps", data=timestamps)
-    
-    print('Success.')
-    return timestamps
+    ### Save h5py file ###
+    with h5py.File(os.path.join(directory, 'timestamps.h5'), 'w') as hf:
+        hf.create_dataset("timestamps", data=timestamps)
+        
+        print('Success.')
+        return timestamps
 
 
 
