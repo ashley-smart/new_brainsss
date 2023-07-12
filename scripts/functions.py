@@ -1,4 +1,20 @@
-## final function to get switch times!
+import os
+import sys
+import numpy as np
+import h5py
+import scipy as scipy
+from scipy.signal import find_peaks
+from matplotlib import pyplot as plt
+import math
+from xml.etree import ElementTree as ET
+import csv as csv
+from sklearn.decomposition import IncrementalPCA
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+import brainsss
+
+
+
+
 def get_brain_t_switch_set(dataset_path, exp_length1 = 20, exp_length2 = 40):
     """returns array of arrays of switch times that correspond to index in t of brains.
     returns seperately 20 and 40s experiemnts
@@ -162,42 +178,6 @@ def load_timestamps(directory, file='functional.xml'):
     return timestamps
 
 
- 
-# # get light peaks/s
-
-# #get voltage file
-# data_reducer = 100
-# light_data = []
-# with open(voltage_path, 'r') as rawfile:
-#     reader = csv.reader(rawfile)
-#     data_single = []
-#     for i, row in enumerate(reader):
-#         if i % data_reducer == 0: #will downsample the data 
-#             data_single.append(row)
-#     #light_data.append(data_single) #for more than one fly
-#     light_data = data_single
- 
-
-        
-
-# light_column = get_diode_column(light_data)
-# print(np.shape(light_column))
-    
-# # find peaks
-# light_median = np.median(light_column)
-# early_light_max = max(light_column[0:2000])
-# light_peaks, properties = scipy.signal.find_peaks(light_column, height = early_light_max +.001, prominence = .1, distance = 10)
-   
-    
-    
-# ## convert to seconds
-# voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
-# light_peaks_adjusted = light_peaks/voltage_framerate
-# print('voltage framerate =', voltage_framerate)
-
-
-# #store light_peaks_adjusted in new h5 file
-
 
 def get_light_peaks (Path):
     """input fly path and get out the light peaks files in seconds"""
@@ -222,13 +202,12 @@ def get_light_peaks (Path):
     light_peaks, properties = scipy.signal.find_peaks(light_column, height = early_light_max +.001, prominence = .1, distance = 10)
     #there is a condition that requires this, but I can't remember exactly what the data looked like
     if len(light_peaks) == 0:
-        #print("There are no light peaks for " + str(date) + " " + str(fly))
         print("attempting new early_light_max, because no light peaks")
         early_light_max = max(light_column[0:100])
         light_peaks, properties = scipy.signal.find_peaks(light_column, height = early_light_max +.001, prominence = .1, distance = 10)
         
         if len(light_peaks) == 0:
-            print("There are still no light peaks for " + str(date) + " " + str(fly))
+            print("There are still no light peaks")
             print("skipping this fly--no light peaks")
             
     
@@ -241,7 +220,7 @@ def get_light_peaks (Path):
 
 def find_moco_file(Path):
     """path should be fly folder. This returns the path to the moco ch2 h5 file"""
-    for name in os.listdir(fly_path):
+    for name in os.listdir(Path):
         if 'MOCO_ch2' in name:
             moco_file = name
             moco_path = os.path.join(Path, moco_file)
