@@ -120,7 +120,7 @@ def main(args):
                     
                     elif switch_set_t == None and exp == 'dark':
                         dark_total_timepoints = 0
-                        dark_meanbrain = 0
+                        meanbrain = 0
                         if exp1_switch_set_t[0][0] < exp2_switch_set_t[0][0]:
                             print('twenty is first switch set')
                             end = exp1_switch_set_t[0][0] - 1 # -1 to not do same timepoint twice
