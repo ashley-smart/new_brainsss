@@ -371,7 +371,7 @@ def make_stdbrain (meanbrain, steps, data):
     """takes steps (range start, stop, stepsize) and data = brain and returns std of brain
         can be partial section--specify with steps"""
     total = 0
-    total_timepoints = steps[1] - steps[0]
+    total_timepoints = steps[-1] - steps[0]
     for chunk_num in range(len(steps) - 1):  
         chunk_start = steps[chunk_num]
         chunk_end = steps[chunk_num + 1]
