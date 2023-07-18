@@ -13,7 +13,7 @@ import gc
 
 #get to files
 #date = '20211215'
-dates = ['20230330']  #as of 4-27 4-5 still has one bad fly as does 330
+dates = ['20230623', '20230630', '20230707']  #as of 4-27 4-5 still has one bad fly as does 330
 for date in dates:
   print('STARTING DATE:', str(date))
   dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
