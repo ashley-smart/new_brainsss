@@ -23,7 +23,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = ['20230405__queue__', '20230330__queue__' ] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
-dates = ['20230616', '20230623', '20230630', '20230707']
+dates = ['20230630', '20230714']
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
@@ -113,84 +113,84 @@ for date in dates:
         brainsss.wait_for_job(job_id, logfile, com_path)
 
 
-    ######################
-    ### vol zscore ####
-    #######################
-    printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
-    #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
-    ##run zscore on high pass filtered moco files
-    file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
-    job_ids = []
-    for fly in flies:
-        directory = os.path.join(dataset_path, fly)
-        save_path = directory  #could have it save in a different folder in the future
-        all_files = os.listdir(directory)
-        filenames = [file for file in all_files if file_id in file]
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
-        script = 'vol_zscore.py'
-        printlog(os.path.join(scripts_path, script))
-        job_id = brainsss.sbatch(jobname='volzscore',
-                             script=os.path.join(scripts_path, script),
-                             modules=modules,
-                             args=args,
-                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
-        job_ids.append(job_id)
-        printlog("fly started")
+    # ######################
+    # ### vol zscore ####
+    # #######################
+    # printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
+    # #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+    # ##run zscore on high pass filtered moco files
+    # file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
+    # job_ids = []
+    # for fly in flies:
+    #     directory = os.path.join(dataset_path, fly)
+    #     save_path = directory  #could have it save in a different folder in the future
+    #     all_files = os.listdir(directory)
+    #     filenames = [file for file in all_files if file_id in file]
+    #     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+    #     script = 'vol_zscore.py'
+    #     printlog(os.path.join(scripts_path, script))
+    #     job_id = brainsss.sbatch(jobname='volzscore',
+    #                          script=os.path.join(scripts_path, script),
+    #                          modules=modules,
+    #                          args=args,
+    #                          logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+    #     job_ids.append(job_id)
+    #     printlog("fly started")
 
-    for job_id in job_ids:
-        brainsss.wait_for_job(job_id, logfile, com_path)
+    # for job_id in job_ids:
+    #     brainsss.wait_for_job(job_id, logfile, com_path)
 
 
-    ############################
-    #### make mean anat brain  ###
-    ################################
-    all_files = os.listdir(dataset_path)
-    anat_flies = []
-    func_flies = []
-    for file in all_files:
-        fly_path = os.path.join(dataset_path, file)
-        if 'anat' in fly_path and 'txt' not in fly_path:
-            anat_flies.append(file)
-        elif 'func' in fly_path:
-            func_flies.append(file)
+    # ############################
+    # #### make mean anat brain  ###
+    # ################################
+    # all_files = os.listdir(dataset_path)
+    # anat_flies = []
+    # func_flies = []
+    # for file in all_files:
+    #     fly_path = os.path.join(dataset_path, file)
+    #     if 'anat' in fly_path and 'txt' not in fly_path:
+    #         anat_flies.append(file)
+    #     elif 'func' in fly_path:
+    #         func_flies.append(file)
 
-    ##for now just making anat means
-    job_ids = []
-    for fly in anat_flies:
-        directory = os.path.join(dataset_path, fly)
-        files = os.listdir(directory)
-        args = {'logfile': logfile, 'directory': directory, 'files': files} #note: files and flies
-        script = 'make_mean_brain.py'
-        job_id = brainsss.sbatch(jobname='meanbrn',
-                            script=os.path.join(scripts_path, script),
-                            modules=modules,
-                            args=args,
-                            logfile=logfile, time=5, mem=18, nice=nice, nodes=nodes)
-        brainsss.wait_for_job(job_id, logfile, com_path)
-        job_ids.append(job_id)
-        printlog("fly started")
+    # ##for now just making anat means
+    # job_ids = []
+    # for fly in anat_flies:
+    #     directory = os.path.join(dataset_path, fly)
+    #     files = os.listdir(directory)
+    #     args = {'logfile': logfile, 'directory': directory, 'files': files} #note: files and flies
+    #     script = 'make_mean_brain.py'
+    #     job_id = brainsss.sbatch(jobname='meanbrn',
+    #                         script=os.path.join(scripts_path, script),
+    #                         modules=modules,
+    #                         args=args,
+    #                         logfile=logfile, time=5, mem=18, nice=nice, nodes=nodes)
+    #     brainsss.wait_for_job(job_id, logfile, com_path)
+    #     job_ids.append(job_id)
+    #     printlog("fly started")
 
-    ########################
-    ###### PCA   ##########
-    ###########################
-    printlog(f"\n{'   PCA   ':=^{width}}")
-    file_id = '_highpass.h5'  ##doesn't currently do anything
-    job_ids = []
-    for fly in flies:
-        directory = os.path.join(dataset_path, fly)
-        save_path = directory  #could have it save in a different folder in the future
-        all_files = os.listdir(directory)
-        filenames = [file for file in all_files if file_id in file]  #I'm not suing this right now
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
-        script = 'PCA_main.py'
-        printlog(os.path.join(scripts_path, script))
-        job_id = brainsss.sbatch(jobname='PCA',
-                             script=os.path.join(scripts_path, script),
-                             modules=modules,
-                             args=args,
-                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
-        job_ids.append(job_id)
-        printlog("fly started")
+    # ########################
+    # ###### PCA   ##########
+    # ###########################
+    # printlog(f"\n{'   PCA   ':=^{width}}")
+    # file_id = '_highpass.h5'  ##doesn't currently do anything
+    # job_ids = []
+    # for fly in flies:
+    #     directory = os.path.join(dataset_path, fly)
+    #     save_path = directory  #could have it save in a different folder in the future
+    #     all_files = os.listdir(directory)
+    #     filenames = [file for file in all_files if file_id in file]  #I'm not suing this right now
+    #     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+    #     script = 'PCA_main.py'
+    #     printlog(os.path.join(scripts_path, script))
+    #     job_id = brainsss.sbatch(jobname='PCA',
+    #                          script=os.path.join(scripts_path, script),
+    #                          modules=modules,
+    #                          args=args,
+    #                          logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+    #     job_ids.append(job_id)
+    #     printlog("fly started")
 
     for job_id in job_ids:
         brainsss.wait_for_job(job_id, logfile, com_path)

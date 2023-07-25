@@ -28,7 +28,7 @@ def main(args):
   # colors = args['colors']
   printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
-  rerun_moco = False #will rerun moco even if it exists. Change to true if somethign wrong with moco 
+  rerun_moco = False #if true will rerun moco even if it exists. Change to true if somethign wrong with moco 
 
   #save_file_ch1 = os.path.join(save_path, 'MOCO_ch1.h5')
   #save_file_ch2 = os.path.join(save_path, 'MOCO_ch2.h5')
