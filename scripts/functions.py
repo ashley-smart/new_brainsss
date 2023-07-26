@@ -380,5 +380,65 @@ def make_stdbrain (meanbrain, steps, data):
         total = s + total
     final_std = np.sqrt(total/total_timepoints) #fix this from len
     return final_std
+
+def make_empty_h5(savefile, key, dims):
+    """make empty h5 file with specified key and dims as the shape. returns the filename"""
+    with h5py.File(savefile, 'w') as f:
+        dset = f.create_dataset(key, dims, dtype='float32', chunks=True)
+    return savefile
     
+def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
+    """gets light peaks in terms of brain time index.
+    Note: this may end up being longer than light_peaks_ms because 
+    if the light turns on between two zstacks it records the closer 
+    one or records both if they are both < 100ms from the flash.
+    max dims is the t dims of the brain (sometimes voltage recording extends longer than 2p imaging)"""
+    light_peaks_s = get_light_peaks(fly_path)
+    timestamps = load_timestamps(fly_path)
+    average_timestamps = np.mean(timestamps, axis = 1)/1000  ##to convert ms to s to match light_peaks
+
+#     light_buffer_ms = 100 #the number of ms that the peak light flash needs to be away from the start or end of zstack to not elimiante the data
+    first_timestamps = []
+    last_timestamps = []
+    for t in timestamps:
+        first_timestamps.append(t[0])
+        last_timestamps.append(t[-1])
+        
+    first_timestamps = np.array(first_timestamps)
+    first_timestamps_s = first_timestamps/1000
+    last_timestamps = np.array(last_timestamps)
+    last_timestamps_s = last_timestamps/1000
+    
+    light_peaks_t = []
+    for light in light_peaks_s:
+        last = np.where(last_timestamps_s >= light)[0][0]
+        first = np.where(first_timestamps_s <= light)[0][-1]
+        ##check to make sure it is within brain time
+        if last <= max_dims:
+            #then sort out which ones to append based on when the light is coming on in relation to brain volume
+            if last == first:
+                light_peaks_t.append(last) #since the are the same then the light is in this zstack
+            elif last != first: #then the light comes on between two zstacks
+                #determine which one it is closer to.
+                time_start_last = first_timestamps_s[last] #the start of the zstack that happens just after flash
+                time_end_first = last_timestamps_s[first] #the end of the zstack that happens just before the flash
+
+                if time_start_last - light  < light - time_end_first:
+                    #then the flash is closer to the "last" index
+        #             print('closer to second stack')
+        #             print('diff ms = ', (time_start_last - light)*1000)
+                    light_peaks_t.append(last)
+                     #check if it is very close to the last index too though
+                    if (light - time_end_first)*1000 < light_buffer_ms:
+                        light_peaks_t.append(first) #if it's close then add the other zstack to be removed too
+
+                else:
+                    #light is closet to the "first" index
+        #             print('closer to first stack')
+        #             print('diff ms = ', (light - time_end_first)*1000)
+                    light_peaks_t.append(first)
+                    #check if it is very close to the last index too though
+                    if (time_start_last - light)*1000 < light_buffer_ms:
+                        light_peaks_t.append(last) #if it's close then add the other zstack to be removed too
+    return light_peaks_t
 
