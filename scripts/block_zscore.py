@@ -53,7 +53,7 @@ def main(args):
                 max_t = dims[-1]
                 
                 light_peaks_to_rem = fun.get_light_peaks_brain_time(directory, max_t, light_buffer)
-                printlog(light_peaks_to_rem)
+                printlog(f'light peaks to rem: {light_peaks_to_rem]')
                 fun.add_to_h5(rem_light_file, 'light peaks brain t', light_peaks_to_rem)
                 printlog('added light peaks to h5')
                 new_data_file = fun.make_empty_h5(rem_light_file, 'data rem light', dims)
@@ -168,7 +168,7 @@ def main(args):
                         number_timepoints = end - start
                         dark_total_timepoints += number_timepoints #to add each switch set
                         printlog('dark steps', dark_steps)
-                        printlog(len(dark_steps))
+                        printlog(f'number dark steps {len(dark_steps)}')
 
                         #make meanbrain
                         meanbrain = fun.make_meanbrain(dark_steps, data)
