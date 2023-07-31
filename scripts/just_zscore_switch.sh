@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=zscore
+#SBATCH --job-name=zscore_switch
 #SBATCH --time=7-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
