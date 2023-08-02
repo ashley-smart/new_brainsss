@@ -37,7 +37,7 @@ def main(args):
     light_buffer = 100 #ms needed away from light peak to allow brain volume to not be marked as light
     
     stepsize = 25 ##this is set so memory doesn't get overwhelmed. lower if getting oom errors
-    exp_types = ['dark'] #must be this format ['20', '40', dark] #skip dark if don't want it
+    exp_types = ['20', '40','dark'] #must be this format ['20', '40', dark] #skip dark if don't want it
 
 
     for brain_file in file_names:

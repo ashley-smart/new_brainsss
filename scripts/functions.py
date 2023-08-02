@@ -15,6 +15,81 @@ import brainsss
 
 
 
+
+
+ 
+
+
+
+
+
+         
+            
+            
+def run_PCA (h5file, n_components, key = 'data'):
+    """input path to h5 file. will default to do non-zscore data, but can specify another key (i.e. 'zscore'). 
+    Returns loadings and components reshaped back to n_components, x, y, z"""
+    
+    t_batch = 200 #number of timepoints to run (this used to be 200, but I'm dropping to try to not get small batch errors?)
+    minimum = 100
+    with h5py.File(h5file, 'r') as hf:  
+        data = hf[key]  
+        dims = np.shape(data) #x,y,z,t
+    #     ##remove first 3 z slices
+    #     moco_data = moco_data[:,:,3:,:] #to get rid of first 3 z slices
+    
+
+        #run through batches of t so it can load in memory
+        windows = np.arange(0,dims[-1], t_batch)
+        transformer = IncrementalPCA(n_components = n_components)
+
+
+        for window_index in range(len(windows)-1):
+            #find out if it is the last window OR if the last batch will be too small and have it go to the end
+            if windows[window_index] == windows[-2]: # or dims[3] - windows[window_index] < t_batch + minimum: #last case go to end of dims (dims[-1])
+                data_subset = np.array(data[:,:,:, windows[window_index]:dims[-1]])
+                data_reshaped = np.reshape(data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
+                transformer.partial_fit(data_reshaped)
+            elif windows[window_index] == windows[-1]:  #just skip the last one because second to last should do both
+                print(f'last batch size = {dims[3] - windows[window_index]}')
+            else:
+                data_subset = np.array(data[:,:,:, windows[window_index]:windows[window_index + 1]])
+                data_reshaped = np.reshape(data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
+                transformer.partial_fit(data_reshaped)
+
+        components = transformer.components_  #ndarray of shape (n_components, n_features)
+        #reshape back components to xyz
+        reshaped_components = np.reshape(components, (n_components,) + dims[0:3]) #components, x,y,z
+        
+        ###plotting components DOES NOT CURRENTLY GET RETURNED (easy to do later)
+        #components_shape_plotting = np.concatenate([reshaped_components[:, :, :, i] for i in range(reshaped_components.shape[3])], axis=2)
+
+        ##run through data again to get time relevant information
+        all_loadings = []
+        for window_index in range(len(windows)):
+            if windows[window_index] == windows[-1]: #last case go to end of dims (dims[-1])
+                data_subset = np.array(data[:,:,:, windows[window_index]:dims[-1]])
+                data_reshaped = np.reshape(data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
+                all_loadings.append(transformer.transform(data_reshaped))
+            else:
+                data_subset = np.array(data[:,:,:, windows[window_index]:windows[window_index + 1]])
+                data_reshaped = np.reshape(data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
+                all_loadings.append(transformer.transform(data_reshaped))
+        loadings = np.concatenate(all_loadings, 0)
+        
+        return loadings, reshaped_components
+
+
+
+
+     
+
+
+
+
+            
+
+
 def get_brain_t_switch_set(dataset_path, exp_length1 = 20, exp_length2 = 40):
     """returns array of arrays of switch times that correspond to index in t of brains.
     returns seperately 20 and 40s experiemnts
@@ -259,54 +334,7 @@ def add_to_h5(Path, key, value):
             
             
             
-def run_PCA (Path, n_components, key = 'data'):
-    """input path to moco file. will default to do non-zscore data, but can specify another key (i.e. 'zscore'). 
-    Returns loadings and components reshaped back to n_components, x, y, z"""
-    
-    t_batch = 200 #number of timepoints to run
 
-    with h5py.File(Path, 'r') as hf:  
-        moco_data = hf[key]  
-        dims = np.shape(moco_data) #x,y,z,t
-    #     ##remove first 3 z slices
-    #     moco_data = moco_data[:,:,3:,:] #to get rid of first 3 z slices
-    #     dims = np.shape(moco_data)
-
-        #run through batches of t so it can load in memory
-        windows = np.arange(0,dims[-1], t_batch)
-        transformer = IncrementalPCA(n_components = n_components)
-
-        for window_index in range(len(windows)):
-            if windows[window_index] == windows[-1]: #last case go to end of dims (dims[-1])
-                moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:dims[-1]])
-                moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
-                transformer.partial_fit(moco_data_reshaped)
-            else:
-                moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:windows[window_index + 1]])
-                moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
-                transformer.partial_fit(moco_data_reshaped)
-
-        components = transformer.components_  #ndarray of shape (n_components, n_features)
-        #reshape back components to xyz
-        reshaped_components = np.reshape(components, (n_components,) + dims[0:3]) #components, x,y,z
-        
-        ###plotting components DOES NOT CURRENTLY GET RETURNED (easy to do later)
-        #components_shape_plotting = np.concatenate([reshaped_components[:, :, :, i] for i in range(reshaped_components.shape[3])], axis=2)
-
-        ##run through data again to get time relevant information
-        all_loadings = []
-        for window_index in range(len(windows)):
-            if windows[window_index] == windows[-1]: #last case go to end of dims (dims[-1])
-                moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:dims[-1]])
-                moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
-                all_loadings.append(transformer.transform(moco_data_reshaped))
-            else:
-                moco_data_subset = np.array(moco_data[:,:,:, windows[window_index]:windows[window_index + 1]])
-                moco_data_reshaped = np.reshape(moco_data_subset, (np.prod(dims[0:3]), -1)).T  #so xyz is column and t is row
-                all_loadings.append(transformer.transform(moco_data_reshaped))
-        loadings = np.concatenate(all_loadings, 0)
-        
-        return loadings, reshaped_components
 
 def get_fly_name_from_path (Path):
     """will get last folder in path (assumes fly name is the last folder)"""

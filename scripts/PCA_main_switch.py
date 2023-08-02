@@ -1,3 +1,4 @@
+## run pca only
 import time
 import sys
 import os
@@ -76,12 +77,12 @@ for date in dates:
 
 
     ######################
-    ### vol zscore ####
+    ### vol PCA ####
     #######################
-    printlog(f"\n{'   vol by vol switch zscore test   ':=^{width}}")
+    printlog(f"\n{'   vol by vol switch PCA   ':=^{width}}")
     #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
     ##run zscore on high pass filtered moco files
-    file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
+    file_id = 'zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
     job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
@@ -89,11 +90,11 @@ for date in dates:
         all_files = os.listdir(directory)
         filenames = [file for file in all_files if file_id in file]
         if len(filenames) == 0: 
-            printlog(f'NO {file_id} files! Cannot run zscore')
+            printlog(f'NO {file_id} files! Cannot run PCA')
         args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
-        script = 'block_zscore.py'
+        script = 'PCA_only_switch.py'
         printlog(os.path.join(scripts_path, script))
-        job_id = brainsss.sbatch(jobname='switch_zscore',
+        job_id = brainsss.sbatch(jobname='switch_PCA',
                              script=os.path.join(scripts_path, script),
                              modules=modules,
                              args=args,
