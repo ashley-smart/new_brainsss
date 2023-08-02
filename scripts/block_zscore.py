@@ -56,16 +56,17 @@ def main(args):
                 printlog(f'light peaks to rem: {light_peaks_to_rem}')
                 fun.add_to_h5(rem_light_file, 'light peaks brain t', light_peaks_to_rem)
                 printlog('added light peaks to h5')
-                new_data_file = fun.make_empty_h5(rem_light_file, 'data rem light', dims)
-                printlog('made empty dataset')
-                with h5py.File(new_data_file, 'a') as f:  
-                    print('opened empty data file')
+                #new_data_file = fun.make_empty_h5(rem_light_file, 'data rem light', dims)
+                #printlog('made empty dataset')
+                with h5py.File(rem_light_file, 'a') as f:  
+                    print('opened data file')
                     mask = np.zeros((1, 1, 1, dims[-1]), bool) # [1, 1, 1, dims[-1]]
                     mask[:, :, :, light_peaks_to_rem] = True
                     #if mask is true then replace withzeros otherwise replace with data
                     f['data rem light'] = np.where(mask,
                                                 0,
                                                 data) 
+                    printlog('mask made and stored in h5')
             data_file = rem_light_file
             key = 'data rem light'
             save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_switch_zscore_rem_light.h5')
