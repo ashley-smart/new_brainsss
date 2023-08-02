@@ -23,12 +23,11 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = ['20230405__queue__', '20230330__queue__' ] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
-dates = ['20230504'] #these seem to be partially loaded '20230405__queue__', '20230330__queue__', need to figure out transfer and redo
+dates = ['20230428', '20230616'] 
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
-    #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
-
+    
 
     mem = 12
     high_pass_mem = 6

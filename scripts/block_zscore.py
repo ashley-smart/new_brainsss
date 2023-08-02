@@ -63,10 +63,13 @@ def main(args):
                     mask = np.zeros((1, 1, 1, dims[-1]), bool) # [1, 1, 1, dims[-1]]
                     mask[:, :, :, light_peaks_to_rem] = True
                     #if mask is true then replace withzeros otherwise replace with data
-                    f['data rem light'] = np.where(mask,
-                                                0,
-                                                data) 
-                    printlog('mask made and stored in h5')
+                    if 'data rem light' in f.keys():
+                        printlog('data rem light already in keys so skipping adding it')
+                    else:
+                        f['data rem light'] = np.where(mask,
+                                                    0,
+                                                    data) 
+                        printlog('mask made and stored in h5')
             data_file = rem_light_file
             key = 'data rem light'
             save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_switch_zscore_rem_light.h5')

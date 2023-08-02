@@ -18,6 +18,7 @@ from xml.etree import ElementTree as ET
 import pickle
 import psutil
 import math
+import functions as fun
 
 #sys.path.append(os.path.split(os.path.dirname(__file__))[0])
 
@@ -37,8 +38,11 @@ def main(args):
         file_to_run_PCA = "MOCO_ch2_highpass.h5"
         save_name = "PCA_HP.h5" #change this if run zscore to keep track
     else:
-        file_to_run_PCA = "MOCO_ch2_highpass_zscore.h5"
-        key_to_run_PCA = 'zscore'
+        # file_to_run_PCA = "MOCO_ch2_highpass_zscore.h5"
+        # key_to_run_PCA = 'zscore'
+        # save_name = "PCA_zscore.h5"
+        file_id_to_run_PCA = "zscore_rem_light.h5"
+        keys_to_run_PCA = ['20 zscore', '40 zscore', 'dark zscore']
         save_name = "PCA_zscore.h5"
     
 
@@ -51,12 +55,9 @@ def main(args):
             print(f'found fly! running on {file}')
             fly_name = file
             fly_directory = os.path.join(directory, fly_name)
-            # save_plots = '/oak/stanford/groups/trc/data/Ashley2/imports/' + str(date) + "_PLOTS/" + str(fly_name)
-            # if not os.path.exists(save_plots):  #I'm getting a permission denied error in sherlock. Not sure why. maybe weird permission issues?
-            #     os.makedirs(save_plots)
+            
 
-            #check for high pass filter data (or later zscore)
-
+            #check for high pass filter data (or zscore)
             fly_path = os.path.join(fly_directory, file_to_run_PCA)
         
             with h5py.File(fly_path, 'r') as hf:
