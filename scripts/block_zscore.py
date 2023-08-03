@@ -35,6 +35,7 @@ def main(args):
     rem_light = True #to remove light flash times from the zscore data (will resave as new h5 file)
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     light_buffer = 200 #ms needed away from light peak to allow brain volume to not be marked as light
+    redo_rem_light = True # if true will redo remove light and readd it to peaks
     
     stepsize = 25 ##this is set so memory doesn't get overwhelmed. lower if getting oom errors
     exp_types = ['20', '40','dark'] #must be this format ['20', '40', dark] #skip dark if don't want it
@@ -63,8 +64,14 @@ def main(args):
                     mask = np.zeros((1, 1, 1, dims[-1]), bool) # [1, 1, 1, dims[-1]]
                     mask[:, :, :, light_peaks_to_rem] = True
                     #if mask is true then replace withzeros otherwise replace with data
-                    if 'data rem light' in f.keys():
+                    if 'data rem light' in f.keys() and redo_rem_light == False:
                         printlog('data rem light already in keys so skipping adding it')
+                    elif 'data rem light' in f.keys() and redo_rem_light == True:
+                        del f['data rem light']
+                        f['data rem light'] = np.where(mask,
+                                                    0,
+                                                    data) 
+                        printlog('prev mask removed, new mask made and stored in h5')
                     else:
                         f['data rem light'] = np.where(mask,
                                                     0,
