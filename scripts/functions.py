@@ -33,11 +33,11 @@ def run_PCA (h5file, n_components, key = 'data'):
     t_batch = 200 #number of timepoints to run (this used to be 200, but I'm dropping to try to not get small batch errors?)
     minimum = 100
     with h5py.File(h5file, 'r') as hf:  
-        data = hf[key]  
+        nan_data = hf[key]  ##this data has nans probbaly
         dims = np.shape(data) #x,y,z,t
     #     ##remove first 3 z slices
     #     moco_data = moco_data[:,:,3:,:] #to get rid of first 3 z slices
-    
+        data = np.nan_to_num(nan_data)
 
         #run through batches of t so it can load in memory
         windows = np.arange(0,dims[-1], t_batch)
