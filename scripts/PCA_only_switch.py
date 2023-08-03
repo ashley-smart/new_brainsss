@@ -146,5 +146,5 @@ def main(args):
 
 
 if __name__=='__main__':
-  main()
+  main(json.loads(sys.argv[1]))
             
