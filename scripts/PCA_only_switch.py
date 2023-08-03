@@ -95,6 +95,8 @@ def main(args):
                     else:
                         ## run PCA
                         loadings, reshaped_components = fun.run_PCA(load_file, 100, key)
+                        loadings_key = 'scores ' + str(key)
+                        components_key = 'components' + str(key)
                         printlog(f"PCA COMPLETED FOR {key}")
                         #save PCA info
                         with h5py.File(save_file, 'w') as f:
