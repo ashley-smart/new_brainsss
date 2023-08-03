@@ -34,7 +34,7 @@ def run_PCA (h5file, n_components, key = 'data'):
     minimum = 100
     with h5py.File(h5file, 'r') as hf:  
         nan_data = hf[key]  ##this data has nans probbaly
-        dims = np.shape(data) #x,y,z,t
+        dims = np.shape(nan_data) #x,y,z,t
     #     ##remove first 3 z slices
     #     moco_data = moco_data[:,:,3:,:] #to get rid of first 3 z slices
         data = np.nan_to_num(nan_data)
