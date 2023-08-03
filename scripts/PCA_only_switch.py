@@ -19,6 +19,8 @@ import pickle
 import psutil
 import math
 import functions as fun
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+import brainsss
 
 #sys.path.append(os.path.split(os.path.dirname(__file__))[0])
 
@@ -45,7 +47,7 @@ def main(args):
         # file_to_run_PCA = "MOCO_ch2_highpass_zscore.h5"
         # key_to_run_PCA = 'zscore'
         # save_name = "PCA_zscore.h5"
-        file_id = "zscore_rem_light.h5"
+        file_id = "zscore_rem_light.h5"  #put in PCA_main_switch.py 
         keys_to_run_PCA = ['20 zscore', '40 zscore', 'dark zscore']
         
     
@@ -83,21 +85,21 @@ def main(args):
                             else:
                                 printlog('PCA file exists but no loadings key => runing again')
                                 ## run PCA
-                                loadings, reshaped_components = run_PCA(load_file, 100, key)
+                                loadings, reshaped_components = fun.run_PCA(load_file, 100, key)
                                 printlog(f"PCA COMPLETED FOR {key}")
                                 #save PCA info
                                 with h5py.File(save_file, 'w') as f:
-                                    add_to_h5(save_file, loadings_key, loadings)
-                                    add_to_h5(save_file, components_key, reshaped_components)
+                                    fun.add_to_h5(save_file, loadings_key, loadings)
+                                    fun.add_to_h5(save_file, components_key, reshaped_components)
                                     printlog(f'SAVED PCA loadings and components')
                     else:
                         ## run PCA
-                        loadings, reshaped_components = run_PCA(load_file, 100, key)
+                        loadings, reshaped_components = fun.run_PCA(load_file, 100, key)
                         printlog(f"PCA COMPLETED FOR {key}")
                         #save PCA info
                         with h5py.File(save_file, 'w') as f:
-                            add_to_h5(save_file, loadings_key, loadings)
-                            add_to_h5(save_file, components_key, reshaped_components)
+                            fun.add_to_h5(save_file, loadings_key, loadings)
+                            fun.add_to_h5(save_file, components_key, reshaped_components)
                             printlog(f'SAVED PCA loadings and components')
 
 
