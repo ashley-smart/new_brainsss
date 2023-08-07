@@ -151,7 +151,7 @@ def get_switch_start_stop_indices(dataset_path, exp_length1 = 20, exp_length2 = 
     20 and 40 are returned in seperate arrays.
     inclusive (start = first index and stop = last index)"""
     switch_points = find_switch_points(dataset_path)
-    light_peaks = get_light_peaks (dataset_path)
+    light_peaks = get_light_peaks (dataset_path)/1000
     light_times = light_peaks[1:]- light_peaks[0:-1]
     twenty = []
     forty = []
@@ -181,7 +181,7 @@ def get_switch_start_stop_indices(dataset_path, exp_length1 = 20, exp_length2 = 
 
 def find_switch_points(dataset_path):
     """input fly folder containing voltage file, returns indices of the last trial before switch"""
-    light_peaks = get_light_peaks (dataset_path)
+    light_peaks = get_light_peaks (dataset_path) /1000
     light_times = light_peaks[1:]- light_peaks[0:-1]
     light_times_diff = np.rint(abs(light_times[1:] - light_times[0:-1]))
     switch = np.where(light_times_diff > 15)[0]  #switch is the index of the last trial of the current time
@@ -458,7 +458,14 @@ def add_to_h5(Path, key, value):
             f[key] = value
             
             
-            
+def open_light_peaks(savepath):
+    with h5py.File(savepath, 'a') as f:
+        if 'light peaks ms' in f.keys():
+            print('found "light peaks ms" key! returning light peaks')
+            return f['light peaks ms'][()]
+        else: 
+            print(f'Could not find "light peaks ms" key so returning "None"')
+            return None            
 
 
 def get_fly_name_from_path (Path):
@@ -492,6 +499,7 @@ def run_STA (Path, loading):
     returns a list with loading values seperated by light as different trials"""
     bruker_framerate = get_Bruker_framerate(Path)
     light_peaks_adjusted = get_light_peaks(Path)/1000
+
     
     all_trials = []
     for light_index in range(len(light_peaks_adjusted)): #look at each time
