@@ -79,7 +79,7 @@ def main(args):
                         printlog('mask made and stored in h5')
             data_file = rem_light_file
             key = 'data rem light'
-            save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_switch_zscore_rem_light2.h5')
+            save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_switch_zscore_rem_light.h5')
         else:
             data_file = full_load_path
             key = 'high pass filter data'

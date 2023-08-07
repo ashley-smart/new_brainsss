@@ -265,43 +265,168 @@ def load_timestamps(directory, file='functional.xml'):
 
 
 
-def get_light_peaks (Path):
-    """input fly path and get out the light peaks files in seconds"""
-    data_reducer = 100
-    light_data = []
+def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
+    """gets light peaks in terms of brain time index.
+    Note: this may end up being longer than light_peaks_ms because 
+    if the light turns on between two zstacks it records the closer 
+    one or records both if they are both < 100ms from the flash.
+    max dims is the t dims of the brain (sometimes voltage recording extends longer than 2p imaging)"""
+    light_peaks_s = get_light_peaks(fly_path)/1000
+    timestamps = load_timestamps(fly_path)
+    #average_timestamps = np.mean(timestamps, axis = 1)/1000  ##to convert ms to s to match light_peaks
+
+#     light_buffer_ms = 100 #the number of ms that the peak light flash needs to be away from the start or end of zstack to not elimiante the data
+    first_timestamps = []
+    last_timestamps = []
+    for t in timestamps:
+        first_timestamps.append(t[0])
+        last_timestamps.append(t[-1])
+        
+    first_timestamps = np.array(first_timestamps)
+    first_timestamps_s = first_timestamps/1000
+    last_timestamps = np.array(last_timestamps)
+    last_timestamps_s = last_timestamps/1000
+    
+    light_peaks_t = []
+    for light in light_peaks_s:
+        last = np.where(last_timestamps_s >= light)[0][0]
+        first = np.where(first_timestamps_s <= light)[0][-1]
+        ##check to make sure it is within brain time
+        if last <= max_dims:
+            #then sort out which ones to append based on when the light is coming on in relation to brain volume
+            if last == first:
+                light_peaks_t.append(last) #since the are the same then the light is in this zstack
+                
+                #extra
+                light_peaks_t.append(last-1)
+                light_peaks_t.append(last +1)
+                
+            elif last != first: #then the light comes on between two zstacks
+                #determine which one it is closer to.
+                time_start_last = first_timestamps_s[last] #the start of the zstack that happens just after flash
+                time_end_first = last_timestamps_s[first] #the end of the zstack that happens just before the flash
+
+                if time_start_last - light  < light - time_end_first:
+                    #then the flash is closer to the "last" index
+        #             print('closer to second stack')
+        #             print('diff ms = ', (time_start_last - light)*1000)
+                    light_peaks_t.append(last)
+                    
+                    #extra
+                    light_peaks_t.append(last - 1)
+                    light_peaks_t.append(last +1)
+                    
+                     #check if it is very close to the last index too though
+                    if (light - time_end_first)*1000 < light_buffer_ms:
+                        light_peaks_t.append(first) #if it's close then add the other zstack to be removed too
+
+                else:
+                    #light is closet to the "first" index
+        #             print('closer to first stack')
+        #             print('diff ms = ', (light - time_end_first)*1000)
+                    light_peaks_t.append(first)
+            
+                    #extra
+                    light_peaks_t.append(first - 1)
+                    light_peaks_t.append(first +1)
+                    
+                    #check if it is very close to the last index too though
+                    if (time_start_last - light)*1000 < light_buffer_ms:
+                        light_peaks_t.append(last) #if it's close then add the other zstack to be removed too
+    return light_peaks_t
+
+def get_voltage_data(Path):
+    """gets voltage data from voltage file and 
+    returns a list of times and a list of voltage values.
+    
+    args:
+    Path = path to fly (folder that contains brain data and voltage data)
+    data_reducer = default 100, to reduce the number of timepoints 
+    it gets because the resolution is very high when collected
+    
+    returns:
+    voltage data: list of voltage values (every data reducer amount)
+    voltage_time: list of timepoints saved by voltage file"""
+    
+    #1. get voltage file
+    #2. get time column (first column)
+    #3. get data column 
     voltage_path = find_voltage_file(Path)
     with open(voltage_path, 'r') as rawfile:
         reader = csv.reader(rawfile)
         data_single = []
+#         for i, row in enumerate(reader):
+#             if i % data_reducer == 0: #will downsample the data 
+#                 data_single.append(row)
         for i, row in enumerate(reader):
-            if i % data_reducer == 0: #will downsample the data 
-                data_single.append(row)
-        #light_data.append(data_single) #for more than one fly
+            data_single.append(row)
         light_data = data_single    
 
-    light_column = get_diode_column(light_data)
-    #print(np.shape(light_column))
+    light_data_column = get_diode_column(light_data)
+    time_data_column = get_time_column(light_data)
+    return light_data_column, time_data_column
+    
+def get_time_column(raw_light_data):
+    """light data should be single fly and have the header be the first row"""
+    header = raw_light_data[0]
+    diode_column = []
+    for i in range(len(header)):
+        if 'Time(ms)' in header[i]: 
+            time_column = i
+#         else:
+#             print(f'could not find "Time(ms)" in header{header}')
+    reshape_light_data = np.transpose(raw_light_data[1:])
+    column = reshape_light_data[:][time_column] #don't want header anymore
+    column = [float(i) for i in column] #for some reason it was saved as string before
+    return column
+
+
+def get_light_peaks (Path): #, data_reducer = 100):
+    
+    """input fly path and get out the light peaks files in seconds"""
+#     data_reducer = 100
+#     light_data = []
+#     voltage_path = find_voltage_file(Path)
+#     with open(voltage_path, 'r') as rawfile:
+#         reader = csv.reader(rawfile)
+#         data_single = []
+#         for i, row in enumerate(reader):
+#             if i % data_reducer == 0: #will downsample the data 
+#                 data_single.append(row)
+#         #light_data.append(data_single) #for more than one fly
+#         light_data = data_single    
+
+    voltage_multiplier = 0.9991021996109531
+    light_data_column, time_data = get_voltage_data(Path)
 
     # find peaks
-    light_median = np.median(light_column)
-    early_light_max = max(light_column[0:2000])
-    light_peaks, properties = scipy.signal.find_peaks(light_column, height = early_light_max +.001, prominence = .1, distance = 10)
+    light_median = np.median(light_data_column)
+    early_light_max = max(light_data_column[0:2000])
+    light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max +.001, prominence = .1, distance = 10)
     #there is a condition that requires this, but I can't remember exactly what the data looked like
     if len(light_peaks) == 0:
         print("attempting new early_light_max, because no light peaks")
-        early_light_max = max(light_column[0:100])
-        light_peaks, properties = scipy.signal.find_peaks(light_column, height = early_light_max +.001, prominence = .1, distance = 10)
+        early_light_max = max(light_data_column[0:100])
+        light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max +.001, prominence = .1, distance = 10)
         
         if len(light_peaks) == 0:
             print("There are still no light peaks")
             print("skipping this fly--no light peaks")
             
     
-    ## convert to seconds
-    voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
-    light_peaks_adjusted = light_peaks/voltage_framerate
+#     ## convert to seconds
+#     voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
+#     light_peaks_adjusted = light_peaks/voltage_framerate
     
-    return light_peaks_adjusted
+    ##use time to give voltage in time
+    ##light_peaks should be the indices of peaks => I can check the indices in time column
+    light_peaks = np.array(light_peaks)
+    print(np.shape(light_peaks))
+    time_data = np.array(time_data)
+    light_ms = time_data[light_peaks]*voltage_multiplier
+    
+    return light_ms
+
 
 
 def find_moco_file(Path):
@@ -415,58 +540,5 @@ def make_empty_h5(savefile, key, dims):
         dset = f.create_dataset(key, dims, dtype='float32', chunks=True)
     return savefile
     
-def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
-    """gets light peaks in terms of brain time index.
-    Note: this may end up being longer than light_peaks_ms because 
-    if the light turns on between two zstacks it records the closer 
-    one or records both if they are both < 100ms from the flash.
-    max dims is the t dims of the brain (sometimes voltage recording extends longer than 2p imaging)"""
-    light_peaks_s = get_light_peaks(fly_path)
-    timestamps = load_timestamps(fly_path)
-    average_timestamps = np.mean(timestamps, axis = 1)/1000  ##to convert ms to s to match light_peaks
 
-#     light_buffer_ms = 100 #the number of ms that the peak light flash needs to be away from the start or end of zstack to not elimiante the data
-    first_timestamps = []
-    last_timestamps = []
-    for t in timestamps:
-        first_timestamps.append(t[0])
-        last_timestamps.append(t[-1])
-        
-    first_timestamps = np.array(first_timestamps)
-    first_timestamps_s = first_timestamps/1000
-    last_timestamps = np.array(last_timestamps)
-    last_timestamps_s = last_timestamps/1000
-    
-    light_peaks_t = []
-    for light in light_peaks_s:
-        last = np.where(last_timestamps_s >= light)[0][0]
-        first = np.where(first_timestamps_s <= light)[0][-1]
-        ##check to make sure it is within brain time
-        if last <= max_dims:
-            #then sort out which ones to append based on when the light is coming on in relation to brain volume
-            if last == first:
-                light_peaks_t.append(last) #since the are the same then the light is in this zstack
-            elif last != first: #then the light comes on between two zstacks
-                #determine which one it is closer to.
-                time_start_last = first_timestamps_s[last] #the start of the zstack that happens just after flash
-                time_end_first = last_timestamps_s[first] #the end of the zstack that happens just before the flash
-
-                if time_start_last - light  < light - time_end_first:
-                    #then the flash is closer to the "last" index
-        #             print('closer to second stack')
-        #             print('diff ms = ', (time_start_last - light)*1000)
-                    light_peaks_t.append(last)
-                     #check if it is very close to the last index too though
-                    if (light - time_end_first)*1000 < light_buffer_ms:
-                        light_peaks_t.append(first) #if it's close then add the other zstack to be removed too
-
-                else:
-                    #light is closet to the "first" index
-        #             print('closer to first stack')
-        #             print('diff ms = ', (light - time_end_first)*1000)
-                    light_peaks_t.append(first)
-                    #check if it is very close to the last index too though
-                    if (time_start_last - light)*1000 < light_buffer_ms:
-                        light_peaks_t.append(last) #if it's close then add the other zstack to be removed too
-    return light_peaks_t
 
