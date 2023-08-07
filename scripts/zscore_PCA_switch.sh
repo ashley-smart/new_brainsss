@@ -1,10 +1,10 @@
 #!/bin/bash
-#SBATCH --job-name=PCA_switch
+#SBATCH --job-name=remlight_z_P
 #SBATCH --time=7-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
 ## comment out #SBATCH --mem 260G
-#SBATCH --output=./logs/PCA_mainlog.out
+#SBATCH --output=./logs/remlight_mainlog.out
 #SBATCH --open-mode=append
 #SBATCH --cpus-per-task=1
 #SBATCH --mail-type=ALL
