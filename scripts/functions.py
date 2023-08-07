@@ -126,7 +126,7 @@ def get_times_switch_blocks (dataset_path, exp_length1 = 20, exp_length2 = 40):
     starts and ends seperate arrays returned for 20 and 40 (or specified expt times)
     i.e. 20s_times = [[30.9 400.2][600.7  987.6]]  [[start1 stop 1] [start 2 stop 2]] """
     
-    light_peaks = get_light_peaks(dataset_path)
+    light_peaks = get_light_peaks(dataset_path)/1000
     twenty, forty = get_switch_start_stop_indices(dataset_path, exp_length1, exp_length2)
     
     light_peaks_twenty_times = []
@@ -383,7 +383,7 @@ def get_time_column(raw_light_data):
 
 def get_light_peaks (Path): #, data_reducer = 100):
     
-    """input fly path and get out the light peaks files in seconds"""
+    """input fly path and get out the light peaks files in milliseconds"""
 #     data_reducer = 100
 #     light_data = []
 #     voltage_path = find_voltage_file(Path)
@@ -491,7 +491,7 @@ def run_STA (Path, loading):
     """path to folder, this will generate xml file. will also calculate light peaks adjusted. This works for single loading.
     returns a list with loading values seperated by light as different trials"""
     bruker_framerate = get_Bruker_framerate(Path)
-    light_peaks_adjusted = get_light_peaks(Path)
+    light_peaks_adjusted = get_light_peaks(Path)/1000
     
     all_trials = []
     for light_index in range(len(light_peaks_adjusted)): #look at each time
