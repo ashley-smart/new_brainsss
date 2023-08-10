@@ -36,6 +36,7 @@ def main(args):
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     light_buffer = 200 #ms needed away from light peak to allow brain volume to not be marked as light
     redo_rem_light = True # if true will redo remove light and readd it to peaks
+    redo_light_peaks = True
     
     stepsize = 25 ##this is set so memory doesn't get overwhelmed. lower if getting oom errors
     exp_types = ['20', '40','dark'] #must be this format ['20', '40', dark] #skip dark if don't want it
@@ -53,6 +54,12 @@ def main(args):
                 dims = np.shape(data)
                 max_t = dims[-1]
                 
+                if redo_light_peaks == True:
+                    ##this function is the only one that doesn't look for light peaks and deletes 
+                    # previous version and saves it so if want to redo must run this function first
+                    ##otherwise the other functions will look for light peaks in the h5 file before generating it if it has been made before
+                    light_peaks_ms = fun.get_light_peaks(directory)  
+                    
                 light_peaks_to_rem = fun.get_light_peaks_brain_time(directory, max_t, light_buffer)
                 printlog(f'light peaks to rem: {light_peaks_to_rem}')
                 fun.add_to_h5(rem_light_file, 'light peaks brain t', light_peaks_to_rem)

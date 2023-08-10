@@ -27,13 +27,14 @@ import brainsss
             
             
 def run_PCA (h5file, n_components, key = 'data'):
-    """input path to h5 file. will default to do non-zscore data, but can specify another key (i.e. 'zscore'). 
+    """input path to h5 file. will default to do non-zscore data, but can specify another key (i.e. 'zscore').
+    Data needs to be in [x,y,z,t] format 
     Returns loadings and components reshaped back to n_components, x, y, z"""
     
     t_batch = 200 #number of timepoints to run (this used to be 200, but I'm dropping to try to not get small batch errors?)
     minimum = 100
     with h5py.File(h5file, 'r') as hf:  
-        nan_data = hf[key]  ##this data has nans probbaly
+        nan_data = hf[key]  ##this data has nans probably
         dims = np.shape(nan_data) #x,y,z,t
     #     ##remove first 3 z slices
     #     moco_data = moco_data[:,:,3:,:] #to get rid of first 3 z slices
@@ -126,7 +127,13 @@ def get_times_switch_blocks (dataset_path, exp_length1 = 20, exp_length2 = 40):
     starts and ends seperate arrays returned for 20 and 40 (or specified expt times)
     i.e. 20s_times = [[30.9 400.2][600.7  987.6]]  [[start1 stop 1] [start 2 stop 2]] """
     
-    light_peaks = get_light_peaks(dataset_path)/1000
+    
+    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
+    opened_peaks = open_light_peaks(light_peaks_path)
+    if opened_peaks is not None:
+        light_peaks = opened_peaks/1000
+    else:
+        light_peaks = get_light_peaks(dataset_path)/1000
     twenty, forty = get_switch_start_stop_indices(dataset_path, exp_length1, exp_length2)
     
     light_peaks_twenty_times = []
@@ -151,7 +158,13 @@ def get_switch_start_stop_indices(dataset_path, exp_length1 = 20, exp_length2 = 
     20 and 40 are returned in seperate arrays.
     inclusive (start = first index and stop = last index)"""
     switch_points = find_switch_points(dataset_path)
-    light_peaks = get_light_peaks (dataset_path)/1000
+    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
+    opened_peaks = open_light_peaks(light_peaks_path)
+    if opened_peaks is not None:
+        light_peaks = opened_peaks/1000
+    else:
+        light_peaks = get_light_peaks(dataset_path)/1000
+    
     light_times = light_peaks[1:]- light_peaks[0:-1]
     twenty = []
     forty = []
@@ -181,7 +194,13 @@ def get_switch_start_stop_indices(dataset_path, exp_length1 = 20, exp_length2 = 
 
 def find_switch_points(dataset_path):
     """input fly folder containing voltage file, returns indices of the last trial before switch"""
-    light_peaks = get_light_peaks (dataset_path) /1000
+    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
+    opened_peaks = open_light_peaks(light_peaks_path)
+    if opened_peaks is not None:
+        light_peaks = opened_peaks/1000
+    else:
+        light_peaks = get_light_peaks(dataset_path)/1000
+    
     light_times = light_peaks[1:]- light_peaks[0:-1]
     light_times_diff = np.rint(abs(light_times[1:] - light_times[0:-1]))
     switch = np.where(light_times_diff > 15)[0]  #switch is the index of the last trial of the current time
@@ -271,7 +290,14 @@ def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
     if the light turns on between two zstacks it records the closer 
     one or records both if they are both < 100ms from the flash.
     max dims is the t dims of the brain (sometimes voltage recording extends longer than 2p imaging)"""
-    light_peaks_s = get_light_peaks(fly_path)/1000
+    
+    light_peaks_path = os.path.join(fly_path, 'light_peaks.h5')
+    opened_peaks = open_light_peaks(light_peaks_path)
+    if opened_peaks is not None:
+        light_peaks_s = opened_peaks/1000
+    else:
+        light_peaks_s = get_light_peaks(fly_path)/1000
+    
     timestamps = load_timestamps(fly_path)
     #average_timestamps = np.mean(timestamps, axis = 1)/1000  ##to convert ms to s to match light_peaks
 
@@ -395,8 +421,8 @@ def get_light_peaks (Path): #, data_reducer = 100):
 #                 data_single.append(row)
 #         #light_data.append(data_single) #for more than one fly
 #         light_data = data_single    
-
-    voltage_multiplier = 0.9991021996109531
+    voltage_multiplier = 0.9991401258909588  ##this is the average of the more accurate estimations of the last bleedthrough time and corresponding light flash in voltage
+    #voltage_multiplier = 0.9991021996109531  #this was calculated from bleedthrough and voltage difference on bruker 8.7.23
     light_data_column, time_data = get_voltage_data(Path)
 
     # find peaks
@@ -424,10 +450,32 @@ def get_light_peaks (Path): #, data_reducer = 100):
     print(np.shape(light_peaks))
     time_data = np.array(time_data)
     light_ms = time_data[light_peaks]*voltage_multiplier
+
+    #save light peaks
+    light_peaks_path = os.path.join(Path, 'light_peaks.h5')
+    #add_to_h5(light_peaks_path, 'light peaks ms', light_ms)
     
-    return light_ms
+    #get just one peak (will take the last value before the drop)
+    single_light_ms = get_single_light_peaks(light_ms, 5000)
+    add_to_h5(light_peaks_path, 'light peaks ms', light_ms)
+    return single_light_ms
 
 
+
+def get_single_light_peaks(light_peaks, seperator):
+    """takes in array of light peaks and makes sure they are at least seperator distance apart
+    args:
+    light_peaks = array that has the peaks in it (in ms or s but change seperator)
+    seperator = value that two adjacent peaks must be apart in order to be kept. 
+    last number that is far enough apart will be kept"""
+    single_light_peaks = []
+    for i in range(len(light_peaks)-1):
+        current = light_peaks[i]
+        next_time = light_peaks[i+1]
+        if next_time - current > seperator:
+            single_light_peaks.append(current)
+    single_light_peaks = np.array(single_light_peaks)
+    return single_light_peaks
 
 def find_moco_file(Path):
     """path should be fly folder. This returns the path to the moco ch2 h5 file"""
@@ -459,13 +507,17 @@ def add_to_h5(Path, key, value):
             
             
 def open_light_peaks(savepath):
-    with h5py.File(savepath, 'a') as f:
-        if 'light peaks ms' in f.keys():
-            print('found "light peaks ms" key! returning light peaks')
-            return f['light peaks ms'][()]
-        else: 
-            print(f'Could not find "light peaks ms" key so returning "None"')
-            return None            
+    if os.path.exists(savepath):
+        with h5py.File(savepath, 'a') as f:
+            if 'light peaks ms' in f.keys():
+                print('found "light peaks ms" key! returning light peaks')
+                return f['light peaks ms'][()]
+            else: 
+                print(f'Could not find "light peaks ms" key so returning "None"')
+                return None
+    else:
+        print(f'savepath {savepath} does not exist') 
+        return None           
 
 
 def get_fly_name_from_path (Path):
@@ -498,7 +550,12 @@ def run_STA (Path, loading):
     """path to folder, this will generate xml file. will also calculate light peaks adjusted. This works for single loading.
     returns a list with loading values seperated by light as different trials"""
     bruker_framerate = get_Bruker_framerate(Path)
-    light_peaks_adjusted = get_light_peaks(Path)/1000
+    light_peaks_path = os.path.join(Path, 'light_peaks.h5')
+    opened_peaks = open_light_peaks(light_peaks_path)
+    if opened_peaks is not None:
+        light_peaks_adjusted = opened_peaks/1000
+    else:
+        light_peaks_adjusted = get_light_peaks(Path)/1000
 
     
     all_trials = []

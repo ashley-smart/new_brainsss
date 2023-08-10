@@ -70,20 +70,20 @@ def main(args):
             for key in keys_to_run_PCA:
                 if key in load_keys:
                     printlog(f'Found {key} key!')
+                    loadings_key = 'scores ' + str(key)
+                    components_key = 'components ' + str(key)
 
                     #check if PCA has already been run
                     if rerun_PCA == False and save_name in fly_files:
                         #also check that there is something in the PC file
                         with h5py.File(save_file, 'r') as c:
-                            loadings_key = 'scores ' + str(key)
-                            components_key = 'components' + str(key)
                             if loadings_key in c.keys():
-                                printlog('PCA already exists ---> opening loadings and components for STA')
+                                printlog(f'PCA already exists for {key} ---> opening loadings and components for STA')
                                 #open loadings and components
                                 loadings = c[loadings_key][()]
                                 reshaped_components = c[components_key][()]
                             else:
-                                printlog('PCA file exists but no loadings key => runing again')
+                                printlog('PCA file exists but no loadings key => running again')
                                 ## run PCA
                                 loadings, reshaped_components = fun.run_PCA(load_file, 100, key)
                                 printlog(f"PCA COMPLETED FOR {key}")
@@ -91,18 +91,16 @@ def main(args):
                                 with h5py.File(save_file, 'w') as f:
                                     fun.add_to_h5(save_file, loadings_key, loadings)
                                     fun.add_to_h5(save_file, components_key, reshaped_components)
-                                    printlog(f'SAVED PCA loadings and components')
+                                    printlog(f'SAVED PCA loadings and components for {loadings_key}')
                     else:
                         ## run PCA
                         loadings, reshaped_components = fun.run_PCA(load_file, 100, key)
-                        loadings_key = 'scores ' + str(key)
-                        components_key = 'components' + str(key)
                         printlog(f"PCA COMPLETED FOR {key}")
                         #save PCA info
                         with h5py.File(save_file, 'w') as f:
                             fun.add_to_h5(save_file, loadings_key, loadings)
                             fun.add_to_h5(save_file, components_key, reshaped_components)
-                            printlog(f'SAVED PCA loadings and components')
+                            printlog(f'SAVED PCA loadings and components {loadings_key}')
 
 
 
