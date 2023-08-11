@@ -88,19 +88,17 @@ def main(args):
                                 loadings, reshaped_components = fun.run_PCA(load_file, 100, key)
                                 printlog(f"PCA COMPLETED FOR {key}")
                                 #save PCA info
-                                with h5py.File(save_file, 'w') as f:
-                                    fun.add_to_h5(save_file, loadings_key, loadings)
-                                    fun.add_to_h5(save_file, components_key, reshaped_components)
-                                    printlog(f'SAVED PCA loadings and components for {loadings_key}')
+                                fun.add_to_h5(save_file, loadings_key, loadings)
+                                fun.add_to_h5(save_file, components_key, reshaped_components)
+                                printlog(f'SAVED PCA loadings and components for {loadings_key}')
                     else:
                         ## run PCA
                         loadings, reshaped_components = fun.run_PCA(load_file, 100, key)
                         printlog(f"PCA COMPLETED FOR {key}")
                         #save PCA info
-                        with h5py.File(save_file, 'w') as f:
-                            fun.add_to_h5(save_file, loadings_key, loadings)
-                            fun.add_to_h5(save_file, components_key, reshaped_components)
-                            printlog(f'SAVED PCA loadings and components {loadings_key}')
+                        fun.add_to_h5(save_file, loadings_key, loadings)
+                        fun.add_to_h5(save_file, components_key, reshaped_components)
+                        printlog(f'SAVED PCA loadings and components {loadings_key}')
 
 
 
