@@ -1,3 +1,4 @@
+## from vscode
 import os
 import sys
 import numpy as np
@@ -9,8 +10,7 @@ import math
 from xml.etree import ElementTree as ET
 import csv as csv
 from sklearn.decomposition import IncrementalPCA
-sys.path.append(os.path.split(os.path.dirname(__file__))[0])
-import brainsss
+
 
 
 
@@ -95,28 +95,92 @@ def get_brain_t_switch_set(dataset_path, exp_length1 = 20, exp_length2 = 40):
     """returns array of arrays of switch times that correspond to index in t of brains.
     returns seperately 20 and 40s experiemnts
     20s_t_points = [[start1 stop1] [start 2 stop2]]
-    *takes time from average time across all z for one brain slice to get t brain slice"""
+    *takes time from zstack timestamps to find which zstack the light is in"""
     
     light_peaks_twenty_times, light_peaks_forty_times = get_times_switch_blocks (dataset_path, exp_length1, exp_length2)
     timestamps = load_timestamps(dataset_path)
     average_timestamps = np.mean(timestamps, axis = 1)/1000  ##to convert ms to s to match light_peaks
+    
+    first_timestamps = []
+    last_timestamps = []
+    for t in timestamps:
+        first_timestamps.append(t[0])
+        last_timestamps.append(t[-1])
+
+    first_timestamps = np.array(first_timestamps)
+    first_timestamps_s = first_timestamps/1000
+    last_timestamps = np.array(last_timestamps)
+    last_timestamps_s = last_timestamps/1000
     
     twenty_switch_set_t = []
     forty_switch_set_t = []
     for switch_set in light_peaks_twenty_times:
         start_time = switch_set[0]
         end_time = switch_set[1]
-        start_time_index = np.where(average_timestamps < start_time)[0][-1]
-        end_time_index = np.where(average_timestamps < end_time)[0][-1]
-        both = both = (start_time_index, end_time_index)
+        
+        ##find start time based on z-stack times
+        #the last z = 0 timstamp that is less then switch time
+        first_index_start = np.where(first_timestamps_s < start_time)[0][-1]
+        #last z slice (z = 49) that switch time happens before
+        last_index_start = np.where(last_timestamps_s > start_time)[0][0]
+        if first_index_start == last_index_start:
+            start_time_index = first_index_start
+        ##find out if it's in the middle of two stacks
+        elif last_timestamps_s[first_index_start] < start_time < first_timestamps_s[last_index_start]:
+            ##then it's between timestamps, if start time then have switch start at the following zstack
+            start_time_index = last_index_start
+        else:
+            #this shouldn't happen
+            print('odd scenario. not in same z-stack and not between z-stacks')
+            
+        #end time
+        first_index_end = np.where(first_timestamps_s < end_time)[0][-1]
+        last_index_end = np.where(last_timestamps_s > end_time)[0][0]
+        if first_index_end == last_index_end:
+            end_time_index = first_index_end
+        elif last_timestamps_s[first_index_end] < end_time < first_timestamps_s[last_index_end]:
+            #ending index choose the zstack before (miss the bit between, but I'm removing that data anyway)
+            end_time_index = first_index_end
+        else:
+            #this shouldn't happen
+            print('odd scenario. not in same z-stack and not between z-stacks')
+
+        both = (start_time_index, end_time_index)
         twenty_switch_set_t.append(both)
 
     for switch_set in light_peaks_forty_times:
         start_time = switch_set[0]
         end_time = switch_set[1]
-        start_time_index = np.where(average_timestamps < start_time)[0][-1]  #np.where needs 0 index and then want the last element
-        end_time_index = np.where(average_timestamps < end_time)[0][-1]
-        both = both = (start_time_index, end_time_index)
+        
+        ##find start time based on z-stack times
+        #the last z = 0 timstamp that is less then switch time
+        first_index_start = np.where(first_timestamps_s < start_time)[0][-1]
+        #last z slice (z = 49) that switch time happens before
+        last_index_start = np.where(last_timestamps_s > start_time)[0][0]
+        if first_index_start == last_index_start:
+            start_time_index = first_index_start
+        ##find out if it's in the middle of two stacks
+        elif last_timestamps_s[first_index_start] < start_time < first_timestamps_s[last_index_start]:
+            ##then it's between timestamps, if start time then have switch start at the following zstack
+            start_time_index = last_index_start
+        else:
+            #this shouldn't happen
+            print('odd scenario. not in same z-stack and not between z-stacks')
+            
+        #end time
+        first_index_end = np.where(first_timestamps_s < end_time)[0][-1]
+        last_index_end = np.where(last_timestamps_s > end_time)[0][0]
+        if first_index_end == last_index_end:
+            end_time_index = first_index_end
+        elif last_timestamps_s[first_index_end] < end_time < first_timestamps_s[last_index_end]:
+            #ending index choose the zstack before (miss the bit between, but I'm removing that data anyway)
+            #changin this to last index because it's been ending too early
+            end_time_index = last_index_end
+        else:
+            #this shouldn't happen
+            print('odd scenario. not in same z-stack and not between z-stacks')
+
+        both = (start_time_index, end_time_index)
         forty_switch_set_t.append(both)
     twenty_switch_set_t = np.array(twenty_switch_set_t)
     forty_switch_set_t = np.array(forty_switch_set_t)
@@ -132,6 +196,7 @@ def get_times_switch_blocks (dataset_path, exp_length1 = 20, exp_length2 = 40):
     opened_peaks = open_light_peaks(light_peaks_path)
     if opened_peaks is not None:
         light_peaks = opened_peaks/1000
+        print('found light in h5 file')
     else:
         light_peaks = get_light_peaks(dataset_path)/1000
     twenty, forty = get_switch_start_stop_indices(dataset_path, exp_length1, exp_length2)
@@ -169,43 +234,70 @@ def get_switch_start_stop_indices(dataset_path, exp_length1 = 20, exp_length2 = 
     twenty = []
     forty = []
     for i in range(len(switch_points)):
-        switch_index = switch_points[i] #plus 1 to account for 
+        switch_index = switch_points[i] 
         print(switch_index)
         print(light_times[switch_index])
         if i == 0:
             if exp_length1 - 5 < light_times[switch_index] < exp_length1 + 5:
-                t = (0, switch_index)
+                t = (0, switch_index + 1) #the + 1 helps it end and start at the same place
                 twenty.append(t)
             elif exp_length2 - 5 < light_times[switch_index] < exp_length2 + 5:
-                t = (0, switch_index)
+                t = (0, switch_index + 1)
                 forty.append(t)
         else:
-            previous_index = switch_points[i - 1] + 1
+            previous_index = switch_points[i - 1] + 1 
             if exp_length1 - 5 < light_times[switch_index] < exp_length1 + 5:
-                t = (previous_index, switch_index)
+                t = (previous_index, switch_index + 1)
                 twenty.append(t)
             elif exp_length2 - 5 < light_times[switch_index] < exp_length2 + 5:
-                t = (previous_index, switch_index)
+                t = (previous_index, switch_index + 1)
                 forty.append(t)
     twenty = np.array(twenty)
     forty = np.array(forty)
     return twenty, forty
 
 
-def find_switch_points(dataset_path):
-    """input fly folder containing voltage file, returns indices of the last trial before switch"""
+def find_switch_points(dataset_path, difference=15):
+    """takes dataset path and imports light peaks and returns the times there is a switch
+    args:
+    dataset_path = path to fly folder that has voltage file
+    difference = value that it will sort by to see if there is a switch point. 
+    The difference between two intervals should be greater than this number (i.e. 40-20 = 20 >15)
+    returns:
+    indices of the last trial before switch"""
+    
+    #get light peaks
     light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
     opened_peaks = open_light_peaks(light_peaks_path)
+    print(opened_peaks)
     if opened_peaks is not None:
         light_peaks = opened_peaks/1000
     else:
         light_peaks = get_light_peaks(dataset_path)/1000
     
-    light_times = light_peaks[1:]- light_peaks[0:-1]
+    #find times between light flashes
+    light_times = light_peaks[1:]- light_peaks[0:-1] 
+    #check that light peaks is single light peaks 
+    if len(np.where(light_times < difference)[0]):
+        #light_peaks is taking more than one datapoint per peak
+        raise Exception(f'WARNING: these are not single peaks check indices {np.where(light_times<15)[0]}')
+    
+    #find switch points
     light_times_diff = np.rint(abs(light_times[1:] - light_times[0:-1]))
-    switch = np.where(light_times_diff > 15)[0]  #switch is the index of the last trial of the current time
-    switch = np.array(switch)
-    return switch
+    switch_ind = np.where(light_times_diff > 15)[0] 
+    #switch_ind = np.insert(switch_ind, 0,light_times_diff[0]) #This will add 0 but I don't need it
+     
+#     ##switch times in s
+#     switch_times_s = light_peaks[switch_ind]
+    
+#     #block interval values
+#     #skip 0 because it is dark and then subtract 1 to make sure its in the block 
+#     #(the end point is the last point anyway so it should be fine without the -1)
+#     ind_to_get_ints = switch_ind[1:] - 1 
+#     interval_sets = light_times[ind_to_get_ints]
+#     interval_sets_int = [int(i) for i in interval_sets]
+    
+    return switch_ind
 
 ## get light peaks
 ## functions
@@ -361,7 +453,7 @@ def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
                         light_peaks_t.append(last) #if it's close then add the other zstack to be removed too
     return light_peaks_t
 
-def get_voltage_data(Path):
+def get_voltage_data(dataset_path):
     """gets voltage data from voltage file and 
     returns a list of times and a list of voltage values.
     
@@ -377,7 +469,7 @@ def get_voltage_data(Path):
     #1. get voltage file
     #2. get time column (first column)
     #3. get data column 
-    voltage_path = find_voltage_file(Path)
+    voltage_path = find_voltage_file(dataset_path)
     with open(voltage_path, 'r') as rawfile:
         reader = csv.reader(rawfile)
         data_single = []
@@ -407,7 +499,7 @@ def get_time_column(raw_light_data):
     return column
 
 
-def get_light_peaks (Path): #, data_reducer = 100):
+def get_light_peaks (dataset_path): #, data_reducer = 100):
     
     """input fly path and get out the light peaks files in milliseconds"""
 #     data_reducer = 100
@@ -423,7 +515,7 @@ def get_light_peaks (Path): #, data_reducer = 100):
 #         light_data = data_single    
     voltage_multiplier = 0.9991401258909588  ##this is the average of the more accurate estimations of the last bleedthrough time and corresponding light flash in voltage
     #voltage_multiplier = 0.9991021996109531  #this was calculated from bleedthrough and voltage difference on bruker 8.7.23
-    light_data_column, time_data = get_voltage_data(Path)
+    light_data_column, time_data = get_voltage_data(dataset_path)
 
     # find peaks
     light_median = np.median(light_data_column)
@@ -452,12 +544,12 @@ def get_light_peaks (Path): #, data_reducer = 100):
     light_ms = time_data[light_peaks]*voltage_multiplier
 
     #save light peaks
-    light_peaks_path = os.path.join(Path, 'light_peaks.h5')
+    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
     #add_to_h5(light_peaks_path, 'light peaks ms', light_ms)
     
     #get just one peak (will take the last value before the drop)
-    single_light_ms = get_single_light_peaks(light_ms, 5000)
-    add_to_h5(light_peaks_path, 'light peaks ms', light_ms)
+    single_light_ms = get_single_light_peaks(light_ms, 10000)
+    add_to_h5(light_peaks_path, 'light peaks ms', single_light_ms)
     return single_light_ms
 
 
@@ -468,36 +560,41 @@ def get_single_light_peaks(light_peaks, seperator):
     light_peaks = array that has the peaks in it (in ms or s but change seperator)
     seperator = value that two adjacent peaks must be apart in order to be kept. 
     last number that is far enough apart will be kept"""
-    single_light_peaks = []
-    for i in range(len(light_peaks)-1):
-        current = light_peaks[i]
-        next_time = light_peaks[i+1]
-        if next_time - current > seperator:
-            single_light_peaks.append(current)
-    single_light_peaks = np.array(single_light_peaks)
+    diff = light_peaks[1:] - light_peaks[0:-1]
+    single_light_peak_indices = np.where(diff>seperator)[0]
+    single_light_peaks = light_peaks[single_light_peak_indices]
     return single_light_peaks
+#     single_light_peaks = []
+#     for i in range(len(light_peaks)-1):
+#         current = light_peaks[i]
+#         next_time = light_peaks[i+1]
+#         if next_time - current > seperator:
+#             single_light_peaks.append(current)
+#     single_light_peaks = np.array(single_light_peaks)
+#     return single_light_peaks
 
-def find_moco_file(Path):
+
+def find_moco_file(dataset_path):
     """path should be fly folder. This returns the path to the moco ch2 h5 file"""
-    for name in os.listdir(Path):
+    for name in os.listdir(dataset_path):
         if 'MOCO_ch2' in name:
             moco_file = name
-            moco_path = os.path.join(Path, moco_file)
+            moco_path = os.path.join(dataset_path, moco_file)
     return moco_path
 
-def find_voltage_file(Path):
+def find_voltage_file(dataset_path):
     """path should be fly folder. Returns path to specific voltage csv"""
-    for name in os.listdir(Path):
+    for name in os.listdir(dataset_path):
         if 'Voltage' in name and '.csv' in name:
             voltage_file = name
-            voltage_path = os.path.join(Path, voltage_file)
+            voltage_path = os.path.join(dataset_path, voltage_file)
     return voltage_path
 
 
-def add_to_h5(Path, key, value):
+def add_to_h5(dataset_path, key, value):
     """adds new key value to h5 file and checks if it already exists
     does overwrite"""
-    with h5py.File(Path, 'a') as f:
+    with h5py.File(dataset_path, 'a') as f:
         if key not in f.keys(): #check if key already in file
             f[key] = value
         else:
@@ -516,22 +613,22 @@ def open_light_peaks(savepath):
                 print(f'Could not find "light peaks ms" key so returning "None"')
                 return None
     else:
-        print(f'savepath {savepath} does not exist') 
+        print(f'light peaks path {savepath} does not exist') 
         return None           
 
 
-def get_fly_name_from_path (Path):
+def get_fly_name_from_path (dataset_path):
     """will get last folder in path (assumes fly name is the last folder)"""
-    fly_name = Path.split('/')[-1]
+    fly_name = dataset_path.split('/')[-1]
     return fly_name
 
-def get_Bruker_framerate(Path, z_number = 49):
+def get_Bruker_framerate(dataset_path, z_number = 49):
     """from path will return framerate using xml file to calculate. 
     z can be specified, but its just used to get to midpoint of stack. 
     If the stack is less than the specified z this will fail. in future have it revert to z = 1"""
-    fly_name = get_fly_name_from_path(Path)
+    fly_name = get_fly_name_from_path(dataset_path)
     xml_file = str(fly_name) + '.xml'
-    timestamps = load_timestamps(Path, xml_file)
+    timestamps = load_timestamps(dataset_path, xml_file)
     
     z = int(z_number/2) #to get roughly middle z
 
@@ -546,16 +643,16 @@ def get_Bruker_framerate(Path, z_number = 49):
     
     return bruker_framerate
     
-def run_STA (Path, loading):
+def run_STA (dataset_path, loading):
     """path to folder, this will generate xml file. will also calculate light peaks adjusted. This works for single loading.
     returns a list with loading values seperated by light as different trials"""
-    bruker_framerate = get_Bruker_framerate(Path)
-    light_peaks_path = os.path.join(Path, 'light_peaks.h5')
+    bruker_framerate = get_Bruker_framerate(dataset_path)
+    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
     opened_peaks = open_light_peaks(light_peaks_path)
     if opened_peaks is not None:
         light_peaks_adjusted = opened_peaks/1000
     else:
-        light_peaks_adjusted = get_light_peaks(Path)/1000
+        light_peaks_adjusted = get_light_peaks(dataset_path)/1000
 
     
     all_trials = []
