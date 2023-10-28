@@ -28,7 +28,7 @@ import textwrap
 import gc
 
 
-sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+sys.path.append(os.path.split(os.path.split(os.path.dirname(__file__))[0])[0])
 print(sys.path)
 import brainsss
 
