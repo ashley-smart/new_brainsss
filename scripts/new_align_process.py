@@ -164,7 +164,7 @@ for date in dates:
                                 script=os.path.join(scripts_path, script),
                                 modules=modules,
                                 args=args,
-                                logfile=logfile, time=3, mem=12, nice=nice, nodes=nodes( #), global_resources=True)
+                                logfile=logfile, time=3, mem=12, nice=nice, nodes=nodes) #), global_resources=True)
             job_ids.append(job_id)
             brainsss.wait_for_job(job_id, logfile, com_path)
 
