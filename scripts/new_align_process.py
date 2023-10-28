@@ -1,6 +1,5 @@
 """ ## this is the code that will run scripts to take an individual fly and run scripts to 
 1) align individual fly functional channel to anatomical channel
-2) align anatomical to template 
 use: "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"
 
 
@@ -28,7 +27,8 @@ import textwrap
 import gc
 
 
-sys.path.append(os.path.split(os.path.split(os.path.dirname(__file__))[0])[0])
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+sys.path.append('/home/users/asmart/projects/new_brainsss/')
 print(sys.path)
 import brainsss
 
