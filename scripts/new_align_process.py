@@ -28,7 +28,9 @@ import gc
 
 
 sys.path.append(os.path.split(os.path.dirname(__file__))[0])
-sys.path.append('/home/users/asmart/projects/new_brainsss/')
+sys.path.append("/home/users/asmart/projects/new_brainsss/")
+sys.path.append("/home/users/asmart/projects/new_brainsss/brainsss")
+
 print(sys.path)
 import brainsss
 
