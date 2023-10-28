@@ -10,6 +10,8 @@ import h5py
 sys.path.append(os.path.split(os.path.dirname(__file__))[0])
 import brainsss
 
+
+
 def main(args):
 
     logfile = args['logfile']
@@ -22,23 +24,18 @@ def main(args):
     # Check if files is just a single file path string
     if type(files) is str:
         files = [files]
-        printlog(files)
 
     
 
     for file in files:
-        # try:
-
+        try:
             ### make mean ###
-        printlog(f'current file attempting: {file}')
-        full_path = os.path.join(directory, file)
-        if full_path.endswith('stitched.nii') and 'mean' not in full_path:
-            printlog(f'found potental file {file}')
-            brain = np.asarray(nib.load(full_path).get_data(), dtype='uint16')
-        ##this condition doesn't happen for my flies. Uncomment if I want average from moco
-        # elif full_path.endswith('.h5'):
-        #     with h5py.File(full_path, 'r') as hf:
-        #         brain = np.asarray(hf['data'][:], dtype='uint16')
+            full_path = os.path.join(directory, file)
+            if full_path.endswith('.nii'):
+                brain = np.asarray(nib.load(full_path).get_data(), dtype='uint16')
+            elif full_path.endswith('.h5'):
+                with h5py.File(full_path, 'r') as hf:
+                    brain = np.asarray(hf['data'][:], dtype='uint16')
 
             if meanbrain_n_frames is not None:
                 # average over first meanbrain_n_frames frames
@@ -59,9 +56,9 @@ def main(args):
             printlog(F"meanbrn | COMPLETED | {fly_print} | {func_print} | {file} | {brain.shape} ===> {meanbrain.shape}")
             print(brain.shape[-1]) ### IMPORTANT: for communication to main
             brain = None
-        # except FileNotFoundError:
-        #     printlog(F"Not found (skipping){file:.>{width-20}}")
-        #     #printlog(f'{file} not found.')
+        except FileNotFoundError:
+            printlog(F"Not found (skipping){file:.>{width-20}}")
+            #printlog(f'{file} not found.')
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))

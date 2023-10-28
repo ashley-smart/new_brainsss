@@ -1,3 +1,7 @@
+##this file will run other scripts 
+#align_anat.py
+
+
 """align anatomical brain to functional brain and warp to brain template---based off of Luke's preprocess code. 
 https://github.com/ClandininLab/brainsss/blob/main/scripts/preprocess.py
 
@@ -7,14 +11,16 @@ His instructions:
 https://github.com/ClandininLab/brainsss/blob/main/scripts/preprocess.py
 starting at line 507
 can run using preprocess and the --f2a flag
-2) align anat to whatever template you are using (the final space for your data). I use "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"
+2) align anat to whatever template you are using (the final space for your data). I use 
+"/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"
 (brainsss function anat2anat), see 
 
 https://github.com/ClandininLab/brainsss/blob/main/scripts/preprocess.py
 starting at line 582
 can run using preprocess and the --a2a flag
 
-3) use these two transforms to apply to whatever neural data you want to warp. You can either warp in single maps you calculated in the original space (like a correlation map), or the entirety of your functional recording. For the former, the code will look something like
+3) use these two transforms to apply to whatever neural data you want to warp. You can either warp in single maps you calculated in the original space 
+(like a correlation map), or the entirety of your functional recording. For the former, the code will look something like
 https://github.com/ClandininLab/brainsss/blob/main/brainsss/brain_utils.py
 check out warp_STA_brain function.
 
@@ -37,7 +43,13 @@ import argparse
 import nibabel as nib
 
 def main(args):
-    
+    ##align func to anat for an individual fly
+
+    ##args
+    fly_dirs = #folder where all the flies are
+    moving_path = #nifty file for red functional channel (mean)
+    fixed_path = #nfty file for anatomy red channel (mean) --I think from anatomy scan 
+    fly_directory = #folder for individual fly
 
     modules = 'gcc/6.3.0 python/3.6 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz py-scikit-learn/0.19.1_py36 antspy/0.2.2'
 
@@ -129,3 +141,81 @@ def main(args):
                                 args=args,
                                 logfile=logfile, time=8, mem=4, nice=nice, nodes=nodes) # 2 to 1
         brainsss.wait_for_job(job_id, logfile, com_path)
+
+
+
+#################
+### anat2mean ###
+#################
+#res_anat = (1.3,1.3,1.3) # new anat res <------------------ this is set !!!!!
+res_anat = (0.653, 0.653, 1)
+res_meanbrain = (2,2,2)
+
+for fly in fly_dirs:
+    fly_directory = os.path.join(dataset_path, fly)
+
+    if loco_dataset:
+        moving_path = os.path.join(fly_directory, 'anat_0', 'moco', 'anat_red_clean.nii')
+    else:
+        moving_path = os.path.join(fly_directory, 'anat_0', 'moco', 'anatomy_channel_1_moc_mean_clean.nii')
+    moving_fly = 'anat'
+    moving_resolution = res_anat
+
+    # for gcamp6f with actual myr-tdtom
+    fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"#luke.nii"
+    fixed_fly = 'meanbrain'
+
+    # for gcamp8s with non-myr-tdtom
+    #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/20220421_make_nonmyr_meanbrain/non_myr_2_fdaatlas_40_8.nii"
+    #fixed_fly = 'non_myr_mean'
+
+    fixed_resolution = res_meanbrain
+
+    save_directory = os.path.join(fly_directory, 'warp')
+    if not os.path.exists(save_directory):
+        os.mkdir(save_directory)
+
+    type_of_transform = 'SyN'
+    save_warp_params = True
+    flip_X = False
+    flip_Z = False
+
+    low_res = False
+    very_low_res = False
+
+    iso_2um_fixed = False
+    iso_2um_moving = True
+
+    grad_step = 0.2
+    flow_sigma = 3
+    total_sigma = 0
+    syn_sampling = 32
+
+    args = {'logfile': logfile,
+            'save_directory': save_directory,
+            'fixed_path': fixed_path,
+            'moving_path': moving_path,
+            'fixed_fly': fixed_fly,
+            'moving_fly': moving_fly,
+            'type_of_transform': type_of_transform,
+            'flip_X': flip_X,
+            'flip_Z': flip_Z,
+            'moving_resolution': moving_resolution,
+            'fixed_resolution': fixed_resolution,
+            'save_warp_params': save_warp_params,
+            'low_res': low_res,
+            'very_low_res': very_low_res,
+            'iso_2um_fixed': iso_2um_fixed,
+            'iso_2um_moving': iso_2um_moving,
+            'grad_step': grad_step,
+            'flow_sigma': flow_sigma,
+            'total_sigma': total_sigma,
+            'syn_sampling': syn_sampling}
+
+    script = 'align_anat.py'
+    job_id = brainsss.sbatch(jobname='align',
+                            script=os.path.join(scripts_path, script),
+                            modules=modules,
+                            args=args,
+                            logfile=logfile, time=8, mem=8, nice=nice, nodes=nodes)
+    brainsss.wait_for_job(job_id, logfile, com_path)
