@@ -3,13 +3,16 @@ import sys
 import json
 from time import sleep
 import datetime
-import brainsss
+
 import numpy as np
 import nibabel as nib
 
 import scipy
 from skimage.filters import threshold_triangle as triangle
 from sklearn.preprocessing import quantile_transform
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+sys.path.append("/home/users/asmart/projects/new_brainsss/")
+import brainsss
 
 def main(args):
     logfile = args['logfile']
