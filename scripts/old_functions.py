@@ -1,3 +1,7 @@
+"""these are functions before the timestamp fix. USE THESE FOR NEW DATA AFTER 20231102
+JUST RENAME TO BE FUNCTIONS AND DELETE other functions OR I COULD ADD A FLAG"""
+
+
 ## from vscode
 import os
 import sys
@@ -318,16 +322,14 @@ def get_diode_column(raw_light_data):
 
 
 ## get xml timestamps
-def load_timestamps(directory, fix = False):
+def load_timestamps(directory, file='functional.xml'):
     """ Parses a Bruker xml file to get the times of each frame, or loads h5py file if it exists.
     First tries to load from 'timestamps.h5' (h5py file). If this file doesn't exist
     it will load and parse the Bruker xml file, and save the h5py file for quick loading in the future.
-    updaate: now have two timestamp functions find_timestamps() will generate timestamps without looking up
-
     Parameters
     ----------
-    directory: full directory that contains xml file (str). (fly_path)
-    
+    directory: full directory that contains xml file (str).
+    file: Defaults to 'functional.xml'
     Returns
     -------
     timestamps: [t,z] numpy array of times (in ms) of Bruker imaging frames.
@@ -335,157 +337,47 @@ def load_timestamps(directory, fix = False):
     try:
         print('Trying to load timestamp data from hdf5 file.')
         with h5py.File(os.path.join(directory, 'timestamps.h5'), 'r') as hf:
-                timestamps = hf['timestamps'][:]
+            timestamps = hf['timestamps'][:]
+
     except:
-        print(f'RUNNING FIND TIMESTAMPS and RESAVING. fix = {fix}')
-        timestamps = find_timestamps(directory, fix = fix)
-    return timestamps
+        fly_name = get_fly_name_from_path(directory)
+        file = str(fly_name) + '.xml'
+        print('Failed. Extracting frame timestamps from bruker xml file.')
+        xml_file = os.path.join(directory, file)
+        print(f'getting timestamps from {xml_file}')
+        tree = ET.parse(xml_file)
+        root = tree.getroot()
+        timestamps = []
 
-    # try:
-    #     print('Trying to load timestamp data from hdf5 file.')
-    #     with h5py.File(os.path.join(directory, 'timestamps.h5'), 'r') as hf:
-    #         timestamps = hf['timestamps'][:]
-    
-    # except:
-    #     fly_name = get_fly_name_from_path(directory)
-    #     file = str(fly_name) + '.xml'
-    #     print('Failed. Extracting frame timestamps from bruker xml file.')
-    #     xml_file = os.path.join(directory, file)
-    #     print(f'getting timestamps from {xml_file}')
-    #     tree = ET.parse(xml_file)
-    #     root = tree.getroot()
-    #     timestamps = []
+        sequences = root.findall('Sequence')
+        first_frame_len = len(sequences[0].findall('Frame'))
+        for sequence_i in range(len(sequences)):
+            sequence = sequences[sequence_i]
+            frames = sequence.findall('Frame')
+            #skip remaining sequences if ended early
+            if len(frames) != first_frame_len:
+                print(f'sequence # {sequence_i} did not complete z-series => ending')
+                sequence_length = sequence_i #want it to be length to previous sequence value since that was the last complete one => 0 indexing helps
+            else:
+                for frame in frames:
+                    filename = frame.findall('File')[0].get('filename')
+                    time = float(frame.get('relativeTime'))
+                    timestamps.append(time)
+                sequence_length = len(sequences)
+        timestamps = np.multiply(timestamps, 1000)
 
-    #     sequences = root.findall('Sequence')
-    #     first_frame_len = len(sequences[0].findall('Frame'))
-    #     for sequence_i in range(len(sequences)):
-    #         sequence = sequences[sequence_i]
-    #         frames = sequence.findall('Frame')
-    #         #skip remaining sequences if ended early
-    #         if len(frames) != first_frame_len:
-    #             print(f'sequence # {sequence_i} did not complete z-series => ending')
-    #             sequence_length = sequence_i #want it to be length to previous sequence value since that was the last complete one => 0 indexing helps
-    #         else:
-    #             for frame in frames:
-    #                 filename = frame.findall('File')[0].get('filename')
-    #                 time = float(frame.get('relativeTime'))
-    #                 timestamps.append(time)
-    #             sequence_length = len(sequences)
-    #     timestamps = np.multiply(timestamps, 1000)
-
-    #     if len(sequences) > 1:
-    #         timestamps = np.reshape(timestamps, (sequence_length, first_frame_len))
-    #     else:
-    #         timestamps = np.reshape(timestamps, (first_frame_len, sequence_length))
-    # if fix == False:
-    #     ### Save h5py file ###
-    #     with h5py.File(os.path.join(directory, 'timestamps.h5'), 'w') as hf:
-    #         hf.create_dataset("timestamps", data=timestamps)
-            
-    #         print('Success.')
-    #         return timestamps
-    # elif fix == True: ## this means that need to delete timestamps due to split_nii error
-    #     new_timestamps = []
-    #     for t in range(len(timestamps)):
-    #         #timestamps to keep
-    #         if (t + 1) % skip_number != 0:
-    #             new_timestamps.append(timestamps[t])
-    #     new_timestamps = np.array(new_timestamps)
-    #     with h5py.File(os.path.join(directory, 'timestamps.h5'), 'w') as hf:
-    #         hf.create_dataset("timestamps", data=new_timestamps)
-    #         print('Success.')
-    #         return new_timestamps
-        
-## get xml timestamps
-def find_timestamps(directory, fix = False):
-    """ Parses a Bruker xml file to get the times of each frame. 
-    it will load and parse the Bruker xml file, and save the h5py file for quick loading in the future.
-    Parameters
-    ----------
-    directory: full directory that contains xml file (str).
-    fix: bool that if true deletes timestamps corresponding to deleted timestamps in tiff_split_nii
-    determines if it should delete every 500 or every 1000 timepoints based on the split nii files in the directory
-    
-    Returns
-    -------
-    timestamps: [t,z] numpy array of times (in ms) of Bruker imaging frames.
-    """
-
-    fly_name = get_fly_name_from_path(directory)
-    file = str(fly_name) + '.xml'
-    print('Extracting frame timestamps from bruker xml file.')
-    xml_file = os.path.join(directory, file)
-    print(f'getting timestamps from {xml_file}')
-    tree = ET.parse(xml_file)
-    root = tree.getroot()
-    timestamps = []
-
-    sequences = root.findall('Sequence')
-    first_frame_len = len(sequences[0].findall('Frame'))
-    for sequence_i in range(len(sequences)):
-        sequence = sequences[sequence_i]
-        frames = sequence.findall('Frame')
-        #skip remaining sequences if ended early
-        if len(frames) != first_frame_len:
-            print(f'sequence # {sequence_i} did not complete z-series => ending')
-            sequence_length = sequence_i #want it to be length to previous sequence value since that was the last complete one => 0 indexing helps
+        if len(sequences) > 1:
+            timestamps = np.reshape(timestamps, (sequence_length, first_frame_len))
         else:
-            for frame in frames:
-                filename = frame.findall('File')[0].get('filename')
-                time = float(frame.get('relativeTime'))
-                timestamps.append(time)
-            sequence_length = len(sequences)
-    timestamps = np.multiply(timestamps, 1000)
+            timestamps = np.reshape(timestamps, (first_frame_len, sequence_length))
 
-    if len(sequences) > 1:
-        timestamps = np.reshape(timestamps, (sequence_length, first_frame_len))
-    else:
-        timestamps = np.reshape(timestamps, (first_frame_len, sequence_length))
-    if fix == False:
-        ### Save h5py file ###
-        with h5py.File(os.path.join(directory, 'timestamps.h5'), 'w') as hf:
-            hf.create_dataset("timestamps", data=timestamps)
-            print('Success.')
-            return timestamps
+    ### Save h5py file ###
+    with h5py.File(os.path.join(directory, 'timestamps.h5'), 'w') as hf:
+        hf.create_dataset("timestamps", data=timestamps)
         
-    elif fix == True: ## this means that need to delete timestamps due to split_nii error
-        drop_number = get_timestamp_drop_number(directory)
-        new_timestamps = []
-        for t in range(len(timestamps)):
-            #timestamps to keep
-            if (t + 1) % drop_number != 0:
-                new_timestamps.append(timestamps[t])
-        new_timestamps = np.array(new_timestamps)
-        with h5py.File(os.path.join(directory, 'timestamps.h5'), 'w') as hf:
-            hf.create_dataset("timestamps", data=new_timestamps)
-            print('Success--saved fixed (new) timestamps')
-            return new_timestamps
-        
+        print('Success.')
+        return timestamps
 
-def get_timestamp_drop_number (directory):
-    """looks in the fly directory for split nii files to see if timepoints were dropped every 500 frames or every 1000
-    directory = fly_path that has split nii files
-    returns 500 or 1000"""
-    files = os.listdir(directory)
-    identifier = "channel_1_s500.nii"
-    pos_control = "channel_1_s1000.nii"
-    split_500 = []
-    control = []
-    for file in files:
-        if identifier in file:
-            split_500.append(file)
-        if pos_control in file:
-            control.append(file)
-    #see if 500 file exists (if so then it dropped every 500 timepoint)
-    if len(split_500) > 0 and len(control) > 0:
-        return 500
-    elif len(split_500) == 0 and len(control)> 0:
-        return 1000
-    else:
-        fly = directory.split("/")[-1]
-        raise Exception(f'could not find split files for fly {fly}')
-        
-            
 
 
 def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
@@ -743,17 +635,17 @@ def get_Bruker_framerate(dataset_path, z_number = 49):
     xml_file = str(fly_name) + '.xml'
     timestamps = load_timestamps(dataset_path, xml_file)
     
-    #I can get z_number from second dim of timestamps
     z = int(z_number/2) #to get roughly middle z
 
     z_timestamps = []
-    for t_slice in timestamps[0:400]:  #changing this to account for issues with deleted timepoints
+    for t_slice in timestamps:
         z_timestamps.append(t_slice[z])
 
     z_timestamps = np.array(z_timestamps)
     z_time_mean = np.mean(z_timestamps[1:] - z_timestamps[:-1])
     bruker_framerate = 1000/z_time_mean #f/s
-    z_timestamps_s = z_timestamps/1000    
+    z_timestamps_s = z_timestamps/1000
+    
     return bruker_framerate
     
 def run_STA (dataset_path, loading):

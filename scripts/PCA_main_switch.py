@@ -25,6 +25,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
 dates = ['20230504', '20230428', '20230616'] 
+fix_dropped = False ## change to true to add frames to nifty file every 500th or 1000th timepoint (needed if ran original brukerbridge splitting code)
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
@@ -71,6 +72,8 @@ for date in dates:
     time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
     printlog(F"{day_now+' | '+time_now:^{width}}")
     printlog("")
+
+    
 
         
    

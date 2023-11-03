@@ -44,30 +44,35 @@ def main(args):
 
     for brain_file in file_names:
         full_load_path = os.path.join(directory, brain_file)
-        rem_light_file = os.path.join(save_directory, brain_file.split('.')[0] + '_data_rem_light.h5')
+
+        #rerun timestamps, need to do this so if other functions call load timestamps it will pull the fixed version
+        timestamps = fun.find_timestamps(directory, fix = True)
+        rem_light_file = os.path.join(save_directory, brain_file.split('.')[0] + '_data_rem_light.h5') #generate this file
 
         ##first replace light 
         if rem_light == True:
-            with h5py.File(full_load_path, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
+            with h5py.File(full_load_path, 'r') as hf:   #if want to add zscore to this file as a new key need to change to 'a' to read+write (I don't want to do that in case files get corrupted)
                 printlog(f"opened {brain_file} for rem light")
                 data = hf['high pass filter data']
                 dims = np.shape(data)
                 max_t = dims[-1]
                 
                 if redo_light_peaks == True:
-                    ##this function is the only one that doesn't look for light peaks and deletes 
-                    # previous version and saves it so if want to redo must run this function first
+                    ##this function calculates and resaves light peaks from voltage file rather than loading
+                    #if want to redo must run this function first
                     ##otherwise the other functions will look for light peaks in the h5 file before generating it if it has been made before
                     light_peaks_ms = fun.get_light_peaks(directory)  
+
+                
                     
                 light_peaks_to_rem = fun.get_light_peaks_brain_time(directory, max_t, light_buffer)
                 printlog(f'light peaks to rem: {light_peaks_to_rem}')
                 fun.add_to_h5(rem_light_file, 'light peaks brain t', light_peaks_to_rem)
-                printlog('added light peaks to h5')
+                printlog(f'added light peaks to h5')
                 #new_data_file = fun.make_empty_h5(rem_light_file, 'data rem light', dims)
                 #printlog('made empty dataset')
                 with h5py.File(rem_light_file, 'a') as f:  
-                    print('opened data file')
+                    printlog('opened data file')
                     mask = np.zeros((1, 1, 1, dims[-1]), bool) # [1, 1, 1, dims[-1]]
                     mask[:, :, :, light_peaks_to_rem] = True
                     #if mask is true then replace withzeros otherwise replace with data
@@ -92,8 +97,8 @@ def main(args):
             key = 'high pass filter data'
             save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_switch_zscore.h5')
        
-       
-        with h5py.File(data_file, 'r') as hf:   #if want to add zscore to theis file as a new key need to change to 'a' to read+write
+        #will use rem_light_file or full_load_path as data file depending on if rem_light is True or not
+        with h5py.File(data_file, 'r') as hf:   #if want to add zscore to this file as a new key need to change to 'a' to read+write (I don't want to do that in case files get corrupted)
             printlog(f"opened {brain_file}")
             data = hf[key]
             #get the dimension of the data
