@@ -126,8 +126,9 @@ for date in dates:
 
         func_directory = os.path.join(dataset_path, fly)
         anat_directory = os.path.join(dataset_path, current_anat_file)
-        file_id = "mean.h5"
-        moco_id = "moco.h5"
+        file_id = "mean.nii"
+        moco_id = "MOCO" #but everything after moco also has MOCO in it => need to specify files
+        moco_files = ["MOCO_ch1.h5", "MOCO_ch2.h5"]
         
         mean_func_file = [file for file in os.listdir(func_directory) if file_id in file]
         mean_anat_file = [file for file in os.listdir(anat_directory) if file_id in file]
@@ -137,9 +138,13 @@ for date in dates:
             printlog(f'no {file_id} files for func. Running meanbrain')
             ##RUN MEAN BRAIN FOR FUNC
             #1. find moco files
-            moco_files = [file for file in os.listdir(func_directory) if moco_id in file]
+            #moco_files = [file for file in os.listdir(func_directory) if moco_id in file]
+            
             #2. get moco dir
             for file in moco_files: #two channels
+                if file not in os.listdir(func_directory):
+                    printlog(f'FILE NOT FOUND {file} cannot run func mean')
+                    
                 moco_directory = os.path.join(func_directory, file)
                 #3. run mean brain
                 args = {'logfile': logfile, 'directory': moco_directory, 'files': files}
