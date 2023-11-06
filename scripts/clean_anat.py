@@ -16,7 +16,7 @@ import brainsss
 
 def main(args):
     logfile = args['logfile']
-    directory = args['directory'] # directory will be a full path anat/moco
+    directory = args['directory'] # directory will be a full fly path anat/moco
     files = args['files']
     width = 120
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')

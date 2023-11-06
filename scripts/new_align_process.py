@@ -42,6 +42,7 @@ modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
+## extra functions
 def get_fly_number (file):
     """looks for "fly" in file and returns number following"""
     if 'fly' not in file or '_' not in file:
@@ -54,6 +55,8 @@ def get_fly_number (file):
         return number
 
 
+
+## run these dates
 dates = ['20230504', '20230428', '20230616'] 
 for date in dates:
 
@@ -170,35 +173,19 @@ for date in dates:
 
 
 
-            ### I PROBABLY WANT TO RUN CLEAN_ANAT as well
-            ##########  clean anat (gets rid of blobs around brain and does quantile normalization...)
-            #######################################
-            #  used for aligning to atlas, but I think Luke does not use to align to func for individual fly
-
-            preclean_id = 'mean.nii'  #I think I just want to run this on mean files
-            preclean_files = [file for file in os.listdir(anat_directory) if preclean_id in file]
-            #for mean_file in mean_files:
-            directory = anat_directory
-            args = {'logfile': logfile, 'directory': directory, 'files': preclean_files}
-            script = 'clean_anat.py'
-            job_id = brainsss.sbatch(jobname='clnanat',
-                                script=os.path.join(scripts_path, script),
-                                modules=modules,
-                                args=args,
-                                logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
-            brainsss.wait_for_job(job_id, logfile, com_path)
-
-
-
+            
+        #get paths for moving and fixed flies for alignment
         if len(mean_anat_file) == 2 and len(mean_func_file) == 2:
+
             ##then I can use them for the rest of the stuff
-            ##need to get just channel 1!!!!
+            ##need to get just channel 1!
             mean_ch1_func = [file for file in mean_func_file if 'ch1' in file]
             mean_ch1_anat = [file for file in mean_anat_file if 'ch1' in file]
             
             moving_path = os.path.join(func_directory, mean_ch1_func)
             fixed_path = os.path.join(anat_directory, mean_ch1_anat)
 
+            
 
 
    
@@ -281,6 +268,24 @@ for date in dates:
             
             clean_id = 'clean.nii'
             clean_file = [file for file in os.listdir(anat_directory) if clean_id in file]
+            # run clean anat if it doesn't exist(gets rid of blobs around brain and does quantile normalization...)
+            #  used for aligning to atlas
+            #look for clean anat files
+            if len(clean_file) == 0:
+                preclean_id = 'mean.nii'  #I think I just want to run this on mean files
+                preclean_files = [file for file in os.listdir(anat_directory) if preclean_id in file]
+                #for mean_file in mean_files:
+                directory = anat_directory
+                args = {'logfile': logfile, 'directory': directory, 'files': preclean_files}
+                script = 'clean_anat.py'
+                job_id = brainsss.sbatch(jobname='clnanat',
+                                    script=os.path.join(scripts_path, script),
+                                    modules=modules,
+                                    args=args,
+                                    logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
+                brainsss.wait_for_job(job_id, logfile, com_path)
+            
+            
             moving_path = os.path.join(anat_directory, clean_file)
             
             moving_fly = 'anat'

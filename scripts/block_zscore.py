@@ -37,6 +37,7 @@ def main(args):
     light_buffer = 200 #ms needed away from light peak to allow brain volume to not be marked as light
     redo_rem_light = True # if true will redo remove light and readd it to peaks
     redo_light_peaks = True
+    fix = True ##should the timestamps be corrected due to split_nii data drop?
     
     stepsize = 25 ##this is set so memory doesn't get overwhelmed. lower if getting oom errors
     exp_types = ['20', '40','dark'] #must be this format ['20', '40', dark] #skip dark if don't want it
@@ -46,7 +47,7 @@ def main(args):
         full_load_path = os.path.join(directory, brain_file)
 
         #rerun timestamps, need to do this so if other functions call load timestamps it will pull the fixed version
-        timestamps = fun.find_timestamps(directory, fix = True)
+        timestamps = fun.find_timestamps(directory, fix = fix)
         rem_light_file = os.path.join(save_directory, brain_file.split('.')[0] + '_data_rem_light.h5') #generate this file
 
         ##first replace light 
