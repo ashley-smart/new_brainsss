@@ -144,10 +144,10 @@ for date in dates:
             for file in moco_files: #two channels
                 if file not in os.listdir(func_directory):
                     printlog(f'FILE NOT FOUND {file} cannot run func mean')
-                    
+
                 moco_directory = os.path.join(func_directory, file)
                 #3. run mean brain
-                args = {'logfile': logfile, 'directory': moco_directory, 'files': files}
+                args = {'logfile': logfile, 'directory': func_directory, 'files': moco_files}
                 script = 'make_mean_brain.py'
                 job_id = brainsss.sbatch(jobname='meanbrn',
                                     script=os.path.join(scripts_path, script),
