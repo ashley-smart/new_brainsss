@@ -5,13 +5,20 @@ import psutil
 import nibabel as nib
 from time import time
 import json
-import brainsss
+
 import matplotlib.pyplot as plt
 from contextlib import contextmanager
 import warnings
 warnings.filterwarnings("ignore")
 from shutil import copyfile
 import ants
+
+sys.path.append("/home/users/asmart/projects/new_brainsss/")
+os.listdir("/home/users/asmart/projects/new_brainsss/")
+sys.path.append("/home/users/asmart/projects/new_brainsss/brainsss")
+
+print(sys.path)
+import brainsss
 
 def main(args):
 
