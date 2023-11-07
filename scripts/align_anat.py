@@ -126,7 +126,7 @@ def main(args):
 
     if save_warp_params:
         fwdtransformlist = moco['fwdtransforms']
-        fwdtransforms_save_dir = os.path.join(save_directory, '{}-to-{}_fwdtransforms'.format(moving_fly, fixed_fly))
+        fwdtransforms_save_dir = os.path.join(save_directory, '{}-to-{}_fwdtransforms'.format(moving_fly.split('/')[-1], fixed_fly.split('/')[-1]))
         if low_res:
             fwdtransforms_save_dir += '_lowres'
         if True in [iso_2um_moving, iso_2um_fixed]:
@@ -141,7 +141,7 @@ def main(args):
     # Added this saving of inv transforms 2020 Dec 19
     if save_warp_params:
         fwdtransformlist = moco['invtransforms']
-        fwdtransforms_save_dir = os.path.join(save_directory, '{}-to-{}_invtransforms'.format(moving_fly, fixed_fly))
+        fwdtransforms_save_dir = os.path.join(save_directory, '{}-to-{}_invtransforms'.format(moving_fly.split('/')[-1], fixed_fly.split('/')[-1]))
         if low_res:
             fwdtransforms_save_dir += '_lowres'
         if True in [iso_2um_moving, iso_2um_fixed]:
