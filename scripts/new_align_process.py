@@ -57,7 +57,7 @@ def get_fly_number (file):
 
 
 ## run these dates
-dates = ['20230504', '20230428', '20230616'] 
+dates = ['20230504'] 
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
