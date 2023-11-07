@@ -185,8 +185,8 @@ for date in dates:
             
             ##then I can use them for the rest of the stuff
             ##need to get just channel 1!
-            mean_ch1_func = [file for file in mean_func_file if 'ch1' in file]
-            mean_ch1_anat = [file for file in mean_anat_file if 'ch1' in file]
+            mean_ch1_func = [file for file in mean_func_file if 'ch1' in file][0]
+            mean_ch1_anat = [file for file in mean_anat_file if 'ch1' in file][0] #[0] to get rid of brackets
             printlog(f'Setting the moving path {mean_ch1_func} and fixed path {mean_ch1_anat}')
             moving_path = os.path.join(func_directory, mean_ch1_func)
             fixed_path = os.path.join(anat_directory, mean_ch1_anat)
