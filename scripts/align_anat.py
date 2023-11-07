@@ -166,10 +166,10 @@ def main(args):
 
     # NOT SAVING MIMIC <------ MAY NEED TO CHANGE
     if flip_X:
-        save_file = os.path.join(save_directory, moving_fly + '_m' + '-to-' + fixed_fly)
+        save_file = os.path.join(save_directory, moving_fly.split('/')[-1] + '_m' + '-to-' + fixed_fly.split('/')[-1])
         #save_file = os.path.join(save_directory, mimic_fly + '_m' + '-to-' + fixed_fly + '.nii')
     else:
-        save_file = os.path.join(save_directory, moving_fly + '-to-' + fixed_fly)
+        save_file = os.path.join(save_directory, moving_fly.split('/')[-1] + '-to-' + fixed_fly.split('/')[-1])
         #save_file = os.path.join(save_directory, mimic_fly + '-to-' + fixed_fly + '.nii')
     #nib.Nifti1Image(mimic_moco.numpy(), np.eye(4)).to_filename(save_file)
     if low_res:
