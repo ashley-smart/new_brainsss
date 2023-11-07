@@ -178,15 +178,16 @@ for date in dates:
 
 
 
-            
+        mean_func_file = [file for file in os.listdir(func_directory) if file_id in file]
+        mean_anat_file = [file for file in os.listdir(anat_directory) if file_id in file]
         #get paths for moving and fixed flies for alignment
         if len(mean_anat_file) == 2 and len(mean_func_file) == 2:
-
+            
             ##then I can use them for the rest of the stuff
             ##need to get just channel 1!
             mean_ch1_func = [file for file in mean_func_file if 'ch1' in file]
             mean_ch1_anat = [file for file in mean_anat_file if 'ch1' in file]
-            
+            printlog(f'Setting the moving path {mean_ch1_func} and fixed path {mean_ch1_anat}')
             moving_path = os.path.join(func_directory, mean_ch1_func)
             fixed_path = os.path.join(anat_directory, mean_ch1_anat)
 
