@@ -216,7 +216,11 @@ def main(args):
                             f['dark zscore'][:,:,:, chunk_start:chunk_end] = each_zscore
 
             printlog(f'ZSCORE complete for {brain_file}')
-        
+            txt_file_path = os.path.join(directory, 'redone_with_fix.txt')
+            file1 = open(txt_file_path,"w")
+            L = [f'path: {full_load_path} has new timestamps and new zscore']
+            file1.writelines(L)
+            file1.close()
 
     
 if __name__ == '__main__':

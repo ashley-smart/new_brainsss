@@ -14,6 +14,8 @@ import nibabel as nib
 import h5py
 from matplotlib import pyplot as plt
 from xml.etree import ElementTree as ET
+from pathlib import Path
+import csv
 
 import pickle
 import psutil
@@ -36,7 +38,9 @@ def main(args):
     run_zscore = True #if true will run on zscore data and save as zscore pca otherwise will run on high pass
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 
-
+    fly_path = Path(directory)
+    date_path = fly_path.parent
+    import_directory = date_path.parent
 
 
     if run_zscore == False:
@@ -63,6 +67,7 @@ def main(args):
         #check for high pass filter data (or zscore)
         save_name = str(brain_file[0:-3]) + "PCA.h5"
         save_file = os.path.join(directory, save_name)
+        csv_file = os.path.join(import_directory, 'brain_progress.csv')
         
     
         with h5py.File(load_file, 'r') as hf:
@@ -100,7 +105,15 @@ def main(args):
                         fun.add_to_h5(save_file, components_key, reshaped_components)
                         printlog(f'SAVED PCA loadings and components {loadings_key}')
 
+        
+        if rerun_PCA == True:
+            txt_file_path = os.path.join(directory, 'redone_with_fix.txt')
+            file1 = open(txt_file_path,"w")
+            L = [f'path: {load_file} has new timestamps and new PCA']
+            file1.writelines(L)
+            file1.close()
 
+            ##add brain to csv file as done
 
 
      
