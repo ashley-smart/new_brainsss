@@ -11,7 +11,43 @@ use: "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_
 
 ##need to write function to id same func and anat file
 
+
+
+##this file will run other scripts 
+#align_anat.py
+
+
+align anatomical brain to functional brain and warp to brain template---based off of Bella's preprocess code. 
+https://github.com/ClandininLab/brainsss/blob/main/scripts/preprocess.py
+
+Bella instructions:
+1) align func to anat (for an individual fly)
+(brainsss function func2anat), see 
+https://github.com/ClandininLab/brainsss/blob/main/scripts/preprocess.py
+starting at line 507
+can run using preprocess and the --f2a flag
+2) align anat to whatever template you are using (the final space for your data). I use 
+"/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"
+(brainsss function anat2anat), see 
+
+https://github.com/ClandininLab/brainsss/blob/main/scripts/preprocess.py
+starting at line 582
+can run using preprocess and the --a2a flag
+
+3) use these two transforms to apply to whatever neural data you want to warp. You can either warp in single maps you calculated in the original space 
+(like a correlation map), or the entirety of your functional recording. For the former, the code will look something like
+https://github.com/ClandininLab/brainsss/blob/main/brainsss/brain_utils.py
+check out warp_STA_brain function.
+
+If you want to warp the full recording, check out
+https://github.com/lukebrez/dataflow/blob/master/sherlock_scripts/apply_transforms_to_raw_data.py
+Make sure the voxel sizes are always set correctly, using
+fixed.set_spacing(fixed_resolution)
+and make sure the z-direction matches (ie either anterior to posterior or vica versa for the func,anat,and template.)
+
 """
+
+
 
 import time
 import sys
@@ -127,7 +163,7 @@ for date in dates:
         func_directory = os.path.join(dataset_path, fly)
         anat_directory = os.path.join(dataset_path, current_anat_file)
         file_id = "mean.nii"
-        moco_id = "MOCO" #but everything after moco also has MOCO in it => need to specify files
+        #moco_id = "MOCO" #but everything after moco also has MOCO in it => need to specify files
         moco_files = ["MOCO_ch1.h5", "MOCO_ch2.h5"]
         
         mean_func_file = [file for file in os.listdir(func_directory) if file_id in file]
@@ -218,8 +254,12 @@ for date in dates:
             total_sigma = 0
             syn_sampling = 32
 
+            warp_directory = os.path.join(func_directory, 'warp')
+            if not os.path.exists(warp_directory):
+                os.mkdir(warp_directory)
+
             args = {'logfile': logfile,
-                    'save_directory': func_directory, #save_directory,
+                    'save_directory': warp_directory, #want all transforms in warp folder for easy access
                     'fixed_path': fixed_path,
                     'moving_path': moving_path,
                     'fixed_fly': anat_directory, #fixed_fly,
@@ -307,9 +347,9 @@ for date in dates:
 
             fixed_resolution = res_meanbrain
 
-            save_directory = os.path.join(func_directory, 'warp')
-            if not os.path.exists(save_directory):
-                os.mkdir(save_directory)
+            warp_directory = os.path.join(func_directory, 'warp')
+            if not os.path.exists(warp_directory):
+                os.mkdir(warp_directory)
 
             type_of_transform = 'SyN'
             save_warp_params = True
@@ -328,7 +368,7 @@ for date in dates:
             syn_sampling = 32
 
             args = {'logfile': logfile,
-                    'save_directory': save_directory,
+                    'save_directory': warp_directory,
                     'fixed_path': fixed_path,
                     'moving_path': moving_path,
                     'fixed_fly': fixed_fly,
@@ -362,101 +402,149 @@ for date in dates:
 
 
             ############   YOU ARE HERE 
+            ####################################################
+            ### APPLY TRANSFORMS TO RAW DATA (MOCO, HP, ZSCORE) ##########
+            #####################################################
+            ## tips
+            ## fixed.set_spacing(fixed_resolution)
+            ## and make sure the z-direction matches (ie either anterior to posterior or vica versa for the func,anat,and template.)
+
+            warp_directory = os.path.join(func_directory, 'warp')
+            ## func_to_anat is saved differently because my func names are different...
+            func_fly_name = fly #the name of my fly (could also take last segment of func_directory)
+            anat_fly_name = current_anat_file #could also take last segment of anat_directory
+
+            args = {'logfile': logfile,
+                    'save_directory': func_directory, #currently saving in func, not sure if right spot...
+                    'warp_directory': warp_directory,
+                    'moving_path': moving_path,
+                    'fixed_fly': fixed_fly,
+                    'fixed_path': fixed_path,
+                    'moving_fly': moving_fly,
+                    'func_fly_name': func_fly_name,
+                    'anat_fly_name': anat_fly_name,
+                    'moving_resolution': moving_resolution,
+                    'fixed_resolution': fixed_resolution}
+            
+            script = 'apply_transforms.py'
+            job_id = brainsss.sbatch(jobname='apply',
+                                    script=os.path.join(scripts_path, script),
+                                    modules=modules,
+                                    args=args,
+                                    logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes) # 2 to 1
+            brainsss.wait_for_job(job_id, logfile, com_path)
+            printlog(os.path.join(scripts_path, script))
+            job_ids.append(job_id)
+            printlog("fly started")
 
 
 
+    #         ########################
+    #         ### Apply transforms ###
+    #         ########################
+    #         res_func = (2.611, 2.611, 5)
+    #         res_anat = (2,2,2)#(0.38, 0.38, 0.38)
+    #         final_2um_iso = False #already 2iso so don't need to downsample #not sure what this is
+
+    #         # for fly in fly_dirs:
+    #             #fly_directory = os.path.join(dataset_path, fly)
+    #         fly_directory = func_directory
+    #         behaviors = ['dRotLabY', 'dRotLabZneg', 'dRotLabZpos'] #what are behaviors?
+    #         for behavior in behaviors:
+    #             if loco_dataset:
+    #                 moving_path = os.path.join(fly_directory, 'func_0', 'corr', '20220418_corr_{}.nii'.format(behavior))
+    #             else:
+    #                 moving_path = os.path.join(fly_directory, 'func_0', 'corr', '20220420_corr_{}.nii'.format(behavior))
+    #             moving_fly = 'corr_{}'.format(behavior)
+    #             moving_resolution = res_func
+
+    #             #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/luke.nii"
+    #             fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"#luke.nii"
+    #             fixed_fly = 'meanbrain'
+    #             fixed_resolution = res_anat
+
+    #             save_directory = os.path.join(fly_directory, 'warp')
+    #             if not os.path.exists(save_directory):
+    #                 os.mkdir(save_directory)
+
+    #             args = {'logfile': logfile,
+    #                     'save_directory': save_directory,
+    #                     'fixed_path': fixed_path,
+    #                     'moving_path': moving_path,
+    #                     'fixed_fly': fixed_fly,
+    #                     'moving_fly': moving_fly,
+    #                     'moving_resolution': moving_resolution,
+    #                     'fixed_resolution': fixed_resolution,
+    #                     'final_2um_iso': final_2um_iso}
+
+    #             script = 'apply_transforms.py'
+    #             job_id = brainsss.sbatch(jobname='aplytrns',
+    #                                 script=os.path.join(scripts_path, script),
+    #                                 modules=modules,
+    #                                 args=args,
+    #                                 logfile=logfile, time=12, mem=4, nice=nice, nodes=nodes) # 2 to 1
+    #             brainsss.wait_for_job(job_id, logfile, com_path)
+
+    #     ### STA version
+    #     def warp_STA_brain(STA_brain, fly, fixed, anat_to_mean_type):
+    #         n_tp = STA_brain.shape[1]
+    #         dataset_path = '/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/20190101_walking_dataset'
+    #         moving_resolution = (2.611, 2.611, 5)
+    #         ###########################
+    #         ### Organize Transforms ###
+    #         ###########################
+    #         warp_directory = os.path.join(dataset_path, fly, 'warp')
+    #         warp_sub_dir = 'func-to-anat_fwdtransforms_2umiso'
+    #         affine_file = os.listdir(os.path.join(warp_directory, warp_sub_dir))[0]
+    #         affine_path = os.path.join(warp_directory, warp_sub_dir, affine_file)
+    #         if anat_to_mean_type == 'myr':
+    #             warp_sub_dir = 'anat-to-meanbrain_fwdtransforms_2umiso'
+    #         elif anat_to_mean_type == 'non_myr':
+    #             warp_sub_dir = 'anat-to-non_myr_mean_fwdtransforms_2umiso'
+    #         else:
+    #             print('invalid anat_to_mean_type')
+    #             return
+    #         syn_files = os.listdir(os.path.join(warp_directory, warp_sub_dir))
+    #         syn_linear_path = os.path.join(warp_directory, warp_sub_dir, [x for x in syn_files if '.mat' in x][0])
+    #         syn_nonlinear_path = os.path.join(warp_directory, warp_sub_dir, [x for x in syn_files if '.nii.gz' in x][0])
+    #         ####transforms = [affine_path, syn_linear_path, syn_nonlinear_path]
+    #         transforms = [syn_nonlinear_path, syn_linear_path, affine_path] ### INVERTED ORDER ON 20220503!!!!
+    #         #ANTS DOCS ARE SHIT. THIS IS PROBABLY CORRECT, AT LEAST IT NOW WORKS FOR THE FLY(134) THAT WAS FAILING
+
+
+    #         ### Warp timeponts
+    #         warps = []
+    #         for tp in range(n_tp):
+    #             to_warp = np.rollaxis(STA_brain[:,tp,:,:],0,3)
+    #             moving = ants.from_numpy(to_warp)
+    #             moving.set_spacing(moving_resolution)
+    #             ########################
+    #             ### Apply Transforms ###
+    #             ########################
+    #             moco = ants.apply_transforms(fixed, moving, transforms)
+    #             warped = moco.numpy()
+    #             warps.append(warped)
+
+    #         return warps
 
 
 
+    #     #########################
+    #     ###### make supervoxels
+    #     ############################
+    #         for func in funcs:
+    #             args = {'logfile': logfile, 'func_path': func}
+    #             script = 'make_supervoxels.py'
+    #             job_id = brainsss.sbatch(jobname='supervox',
+    #                                 script=os.path.join(scripts_path, script),
+    #                                 modules=modules,
+    #                                 args=args,
+    #                                 logfile=logfile, time=2, mem=12, nice=nice, nodes=nodes)
+    #             brainsss.wait_for_job(job_id, logfile, com_path)
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-            # ########################
-            # ### Apply transforms ###
-            # ########################
-            # res_func = (2.611, 2.611, 5)
-            # res_anat = (2,2,2)#(0.38, 0.38, 0.38)
-            # final_2um_iso = False #already 2iso so don't need to downsample #not sure what this is
-
-            # # for fly in fly_dirs:
-            #     #fly_directory = os.path.join(dataset_path, fly)
-            # fly_directory = func_directory
-            # behaviors = ['dRotLabY', 'dRotLabZneg', 'dRotLabZpos'] #what are behaviors?
-            # for behavior in behaviors:
-            #     if loco_dataset:
-            #         moving_path = os.path.join(fly_directory, 'func_0', 'corr', '20220418_corr_{}.nii'.format(behavior))
-            #     else:
-            #         moving_path = os.path.join(fly_directory, 'func_0', 'corr', '20220420_corr_{}.nii'.format(behavior))
-            #     moving_fly = 'corr_{}'.format(behavior)
-            #     moving_resolution = res_func
-
-            #     #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/luke.nii"
-            #     fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"#luke.nii"
-            #     fixed_fly = 'meanbrain'
-            #     fixed_resolution = res_anat
-
-            #     save_directory = os.path.join(fly_directory, 'warp')
-            #     if not os.path.exists(save_directory):
-            #         os.mkdir(save_directory)
-
-            #     args = {'logfile': logfile,
-            #             'save_directory': save_directory,
-            #             'fixed_path': fixed_path,
-            #             'moving_path': moving_path,
-            #             'fixed_fly': fixed_fly,
-            #             'moving_fly': moving_fly,
-            #             'moving_resolution': moving_resolution,
-            #             'fixed_resolution': fixed_resolution,
-            #             'final_2um_iso': final_2um_iso}
-
-            #     script = 'apply_transforms.py'
-            #     job_id = brainsss.sbatch(jobname='aplytrns',
-            #                         script=os.path.join(scripts_path, script),
-            #                         modules=modules,
-            #                         args=args,
-            #                         logfile=logfile, time=12, mem=4, nice=nice, nodes=nodes) # 2 to 1
-            #     brainsss.wait_for_job(job_id, logfile, com_path)
-
-        
-        ##########################
-        # ###### make supervoxels
-        # ############################
-        #     for func in funcs:
-        #         args = {'logfile': logfile, 'func_path': func}
-        #         script = 'make_supervoxels.py'
-        #         job_id = brainsss.sbatch(jobname='supervox',
-        #                             script=os.path.join(scripts_path, script),
-        #                             modules=modules,
-        #                             args=args,
-        #                             logfile=logfile, time=2, mem=12, nice=nice, nodes=nodes)
-        #         brainsss.wait_for_job(job_id, logfile, com_path)
-
-        ############
-        ### Done ###
-        ############
+    #     ############
+    #     ### Done ###
+    #     ############
 
 
 
