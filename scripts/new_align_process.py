@@ -93,7 +93,7 @@ def get_fly_number (file):
 
 
 ## run these dates
-dates = ['20230707'] 
+dates = ['20230707', '20230714'] 
 
 
 
@@ -343,8 +343,8 @@ for date in dates:
             
             else:
                 printlog('clean anat files found {clean_file}')
-            moving_path = os.path.join(anat_directory, clean_file[0]) #[0] to get rid of brackets
             
+            moving_path = os.path.join(anat_directory, clean_file[0]) #[0] to get rid of brackets
             moving_fly = 'anat'
             moving_resolution = res_anat
 
