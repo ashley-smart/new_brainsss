@@ -25,6 +25,7 @@ def main(args):
     for file_name in files:
         file = os.path.join(directory, file_name)
         brain = np.asarray(nib.load(file).get_data(), dtype='float32')
+        printlog(f'brain loaded {brain.shape}, is nan: {np.any(np.isnan(brain))}, max = {np.max(brain)}, min = {np.min(brain)}')
     # try:
     #     file = os.path.join(directory, 'stitched_brain_red_mean.nii') 
     #     brain = np.asarray(nib.load(file).get_data(), dtype='float32')
@@ -35,17 +36,22 @@ def main(args):
         ### Blur brain and mask small values ###
         brain_copy = brain.copy().astype('float32')
         brain_copy = scipy.ndimage.filters.gaussian_filter(brain_copy, sigma=10)
+        printlog(f'brain copy post gaussian-- {brain_copy.shape}, is nan: {np.any(np.isnan(brain_copy))}, max = {np.max(brain_copy)}, min = {np.min(brain_copy)}')
         threshold = triangle(brain_copy)
         brain_copy[np.where(brain_copy < threshold/2)] = 0
+        printlog(f'brain copy post threshold-- {brain_copy.shape}, is nan: {np.any(np.isnan(brain_copy))}, max = {np.max(brain_copy)}, min = {np.min(brain_copy)}')
+
 
         ### Remove blobs outside contiguous brain ###
         labels, label_nb = scipy.ndimage.label(brain_copy)
         brain_label = np.bincount(labels.flatten())[1:].argmax()+1
         brain_copy = brain.copy().astype('float32')
         brain_copy[np.where(labels != brain_label)] = np.nan
+        printlog(f'brain copy post nan-- {brain_copy.shape}, is nan: {np.any(np.isnan(brain_copy))}, max = {np.max(brain_copy)}, min = {np.min(brain_copy)}')
 
         ### Perform quantile normalization ###
         brain_out = quantile_transform(brain_copy.flatten().reshape(-1, 1), n_quantiles=500, random_state=0, copy=True)
+        printlog(f'brain out quantile made')
         brain_out = brain_out.reshape(brain.shape)
         np.nan_to_num(brain_out, copy=False)
 
