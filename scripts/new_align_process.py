@@ -93,7 +93,7 @@ def get_fly_number (file):
 
 
 ## run these dates
-dates = ['20230707', '20230714'] 
+dates = ['20230714'] 
 
 
 
@@ -342,7 +342,7 @@ for date in dates:
                 brainsss.wait_for_job(job_id, logfile, com_path)
             
             else:
-                printlog('clean anat files found {clean_file}')
+                printlog(f'clean anat files found {clean_file}')
             
             moving_path = os.path.join(anat_directory, clean_file[0]) #[0] to get rid of brackets
             moving_fly = 'anat'
