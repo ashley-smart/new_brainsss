@@ -93,7 +93,7 @@ def get_fly_number (file):
 
 
 ## run these dates
-dates = ['20230504', '20230707'] 
+dates = ['20230707'] 
 
 
 
@@ -326,9 +326,11 @@ for date in dates:
             #  used for aligning to atlas
             #look for clean anat files
             if len(clean_file) == 0:
+                printlog('no clean file found')
                 preclean_id = 'mean.nii'  #I think I just want to run this on mean files
                 preclean_files = [file for file in os.listdir(anat_directory) if preclean_id in file]
                 #for mean_file in mean_files:
+                printlog(f'These files: {preclean_files} will be cleaned')
                 directory = anat_directory
                 args = {'logfile': logfile, 'directory': directory, 'files': preclean_files}
                 script = 'clean_anat.py'
@@ -339,7 +341,8 @@ for date in dates:
                                     logfile=logfile, time=1, mem=1, nice=nice, nodes=nodes)
                 brainsss.wait_for_job(job_id, logfile, com_path)
             
-            
+            else:
+                printlog('clean anat files found {clean_file}')
             moving_path = os.path.join(anat_directory, clean_file[0]) #[0] to get rid of brackets
             
             moving_fly = 'anat'
