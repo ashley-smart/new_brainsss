@@ -44,7 +44,7 @@ def main(args):
                 meanbrain = np.mean(brain, axis=-1)
 
             ### Save ###
-            save_file = os.path.join(directory, file[:-3] + '_mean.nii')
+            save_file = os.path.join(directory, file[:-4] + '_mean.nii')
             aff = np.eye(4)
             img = nib.Nifti1Image(meanbrain, aff)
             img.to_filename(save_file)
