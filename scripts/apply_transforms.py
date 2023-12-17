@@ -16,6 +16,8 @@ import warnings
 warnings.filterwarnings("ignore")
 
 from shutil import copyfile
+sys.path.append("/home/users/asmart/projects/new_brainsss/")
+import brainsss
 
 import platform
 if platform.system() != 'Windows':
@@ -38,6 +40,7 @@ def main(args):
 
     func_fly_name = args['func_fly_name']
     anat_fly_name = args['anat_fly_name']
+    printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 
     ###################
     ### Load Brains ###
@@ -67,16 +70,21 @@ def main(args):
 
     #mine are not lowres... figure out if that's a problem
     syn_files = os.listdir(os.path.join(warp_directory, 'anat-to-meanbrain_fwdtransforms_2umiso'))
+    printlog(f'made syn_files')
     syn_linear_path = os.path.join(warp_directory, 'anat-to-meanbrain_fwdtransforms_2umiso', [x for x in syn_files if '.mat' in x][0])
+    printlog(f'made linear path')
     syn_nonlinear_path = os.path.join(warp_directory, 'anat-to-meanbrain_fwdtransforms_2umiso', [x for x in syn_files if '.nii.gz' in x][0])
+    printlog(f'made nonlinear path')
 
 
     transforms = [affine_path, syn_linear_path, syn_nonlinear_path]
+    printlog(f'made transforms {transforms.shape}')
 
     ########################
     ### Apply Transforms ###
     ########################
     moco = ants.apply_transforms(fixed, moving, transforms, imagetype=3)
+    printlog(f'made transform file {moco.shape}')
 
     ############
     ### Save ###
