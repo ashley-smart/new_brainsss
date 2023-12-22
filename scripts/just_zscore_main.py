@@ -23,7 +23,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = ['20230405__queue__', '20230330__queue__' ] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
-dates = ['20230127', '20230210_stitch', '20230130_stitch'] #these seem to be partially loaded '20230405__queue__', '20230330__queue__', need to figure out transfer and redo
+dates = ['20230428', '20230504', '20230505', '20230707', '20230714'] 
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
@@ -92,7 +92,7 @@ for date in dates:
         if len(filenames) == 0: 
             printlog(f'NO {file_id} files! Cannot run zscore')
         args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
-        script = 'vol_zscore.py'
+        script = 'vol_zscore_rem_light.py'  ##this removes light frames
         printlog(os.path.join(scripts_path, script))
         job_id = brainsss.sbatch(jobname='volzscore',
                              script=os.path.join(scripts_path, script),

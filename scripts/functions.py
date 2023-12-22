@@ -565,6 +565,56 @@ def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
                         light_peaks_t.append(last) #if it's close then add the other zstack to be removed too
     return light_peaks_t
 
+
+def get_light_peaks_brain_t_no_bleedthrough (fly_path):
+    """same as get_light_peaks_brain_t except it removes the added stacks to add as a buffer 
+    so it only removes the stack that have a light in them. If it's between stacks it will find the stack the light is closest to.
+    consider if this will be an issue. I think not since I remove data that clsoe to the light.
+    Need to make sure the data removal isn't an issue too"""
+    light_peaks_path = os.path.join(fly_path, 'light_peaks.h5')
+    opened_peaks = open_light_peaks(light_peaks_path)
+    if opened_peaks is not None:
+        light_peaks_s = opened_peaks/1000
+    else:
+        light_peaks_s = get_light_peaks(fly_path)/1000
+
+    timestamps = load_timestamps(fly_path)
+    print(np.shape(timestamps))
+    #average_timestamps = np.mean(timestamps, axis = 1)/1000  ##to convert ms to s to match light_peaks
+
+    #     light_buffer_ms = 100 #the number of ms that the peak light flash needs to be away from the start or end of zstack to not elimiante the data
+    first_timestamps = []
+    last_timestamps = []
+    for t in timestamps:
+        first_timestamps.append(t[0]) #time at the first z position
+        last_timestamps.append(t[-1]) #time at the last z position
+
+    first_timestamps = np.array(first_timestamps)
+    first_timestamps_s = first_timestamps/1000
+    last_timestamps = np.array(last_timestamps)
+    last_timestamps_s = last_timestamps/1000
+
+    light_peaks_t = []
+    for light in light_peaks_s:
+        last = np.where(last_timestamps_s >= light)[0][0]  #the stack num where the light time is less than the last z time in the stack
+        first = np.where(first_timestamps_s <= light)[0][-1] # the stack num where the light time is greater tahn the first z time in the stack
+        #ort out which ones to append based on when the light is coming on in relation to brain volume
+        if last == first:
+            light_peaks_t.append(last) #since the are the same then the light is in this zstack
+        elif last != first: #then the light comes on between two zstacks
+            #determine which one it is closer to.
+            time_start_last = first_timestamps_s[last] #the start of the zstack that happens just after flash
+            time_end_first = last_timestamps_s[first] #the end of the zstack that happens just before the flash
+
+            if time_start_last - light  < light - time_end_first:
+                #then the flash is closer to the "last" index
+                light_peaks_t.append(last)
+            else:
+                #light is closet to the "first" index
+                light_peaks_t.append(first)
+    return light_peaks_t
+
+
 def get_voltage_data(dataset_path):
     """gets voltage data from voltage file and 
     returns a list of times and a list of voltage values.
