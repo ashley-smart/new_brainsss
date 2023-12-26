@@ -34,6 +34,8 @@ def main(args):
     rem_light = True
     redo_light_peaks = True
     redo_rem_light = True
+    fix = True
+    light_buffer = 100
     
     
     #save_file = os.path.join(save_path, 'ch2_zscore_hp.h5')
@@ -58,6 +60,7 @@ def main(args):
     
     
     for brain_file in file_names:
+        full_load_path = os.path.join(directory, brain_file)
         #rerun timestamps, need to do this so if other functions call load timestamps it will pull the fixed version
         timestamps = fun.find_timestamps(directory, fix = fix)
         rem_light_file = os.path.join(save_directory, brain_file.split('.')[0] + '_data_rem_light.h5') #generate this file
