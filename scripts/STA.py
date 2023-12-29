@@ -55,10 +55,10 @@ def main(args):
 
         #load brain
         with h5py.File(full_load_path, 'r') as hf:
-            print(hf.keys())
+            printlog(hf.keys())
             brain = hf['zscore']
             brain_dims = np.shape(brain)
-            print('got the brain!')
+            printlog('got the brain!')
 
             ##run through different experiments
             for exp in range(len(brain_t_switch_indices)):
@@ -78,24 +78,27 @@ def main(args):
                         if exp_brain_t[round][0] <= current_light and next_light <= exp_brain_t[round][1]:  #starts and stops for each set
                             trial_data = brain[:,:,:,current_light:next_light]
                             trials.append(trial_data)
-                print(f'{key_id} experiment trials collected')
+                printlog(f'{key_id} experiment trials collected')
 
                 # add nans to sta to fix ragged array of trials 
-                max_trial_time = max(len(t)for t in trials[0][0][0])
-
-                max_trial_time = max(len(t)for t in trials[0][0][0])
+                all_t = []
+                for i in range(len(trials)):
+                    for t in trials[i][0][0]:
+                        all_t.append(len(t))
+                max_trial_time = max(all_t) 
+                printlog(max_trial_time)
                 nan_brain = np.empty((len(trials), brain_dims[0], brain_dims[1], brain_dims[2],  max_trial_time)) * np.nan
                 for i, trial in enumerate(trials): #[:,:,:]):
                     nan_brain[i, :,:,:, :trial.shape[3]] = trial
-                print(np.shape(nan_brain))
+                printlog(np.shape(nan_brain))
 
                 with h5py.File(save_file, 'w') as f:
                     fun.add_to_h5(save_file, f'{key_id} trials appended with nans', nan_brain)
 
                     mean_STA = np.nanmean(nan_brain, axis = 0)
-                    print(np.shape(mean_STA))
+                    printlog(np.shape(mean_STA))
                     fun.add_to_h5(save_file, f'{key_id} STA', mean_STA)
-                    print(f'saved {key_id} STA')
+                    printlog(f'saved {key_id} STA')
 
                 ## make plots! 7 x 7 grid of zslices
                 for t in range(mean_STA.shape[3]):  # x, y, z, t
@@ -105,15 +108,24 @@ def main(args):
                         row = []
                         for col_ii in range(7):
                             row.append(mean_STA[:, :, row_ii*7 + col_ii, t])
-                        rows.append(np.concatenate(row, 1))  # if concatenate(row, 1) this makes the row horizontal. Could change.
-                    mean_STA_tile = np.concatenate(rows, 2)  # this should always be a different axis from the one above.
-                    plt.imshow(mean_STA_tile)
+                        rows.append(np.concatenate(row, 0))  # if concatenate(row, 1) this makes the row horizontal. Could change.
+                    mean_STA_tile = np.concatenate(rows, 1)  # this should always be a different axis from the one above.
+                    print(mean_STA_tile.max(), mean_STA_tile.mean(), mean_STA_tile.min()) # use this to figure out vmax,vmin
+                    
+                #     plt.figure(figsize=(10,19))  # mostly vertical
+                #     plt.imshow(mean_STA_tile, vmax=3., vmin=-1.)
+                    plt.figure(figsize=(19,10))   # mostly horizontal
+                    #plt.imshow(mean_STA_tile.T, vmax=3., vmin=-1.)
+                    plt.imshow(mean_STA_tile.T, vmax=2., vmin=-2.) #, cmap = 'bwr')
                     plt.title(f'STA {key_id}, t={t}')
                     brain_name = brain_file.split('.')[0]
-                    save_title = f'{brain_name} STA {key_id} zscore brain t-{t}.png'
-                    plt.savefig(os.path.join(fig_save_path, save_title), bbox_inches = 'tight')
-                    
+                    save_title = f'{brain_name}STA_{key_id}_zscorebrain_t-{t}.png'
+                    print(os.path.join(fig_save_path, save_title))
+                    plt.savefig(os.path.join(fig_save_path, save_title), bbox_inches='tight')
+                    plt.show()
                     print(f'images saved for {key_id} experiment for {brain_file}')
+
+                
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
