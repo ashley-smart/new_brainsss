@@ -40,7 +40,7 @@ def main(args):
         save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_STA.h5') #generate this file
 
         ##save pngs in seperate folder
-        fig_save_path = os.path.join(save_directory, '/plots')
+        fig_save_path = os.path.join(save_directory, 'plots')
         if not os.path.exists(fig_save_path):
             os.mkdir(fig_save_path)
 
