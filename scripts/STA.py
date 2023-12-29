@@ -55,7 +55,7 @@ def main(args):
 
         #load brain
         with h5py.File(full_load_path, 'r') as hf:
-            printlog(hf.keys())
+            #printlog(hf.keys())
             brain = hf['zscore']
             brain_dims = np.shape(brain)
             printlog('got the brain!')
@@ -110,7 +110,7 @@ def main(args):
                             row.append(mean_STA[:, :, row_ii*7 + col_ii, t])
                         rows.append(np.concatenate(row, 0))  # if concatenate(row, 1) this makes the row horizontal. Could change.
                     mean_STA_tile = np.concatenate(rows, 1)  # this should always be a different axis from the one above.
-                    print(mean_STA_tile.max(), mean_STA_tile.mean(), mean_STA_tile.min()) # use this to figure out vmax,vmin
+                    printlog(mean_STA_tile.max(), mean_STA_tile.mean(), mean_STA_tile.min()) # use this to figure out vmax,vmin
                     
                 #     plt.figure(figsize=(10,19))  # mostly vertical
                 #     plt.imshow(mean_STA_tile, vmax=3., vmin=-1.)
@@ -120,10 +120,10 @@ def main(args):
                     plt.title(f'STA {key_id}, t={t}')
                     brain_name = brain_file.split('.')[0]
                     save_title = f'{brain_name}STA_{key_id}_zscorebrain_t-{t}.png'
-                    print(os.path.join(fig_save_path, save_title))
+                    printlog(os.path.join(fig_save_path, save_title))
                     plt.savefig(os.path.join(fig_save_path, save_title), bbox_inches='tight')
                     plt.show()
-                    print(f'images saved for {key_id} experiment for {brain_file}')
+                    printlog(f'images saved for {key_id} experiment for {brain_file}')
 
                 
 
