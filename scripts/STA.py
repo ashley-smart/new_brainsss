@@ -46,16 +46,16 @@ def main(args):
 
         #get light peaks in terms of brain time
         light_peaks_brain_t = fun.get_light_peaks_brain_t_no_bleedthrough (directory)
-        print(np.shape(light_peaks_brain_t))
+        printlog(f'light shape {np.shape(light_peaks_brain_t)}')
 
         ## get frames dark, 20, 40
         ## these are the start and stop points of the different experiments (have them be inclusive)
         brain_t_switch_indices = fun.get_brain_t_switch_set(directory)
-        print(brain_t_switch_indices)
+        printlog(f'indices {brain_t_switch_indices}')
 
         #load brain
         with h5py.File(full_load_path, 'r') as hf:
-            #printlog(hf.keys())
+            #printlog(f'{hf.keys()}')
             brain = hf['zscore']
             brain_dims = np.shape(brain)
             printlog('got the brain!')
@@ -86,17 +86,17 @@ def main(args):
                     for t in trials[i][0][0]:
                         all_t.append(len(t))
                 max_trial_time = max(all_t) 
-                printlog(max_trial_time)
+                printlog(f'{max_trial_time}')
                 nan_brain = np.empty((len(trials), brain_dims[0], brain_dims[1], brain_dims[2],  max_trial_time)) * np.nan
                 for i, trial in enumerate(trials): #[:,:,:]):
                     nan_brain[i, :,:,:, :trial.shape[3]] = trial
-                printlog(np.shape(nan_brain))
+                printlog(f'{np.shape(nan_brain)}')
 
                 with h5py.File(save_file, 'w') as f:
                     fun.add_to_h5(save_file, f'{key_id} trials appended with nans', nan_brain)
 
                     mean_STA = np.nanmean(nan_brain, axis = 0)
-                    printlog(np.shape(mean_STA))
+                    printlog(f'{np.shape(mean_STA)}')
                     fun.add_to_h5(save_file, f'{key_id} STA', mean_STA)
                     printlog(f'saved {key_id} STA')
 
@@ -110,7 +110,7 @@ def main(args):
                             row.append(mean_STA[:, :, row_ii*7 + col_ii, t])
                         rows.append(np.concatenate(row, 0))  # if concatenate(row, 1) this makes the row horizontal. Could change.
                     mean_STA_tile = np.concatenate(rows, 1)  # this should always be a different axis from the one above.
-                    printlog(mean_STA_tile.max(), mean_STA_tile.mean(), mean_STA_tile.min()) # use this to figure out vmax,vmin
+                    printlog(f'max {mean_STA_tile.max()}, mean {mean_STA_tile.mean()}, min{mean_STA_tile.min()}') # use this to figure out vmax,vmin
                     
                 #     plt.figure(figsize=(10,19))  # mostly vertical
                 #     plt.imshow(mean_STA_tile, vmax=3., vmin=-1.)
