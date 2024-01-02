@@ -1,3 +1,6 @@
+## calls vol_zscore_rem_light
+## sbatch file to call is just_zscore.sh
+
 import time
 import sys
 import os
