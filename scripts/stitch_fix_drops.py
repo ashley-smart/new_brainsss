@@ -14,7 +14,7 @@ import nibabel as nib
 import gc
 
 
-
+dont use this. use fix timestamps instead
 #get to files
 #date = '20211215'
 dates = ['20230714']  #as of 4-27 4-5 still has one bad fly as does 330
