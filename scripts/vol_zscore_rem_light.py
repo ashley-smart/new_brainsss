@@ -22,7 +22,7 @@ def main(args):
     directory = args['directory'] # full fly path 
     file_names = args['file_names'] ## should be  _highpass.h5 now to run zscore on h5 files
     save_directory = args['save_path']
-
+    fix = args['fix_timestamps'] ##fixes timestamps to account for stitch error for files before 20231201
     
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
@@ -34,7 +34,7 @@ def main(args):
     rem_light = True
     redo_light_peaks = True
     redo_rem_light = True
-    fix = True
+    #fix = True  ##fixes timestamps to account for stitch error for files before 20231201
     light_buffer = 100
     
     

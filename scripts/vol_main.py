@@ -1,3 +1,6 @@
+## motion corrects, high pass filters, and zscores
+## run new_align_process after this to align brains and make mean brains
+
 import time
 import sys
 import os
@@ -23,19 +26,22 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = ['20230405__queue__', '20230330__queue__' ] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
-dates = ['20230707']
+dates = ['20231220__queue__', '20231215__queue__', '20231207__queue__']  #as of 4-27 4-5 still has one bad fly as does 330
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
     #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
 
-
+    zscore_switch = True ##if true runs zscore_switch code, if false runs zscore without switch
+    fix_timestamps = False  ## change this in the future to check the date and after july 2023 have it set to false
+    rem_light = True  #for zscore
     mem = 4
     high_pass_mem = 6
     runtime = 48 #144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log
     nodes = 1 # 1 or 2
     nice = True #True # true to lower priority of jobs. ie, other users jobs go first
+
 
 
 
@@ -113,33 +119,45 @@ for date in dates:
         brainsss.wait_for_job(job_id, logfile, com_path)
 
 
-    # ######################
-    # ### vol zscore ####
-    # #######################
-    # printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
-    # #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
-    # ##run zscore on high pass filtered moco files
-    # file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
-    # job_ids = []
-    # for fly in flies:
-    #     directory = os.path.join(dataset_path, fly)
-    #     save_path = directory  #could have it save in a different folder in the future
-    #     all_files = os.listdir(directory)
-    #     filenames = [file for file in all_files if file_id in file]
-    #     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
-    #     script = 'vol_zscore.py'
-    #     printlog(os.path.join(scripts_path, script))
-    #     job_id = brainsss.sbatch(jobname='volzscore',
-    #                          script=os.path.join(scripts_path, script),
-    #                          modules=modules,
-    #                          args=args,
-    #                          logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
-    #     job_ids.append(job_id)
-    #     printlog("fly started")
+    ######################
+    ### vol zscore ####
+    #######################
+    printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
+    #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+    ##run zscore on high pass filtered moco files
+    file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
+    if zscore_switch == True and rem_light == True:
+        zscore_sript = 'vol_zscore_rem_light.py'
+    elif zscore_switch == True and rem_light == False:
+        zscore_script = 'vol_zscore_switch.py'
+    else:
+        zscore_script = 'vol_zscore.py'
+    printlog(f'zscore script running = {zscore_script}')
 
-    # for job_id in job_ids:
-    #     brainsss.wait_for_job(job_id, logfile, com_path)
 
+    job_ids = []
+    for fly in flies:
+        directory = os.path.join(dataset_path, fly)
+        save_path = directory  #could have it save in a different folder in the future
+        all_files = os.listdir(directory)
+        filenames = [file for file in all_files if file_id in file]
+        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path, 'fix_timestamps': fix_timestamps}
+        script = zscore_script
+        printlog(os.path.join(scripts_path, script))
+        job_id = brainsss.sbatch(jobname='volzscore',
+                             script=os.path.join(scripts_path, script),
+                             modules=modules,
+                             args=args,
+                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+        job_ids.append(job_id)
+        printlog("fly started")
+
+    for job_id in job_ids:
+        brainsss.wait_for_job(job_id, logfile, com_path)
+
+
+    ### make mean brain will run in next processing step new_align_process.py
+        
 
     # ############################
     # #### make mean anat brain  ###
