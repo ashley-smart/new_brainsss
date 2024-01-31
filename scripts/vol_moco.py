@@ -106,7 +106,7 @@ def main(args):
   ####################################################################3
   ## Start MOCO!!  ######
   # loop over all brain vols, motion correcting each and append to growing hdf5 file on disk
-  printlog('moco vol by vol')
+  printlog('starting moco vol by vol')
            
   ### prepare chunks to loop over ###
   # the stepsize defines how many vols to moco before saving them to h5 (this save is slow, so we want to do it less often)

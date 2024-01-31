@@ -82,7 +82,7 @@ for date in dates:
     ######################
     ### vol moco ####
     #######################
-    printlog(f"\n{'   vol by vol moco test   ':=^{width}}")
+    printlog(f"\n{'   running moco   ':=^{width}}")
     job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
@@ -102,6 +102,7 @@ for date in dates:
     ###############################
     ## high pass temporal filter ##
     ################################
+    printlog(f"\n{'   high pass filter   ':=^{width}}")
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future
@@ -122,7 +123,7 @@ for date in dates:
     ######################
     ### vol zscore ####
     #######################
-    printlog(f"\n{'   vol by vol zscore test   ':=^{width}}")
+    printlog(f"\n{'   running zscore   ':=^{width}}")
     #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
     ##run zscore on high pass filtered moco files
     file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
@@ -135,7 +136,7 @@ for date in dates:
     printlog(f'zscore script running = {zscore_script}')
 
 
-    job_ids = []
+    #job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future
