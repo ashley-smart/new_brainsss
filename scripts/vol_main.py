@@ -26,7 +26,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = ['20230405__queue__', '20230330__queue__' ] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
-dates = ['20231220__queue__', '20231215__queue__', '20231207__queue__']  #as of 4-27 4-5 still has one bad fly as does 330
+dates = ['20231220__queue__' ]#, '20231215__queue__', '20231207__queue__']  #as of 4-27 4-5 still has one bad fly as does 330
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
