@@ -79,45 +79,45 @@ for date in dates:
     printlog("")
 
 
-    ######################
-    ### vol moco ####
-    #######################
-    printlog(f"\n{'   running moco   ':=^{width}}")
-    job_ids = []
-    for fly in flies:
-        directory = os.path.join(dataset_path, fly)
-        save_path = directory  #could have it save in a different folder in the future
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
-        script = 'vol_moco.py'
-        job_id = brainsss.sbatch(jobname='volmoco',
-                             script=os.path.join(scripts_path, script),
-                             modules=modules,
-                             args=args,
-                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
-        job_ids.append(job_id)
+    # ######################
+    # ### vol moco ####
+    # #######################
+    # printlog(f"\n{'   running moco   ':=^{width}}")
+    # job_ids = []
+    # for fly in flies:
+    #     directory = os.path.join(dataset_path, fly)
+    #     save_path = directory  #could have it save in a different folder in the future
+    #     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'colors': ['green'], 'file_names': ['ch1_stitched.nii', 'ch2_stitched.nii'], 'save_path': save_path}
+    #     script = 'vol_moco.py'
+    #     job_id = brainsss.sbatch(jobname='volmoco',
+    #                          script=os.path.join(scripts_path, script),
+    #                          modules=modules,
+    #                          args=args,
+    #                          logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+    #     job_ids.append(job_id)
 
-    for job_id in job_ids:
-        brainsss.wait_for_job(job_id, logfile, com_path)
+    # for job_id in job_ids:
+    #     brainsss.wait_for_job(job_id, logfile, com_path)
         
-    ###############################
-    ## high pass temporal filter ##
-    ################################
-    printlog(f"\n{'   high pass filter   ':=^{width}}")
-    for fly in flies:
-        directory = os.path.join(dataset_path, fly)
-        save_path = directory  #could have it save in a different folder in the future
-    #     load_directory = os.path.join(func)
-    #     save_directory = os.path.join(func)
-        brain_file = ['MOCO_ch2.h5', 'MOCO_ch1.h5']
+    # ###############################
+    # ## high pass temporal filter ##
+    # ################################
+    # printlog(f"\n{'   high pass filter   ':=^{width}}")
+    # for fly in flies:
+    #     directory = os.path.join(dataset_path, fly)
+    #     save_path = directory  #could have it save in a different folder in the future
+    # #     load_directory = os.path.join(func)
+    # #     save_directory = os.path.join(func)
+    #     brain_file = ['MOCO_ch2.h5', 'MOCO_ch1.h5']
 
-        args = {'logfile': logfile, 'load_directory': directory, 'save_directory': save_path, 'brain_file': brain_file}
-        script = 'temporal_high_pass_filter.py'
-        job_id = brainsss.sbatch(jobname='highpass',
-                             script=os.path.join(scripts_path, script),
-                             modules=modules,
-                             args=args,
-                             logfile=logfile, time=4, mem=high_pass_mem, nice=nice, nodes=nodes)
-        brainsss.wait_for_job(job_id, logfile, com_path)
+    #     args = {'logfile': logfile, 'load_directory': directory, 'save_directory': save_path, 'brain_file': brain_file}
+    #     script = 'temporal_high_pass_filter.py'
+    #     job_id = brainsss.sbatch(jobname='highpass',
+    #                          script=os.path.join(scripts_path, script),
+    #                          modules=modules,
+    #                          args=args,
+    #                          logfile=logfile, time=4, mem=high_pass_mem, nice=nice, nodes=nodes)
+    #     brainsss.wait_for_job(job_id, logfile, com_path)
 
 
     ######################
