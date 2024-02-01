@@ -37,6 +37,7 @@ for date in dates:
     rem_light = True  #for zscore
     mem = 4
     high_pass_mem = 6
+    zscore_mem = 12
     runtime = 48 #144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log
     nodes = 1 # 1 or 2
@@ -150,7 +151,7 @@ for date in dates:
                              script=os.path.join(scripts_path, script),
                              modules=modules,
                              args=args,
-                             logfile=logfile, time=runtime, mem=high_pass_mem, nice=nice, nodes=nodes)
+                             logfile=logfile, time=runtime, mem=zscore_mem, nice=nice, nodes=nodes)
         job_ids.append(job_id)
         printlog("fly started")
 
