@@ -150,7 +150,7 @@ for date in dates:
                              script=os.path.join(scripts_path, script),
                              modules=modules,
                              args=args,
-                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+                             logfile=logfile, time=runtime, mem=high_pass_mem, nice=nice, nodes=nodes)
         job_ids.append(job_id)
         printlog("fly started")
 
