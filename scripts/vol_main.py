@@ -102,6 +102,7 @@ for date in dates:
     # ###############################
     # ## high pass temporal filter ##
     # ################################
+    # job_ids = []
     # printlog(f"\n{'   high pass filter   ':=^{width}}")
     # for fly in flies:
     #     directory = os.path.join(dataset_path, fly)
@@ -136,7 +137,7 @@ for date in dates:
     printlog(f'zscore script running = {zscore_script}')
 
 
-    #job_ids = []
+    job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future
