@@ -128,7 +128,7 @@ for date in dates:
     ##run zscore on high pass filtered moco files
     file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
     if zscore_switch == True and rem_light == True:
-        zscore_sript = 'vol_zscore_rem_light.py'
+        zscore_script = 'vol_zscore_rem_light.py'
     elif zscore_switch == True and rem_light == False:
         zscore_script = 'vol_zscore_switch.py'
     else:

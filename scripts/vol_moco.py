@@ -36,9 +36,9 @@ def main(args):
   ########################################3
   ## see if already moco file
   if rerun_moco == False:
-    for name in file_names:
-      if 'MOCO' in name:
-          printlog(f'MOCO FILE ALREADY EXISTS {name} => aborting')
+    for file in os.listdir(directory):
+      if 'MOCO' in file:
+          printlog(f'MOCO FILE ALREADY EXISTS {file} => aborting')
           return
   
   # Get brain shape
