@@ -13,11 +13,12 @@ import gc
 
 #get to files
 #date = '20211215'
-dates = ['20231220__queue__', '20231215__queue__', '20231207__queue__']  #as of 4-27 4-5 still has one bad fly as does 330
+dates = ['20240106']  #as of 4-27 4-5 still has one bad fly as does 330
 for date in dates:
   print('STARTING DATE:', str(date))
-  dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+  #dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
   #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
+  dataset_path = f"/oak/stanford/groups/trc/data/Jacob/ImagingData/Bruker/{date}"
   
   fly_files = os.listdir(dataset_path)  ## find directory names, they are the fly names
   fly_folders = []
@@ -35,6 +36,7 @@ for date in dates:
     channel_1_list = []
     channel_2_list = []
     for file in files:
+        print(f'looking in file {file}')
         ## stitch brain ##
         #append all appropriate nii files together
         # these need to be appended in order so first make a list of ch specific files then sort later
