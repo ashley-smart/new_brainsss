@@ -24,65 +24,70 @@ THIS IS A JOBLIB ISSUE. If you can, kindly provide the joblib's team with an
   **kwargs)
  '''
 
-def main(args):
+def main(args):  #added directory and file_names
 
-	func_path = args['func_path']
+	#func_path = args['func_path']
 	logfile = args['logfile']
+	directory = args['directory'] # full fly path Is the same as func_path
+	file_names = args['file_names']  #should be highpass_zscore
 	printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 	n_clusters = 2000
 
 	### LOAD BRAIN ###
+	for brain_file in file_names:
+        brain_path = os.path.join(directory, brain_file)
+		t0 = time.time()
 
-	brain_path = os.path.join(func_path, 'functional_channel_2_moco_zscore_highpass.h5')
-	t0 = time.time()
-	with h5py.File(brain_path, 'r+') as h5_file:
-		brain = np.nan_to_num(h5_file.get("data")[:].astype('float32'))
-	printlog('brain shape: {}'.format(brain.shape))
-	printlog('load duration: {} sec'.format(time.time()-t0))
+		#brain_path = os.path.join(func_path, 'functional_channel_2_moco_zscore_highpass.h5')
+		
+		with h5py.File(brain_path, 'r+') as h5_file:
+			brain = np.nan_to_num(h5_file.get("data")[:].astype('float32'))
+		printlog('brain shape: {}'.format(brain.shape))
+		printlog('load duration: {} sec'.format(time.time()-t0))
 
-	### MAKE CLUSTER DIRECTORY ###
+		### MAKE CLUSTER DIRECTORY ###
 
-	cluster_dir = os.path.join(func_path, 'clustering')
-	if not os.path.exists(cluster_dir):
-		os.mkdir(cluster_dir)
+		cluster_dir = os.path.join(directory, 'clustering')
+		if not os.path.exists(cluster_dir):
+			os.mkdir(cluster_dir)
 
-	### FIT CLUSTERS ###
+		### FIT CLUSTERS ###
 
-	printlog('fitting clusters')
-	t0 = time.time()
-	connectivity = grid_to_graph(256,128)
-	cluster_labels = []
-	for z in range(49):
-		neural_activity = brain[:,:,z,:].reshape(-1, 3384)
-		cluster_model = AgglomerativeClustering(n_clusters=n_clusters,
-									memory=cluster_dir,
-									linkage='ward',
-									connectivity=connectivity)
-		cluster_model.fit(neural_activity)
-		cluster_labels.append(cluster_model.labels_)
-	cluster_labels = np.asarray(cluster_labels)
-	save_file = os.path.join(cluster_dir, 'cluster_labels.npy')
-	np.save(save_file,cluster_labels)
-	printlog('cluster fit duration: {} sec'.format(time.time()-t0))
+		printlog('fitting clusters')
+		t0 = time.time()
+		connectivity = grid_to_graph(256,128)
+		cluster_labels = []
+		for z in range(49):
+			neural_activity = brain[:,:,z,:].reshape(-1, 3384)
+			cluster_model = AgglomerativeClustering(n_clusters=n_clusters,
+										memory=cluster_dir,
+										linkage='ward',
+										connectivity=connectivity)
+			cluster_model.fit(neural_activity)
+			cluster_labels.append(cluster_model.labels_)
+		cluster_labels = np.asarray(cluster_labels)
+		save_file = os.path.join(cluster_dir, 'cluster_labels.npy')
+		np.save(save_file,cluster_labels)
+		printlog('cluster fit duration: {} sec'.format(time.time()-t0))
 
-	### GET CLUSTER AVERAGE SIGNAL ###
+		### GET CLUSTER AVERAGE SIGNAL ###
 
-	printlog('getting cluster averages')
-	t0 = time.time()
-	all_signals = []
-	for z in range(49):
-		neural_activity = brain[:,:,z,:].reshape(-1, 3384)
-		signals = []
-		for cluster_num in range(n_clusters):
-			cluster_indicies = np.where(cluster_labels[z,:]==cluster_num)[0]
-			mean_signal = np.mean(neural_activity[cluster_indicies,:], axis=0)
-			signals.append(mean_signal)
-		signals = np.asarray(signals)
-		all_signals.append(signals)
-	all_signals = np.asarray(all_signals)
-	save_file = os.path.join(cluster_dir, 'cluster_signals.npy')
-	np.save(save_file, all_signals)
-	printlog('cluster average duration: {} sec'.format(time.time()-t0))
+		printlog('getting cluster averages')
+		t0 = time.time()
+		all_signals = []
+		for z in range(49):
+			neural_activity = brain[:,:,z,:].reshape(-1, 3384)
+			signals = []
+			for cluster_num in range(n_clusters):
+				cluster_indicies = np.where(cluster_labels[z,:]==cluster_num)[0]
+				mean_signal = np.mean(neural_activity[cluster_indicies,:], axis=0)
+				signals.append(mean_signal)
+			signals = np.asarray(signals)
+			all_signals.append(signals)
+		all_signals = np.asarray(all_signals)
+		save_file = os.path.join(cluster_dir, 'cluster_signals.npy')
+		np.save(save_file, all_signals)
+		printlog('cluster average duration: {} sec'.format(time.time()-t0))
 
 if __name__ == '__main__':
 	main(json.loads(sys.argv[1]))
