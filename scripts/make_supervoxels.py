@@ -4,7 +4,14 @@ import json
 import numpy as np
 import h5py
 import time
-import brainsss
+
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+sys.path.append("/home/users/asmart/projects/new_brainsss/")
+os.listdir("/home/users/asmart/projects/new_brainsss/")
+sys.path.append("/home/users/asmart/projects/new_brainsss/brainsss")
+
+print(sys.path)
+
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.feature_extraction.image import grid_to_graph
 
