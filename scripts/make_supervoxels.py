@@ -42,13 +42,15 @@ def main(args):  #added directory and file_names
 
 	### LOAD BRAIN ###
 	for brain_file in file_names:
-		brain_path = os.path.join(directory, brain_file)		
+		brain_path = os.path.join(directory, brain_file)	
+		printlog(f'brain path = {brain_path}')	
 		t0 = time.time()
 
 		#brain_path = os.path.join(func_path, 'functional_channel_2_moco_zscore_highpass.h5')
 		
-		with h5py.File(brain_path, 'r+') as h5_file:
-			brain = np.nan_to_num(h5_file.get("data")[:].astype('float32'))
+		with h5py.File(brain_path, 'a') as h5_file:
+			printlog(f'keys = {h5_file.keys()}')
+			brain = np.nan_to_num(h5_file.get("zscore")[:].astype('float32'))
 		printlog('brain shape: {}'.format(brain.shape))
 		printlog('load duration: {} sec'.format(time.time()-t0))
 
