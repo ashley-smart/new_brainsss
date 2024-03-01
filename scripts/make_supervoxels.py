@@ -35,7 +35,7 @@ def main(args):  #added directory and file_names
 
 	### LOAD BRAIN ###
 	for brain_file in file_names:
-        brain_path = os.path.join(directory, brain_file)
+		brain_path = os.path.join(directory, brain_file)		
 		t0 = time.time()
 
 		#brain_path = os.path.join(func_path, 'functional_channel_2_moco_zscore_highpass.h5')
