@@ -61,6 +61,7 @@ for date in dates:
 
     mem = 4
     high_pass_mem = 6
+    super_mem = 20 #12 was insufficient
     runtime = 8 #144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log
     nodes = 1 # 1 or 2
@@ -130,7 +131,7 @@ for date in dates:
                             script=os.path.join(scripts_path, script),
                             modules=modules,
                             args=args,
-                            logfile=logfile, time=2, mem=12, nice=nice, nodes=nodes)
+                            logfile=logfile, time=2, mem=super_mem, nice=nice, nodes=nodes)
         brainsss.wait_for_job(job_id, logfile, com_path)
 
     time.sleep(30) # to allow any final printing
