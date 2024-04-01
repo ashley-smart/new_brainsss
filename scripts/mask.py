@@ -10,31 +10,43 @@ import time
 import scipy
 from scipy import ndimage
 from scipy.ndimage import gaussian_filter1d
+import h5py
 
 import nibabel as nib
-import bigbadbrain as bbb
-import dataflow as flow
+# import bigbadbrain as bbb
+#import dataflow as flow
 
 from skimage.filters import threshold_triangle as tri_thresh
 from skimage.filters import threshold_yen as yen_thresh
 from skimage.filters import threshold_isodata as iso_thresh
 from skimage.filters import threshold_li as li_thresh
 
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+sys.path.append("/home/users/asmart/projects/new_brainsss/")
+os.listdir("/home/users/asmart/projects/new_brainsss/")
+sys.path.append("/home/users/asmart/projects/new_brainsss/brainsss")
+import brainsss
+
 def main(args):
 
     logfile = args['logfile']
     directory = args['directory'] # full fly func path
-    file = args['file']
-    printlog = getattr(flow.Printlog(logfile=logfile), 'print_to_log')
+    #file = args['file']
+    #printlog = getattr(flow.Printlog(logfile=logfile), 'print_to_log')
+    printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
+    brain_id = 'MOCO_ch2_highpass_full_zscore_rem_light.h5' #brain to apply mask to
+    mean_id = 'MOCO_ch_mean.nii' #mean to generate mask
+    #mean_path = f"/oak/stanford/groups/trc/data/Ashley2/imports/{date}/{fly_name}/{mean_file}"
 
-    brain_file = os.path.join(directory, file)
+
+    brain_file = os.path.join(directory, mean_id) ## this should be meanbrain
     printlog("masking {}".format(brain_file))
     
     ### Load Brain ###
     brain = np.array(nib.load(brain_file).get_data(), copy=True)
 
     ### Load brain to use as mask ###
-    brain_file = os.path.join(directory, 'imaging', 'functional_channel_1_mean.nii')
+    brain_file = os.path.join(directory, mean_id) ##mean brain
     brain_mean = np.array(nib.load(brain_file).get_data(), copy=True)
 
     ### Mask ###
@@ -70,11 +82,19 @@ def main(args):
     nib.Nifti1Image(mask, np.eye(4)).to_filename(brain_save_file)
 
     # apply mask
-    brain = brain*mask[:,:,:,None]
+    brain_path = os.path.join(directory, brain_id) ##brain to mask
+    with h5py.File(brain_path, 'r') as hf:
+        printlog(hf.keys())
+        brain = hf['zscore']
+        brain = brain*mask[:,:,:,None]
+        printlog('made masked brain')
+        # Save masked brain 
+        brain_save_file = os.path.join(directory, 'brain_zscore_hp_moco_masked.nii') #<---------------------------------------
+        nib.Nifti1Image(brain, np.eye(4)).to_filename(brain_save_file)
 
     # Save masked brain 
-    brain_save_file = os.path.join(directory, 'brain_zscored_red_high_pass_masked.nii') #<---------------------------------------
-    nib.Nifti1Image(brain, np.eye(4)).to_filename(brain_save_file)
+    # brain_save_file = os.path.join(directory, 'brain_zscored_red_high_pass_masked.nii') #<---------------------------------------
+    # nib.Nifti1Image(brain, np.eye(4)).to_filename(brain_save_file)
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
