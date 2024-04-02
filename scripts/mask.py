@@ -84,7 +84,7 @@ def main(args):
     # apply mask
     brain_path = os.path.join(directory, brain_id) ##brain to mask
     with h5py.File(brain_path, 'r') as hf:
-        printlog(hf.keys())
+        #printlog(hf.keys())
         brain = hf['zscore']
         brain = brain*mask[:,:,:,None]
         printlog('made masked brain')
