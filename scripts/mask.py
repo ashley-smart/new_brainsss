@@ -42,7 +42,7 @@ def main(args):
 
 
     #brain_file = os.path.join(directory, mean_id) ## this should be meanbrain
-    printlog("masking {}".format(brain_file))
+    #printlog("masking {}".format(brain_file))
     
     ### Load Brain ###
     brain = np.array(nib.load(brain_file).get_data(), copy=True)
