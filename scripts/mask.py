@@ -83,7 +83,7 @@ def main(args):
     brain_save_file = os.path.join(directory, 'mask.nii')
     nib.Nifti1Image(mask, np.eye(4)).to_filename(brain_save_file)
 
-    # apply mask
+    # apply mask (consider revising how this is saved to go faster)
     brain_path = os.path.join(directory, brain_id) ##brain to mask
     with h5py.File(brain_path, 'r') as hf:
         #printlog(hf.keys())
