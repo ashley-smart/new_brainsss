@@ -116,7 +116,8 @@ for date in dates:
 
     #### SUPERVOXELS
     for fly in func_flies:
-        file_id = 'highpass_full_zscore_rem_light.h5'
+        #file_id = 'highpass_full_zscore_rem_light.h5'
+        file_id = 'hp_moco_rem_light_masked.h5' #for masked brain
         all_files = os.listdir(func_directory)
         file_names = [file for file in all_files if file_id in file]
         args = {'logfile': logfile, 'directory': func_directory, 'file_names': file_names}

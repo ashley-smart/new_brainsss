@@ -27,6 +27,8 @@ os.listdir("/home/users/asmart/projects/new_brainsss/")
 sys.path.append("/home/users/asmart/projects/new_brainsss/brainsss")
 import brainsss
 
+import functions as fun
+
 def main(args):
 
     logfile = args['logfile']
@@ -39,7 +41,7 @@ def main(args):
     #mean_path = f"/oak/stanford/groups/trc/data/Ashley2/imports/{date}/{fly_name}/{mean_file}"
 
 
-    brain_file = os.path.join(directory, mean_id) ## this should be meanbrain
+    #brain_file = os.path.join(directory, mean_id) ## this should be meanbrain
     printlog("masking {}".format(brain_file))
     
     ### Load Brain ###
@@ -89,9 +91,12 @@ def main(args):
         brain = brain*mask[:,:,:,None]
         printlog('made masked brain')
         # Save masked brain 
-        brain_save_file = os.path.join(directory, 'brain_zscore_hp_moco_masked.nii') #<---------------------------------------
-        nib.Nifti1Image(brain, np.eye(4)).to_filename(brain_save_file)
-
+        brain_save_file = os.path.join(directory, 'brain_zscore_hp_moco_rem_light_masked.nii') #<---------------------------------------
+        brain_save_file_h5 = os.path.join(directory, 'brain_zscore_hp_moco_rem_light_masked.h5')
+        #nib.Nifti1Image(brain, np.eye(4)).to_filename(brain_save_file)
+        with h5py.File(brain_save_file_h5, 'w') as f:
+            key = 'zscore'
+            fun.add_to_h5(brain_save_file_h5, key, brain)
     # Save masked brain 
     # brain_save_file = os.path.join(directory, 'brain_zscored_red_high_pass_masked.nii') #<---------------------------------------
     # nib.Nifti1Image(brain, np.eye(4)).to_filename(brain_save_file)
