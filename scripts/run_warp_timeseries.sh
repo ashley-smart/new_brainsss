@@ -9,4 +9,4 @@
 
 ml python/3.6
 date
-python3 -u ./warp_timeseries.py
+python3 -u /home/users/asmart/projects/new_brainsss/scripts/warp_timeseries.py
