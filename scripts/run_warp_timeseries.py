@@ -65,6 +65,7 @@ dates = ['20230714', '20230707', '20230505', '20230504', '20230428']
 for date in dates:
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
     
+
     ###################################
     ## look for flies in date folder ##
     ###################################
@@ -96,9 +97,13 @@ for date in dates:
         func_directory = os.path.join(dataset_path, fly)
         anat_directory = os.path.join(dataset_path, current_anat_file)
         file_id = "MOCO_ch2_highpass_full_zscore_rem_light.h5" ##run warp on this file
+        save_directory = "/oak/stanford/groups/trc/data/Ashley2/imports/superfly/" + str(date) + str(fly) + "/warp"
         moving_path = os.path.join(func_directory, file_id)
         #run warp timeseries
-        args = {'logfile': logfile, 'directory': func_directory, 'moving_path': moving_path}
+        args = {'logfile': logfile, 
+                'directory': func_directory, 
+                'moving_path': moving_path, 
+                'save_directory': save_directory}
         script = 'warp_timeseries.py'
         job_id = brainsss.sbatch(jobname='warp_ts',
                             script=os.path.join(scripts_path, script),

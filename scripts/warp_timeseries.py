@@ -5,6 +5,10 @@ import psutil
 import nibabel as nib
 from time import time
 import json
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+sys.path.append("/home/users/asmart/projects/new_brainsss/")
+os.listdir("/home/users/asmart/projects/new_brainsss/")
+sys.path.append("/home/users/asmart/projects/new_brainsss/brainsss")
 import brainsss
 import matplotlib.pyplot as plt
 from contextlib import contextmanager
@@ -19,7 +23,9 @@ def main(args):
     logfile = args['logfile']
     fly_directory = args['directory']
     moving_path = args['moving_path']
+    save_directory = args['save_directory']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
+    save_directory = os.path.join(fly_directory, 'warp')
     save_directory = os.path.join(fly_directory, 'warp')
     
     #my moving path should be MOCO_ch2_highpass_full_zscore_rem_light.h5
