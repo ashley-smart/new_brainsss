@@ -41,6 +41,7 @@ THIS IS A JOBLIB ISSUE. If you can, kindly provide the joblib's team with an
 def main(args):
 
     dataset_path = args['dataset_path']
+    #fly_dirs should contain folders of the flies and then func or anat
     fly_dirs = args['fly_dirs']#.split(',')  ##should have only flies looking at because it will make the superfly this len long
     logfile = args['logfile']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
@@ -53,7 +54,7 @@ def main(args):
     printlog(str(fly_dirs))
 
     day = time.strftime("%Y%m%d")
-    superfly_dir = os.path.join(dataset_path,F'{day}_superfly')
+    superfly_dir = os.path.join(dataset_path,F'{day}_superfly')  #this makes a new directory every day the script is run based on the date
     if not os.path.exists(superfly_dir):
         os.mkdir(superfly_dir)
 
@@ -74,7 +75,7 @@ def main(args):
         ###################
         brain_superslice = []
         for fly in fly_dirs:
-            brain_path = os.path.join(dataset_path, fly, 'func_0', 'brain_in_FDA.nii')
+            brain_path = os.path.join(dataset_path, fly, 'func_0', 'brain_in_FDA.nii')  #this will look for func_0 in the fly folder
             brain = np.nan_to_num(np.asarray(nib.load(brain_path).get_data().squeeze(), dtype='float32'))
             brain_superslice.append(brain[:,:,z,:])
 

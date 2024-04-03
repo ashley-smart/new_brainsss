@@ -37,7 +37,7 @@ def main(args):
     #printlog = getattr(flow.Printlog(logfile=logfile), 'print_to_log')
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     brain_id = 'MOCO_ch2_highpass_full_zscore_rem_light.h5' #brain to apply mask to
-    mean_id = 'MOCO_ch_mean.nii' #mean to generate mask
+    mean_id = 'MOCO_ch2_mean.nii' #mean to generate mask
     #mean_path = f"/oak/stanford/groups/trc/data/Ashley2/imports/{date}/{fly_name}/{mean_file}"
 
 

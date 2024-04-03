@@ -20,6 +20,10 @@ def main(args):
     fly_directory = args['fly_directory']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     save_directory = os.path.join(fly_directory, 'warp')
+    moving_path = args['moving_path']
+    #my moving path should be MOCO_ch2_highpass_full_zscore_rem_light.h5
+    ## Bella's moving_path 
+    # moving_path = os.path.join(fly_directory, 'func_0', 'functional_channel_2_moco_zscore_highpass.h5')
 
     ###################
     ### Load Brains ###
@@ -29,7 +33,9 @@ def main(args):
     fixed = ants.from_numpy(fixed)
     fixed.set_spacing((2.611,2.611,5))
 
-    moving_path = os.path.join(fly_directory, 'func_0', 'functional_channel_2_moco_zscore_highpass.h5')
+    
+
+    
     with h5py.File(moving_path, 'r') as hf:
         moving = hf['data'][:]
     moving = ants.from_numpy(moving)
