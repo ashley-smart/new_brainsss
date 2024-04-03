@@ -17,10 +17,11 @@ import h5py
 def main(args):
 
     logfile = args['logfile']
-    fly_directory = args['fly_directory']
+    fly_directory = args['directory']
+    moving_path = args['moving_path']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     save_directory = os.path.join(fly_directory, 'warp')
-    moving_path = args['moving_path']
+    
     #my moving path should be MOCO_ch2_highpass_full_zscore_rem_light.h5
     ## Bella's moving_path 
     # moving_path = os.path.join(fly_directory, 'func_0', 'functional_channel_2_moco_zscore_highpass.h5')

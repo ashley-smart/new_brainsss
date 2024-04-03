@@ -84,4 +84,38 @@ for date in dates:
     printlog(f' func flies found: {func_flies}')
 
 
+    job_ids = []
+    for fly in func_flies:
+        fly_number = get_fly_number(fly)
+        #look at anat flies and find match
+        for anat_fly in anat_flies:
+            anat_number = get_fly_number(anat_fly)
+            if anat_number == fly_number:
+                current_anat_file = anat_fly
+
+        func_directory = os.path.join(dataset_path, fly)
+        anat_directory = os.path.join(dataset_path, current_anat_file)
+        file_id = "MOCO_ch2_highpass_full_zscore_rem_light.h5" ##run warp on this file
+        moving_path = os.path.join(func_directory, file_id)
+        #run warp timeseries
+        args = {'logfile': logfile, 'directory': func_directory, 'moving_path': moving_path}
+        script = 'warp_timeseries.py'
+        job_id = brainsss.sbatch(jobname='warp_ts',
+                            script=os.path.join(scripts_path, script),
+                            modules=modules,
+                            args=args,
+                            logfile=logfile, time=3, mem=12, nice=nice, nodes=nodes) #, global_resources=True)
+        job_ids.append(job_id)
+        brainsss.wait_for_job(job_id, logfile, com_path)
+
+    time.sleep(30) # to allow any final printing
+    day_now = datetime.datetime.now().strftime("%B %d, %Y")
+    time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
+    printlog("="*width)
+    printlog(F"{day_now+' | '+time_now:^{width}}")
+
+    for job_id in job_ids:
+        brainsss.wait_for_job(job_id, logfile, com_path)
+
+
     
