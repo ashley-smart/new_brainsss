@@ -100,10 +100,7 @@ for date in dates:
         save_directory = "/oak/stanford/groups/trc/data/Ashley2/imports/superfly/" + str(date) + str(fly) + "/warp"
         moving_path = os.path.join(func_directory, file_id)
         #run warp timeseries
-        args = {'logfile': logfile, 
-                'directory': func_directory, 
-                'moving_path': moving_path, 
-                'save_directory': save_directory}
+        args = {'logfile': logfile, 'directory': func_directory, 'moving_path': moving_path, 'save_directory': save_directory}
         script = 'warp_timeseries.py'
         job_id = brainsss.sbatch(jobname='warp_ts',
                             script=os.path.join(scripts_path, script),

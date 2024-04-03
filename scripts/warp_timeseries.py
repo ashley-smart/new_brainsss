@@ -40,9 +40,6 @@ def main(args):
     fixed = ants.from_numpy(fixed)
     fixed.set_spacing((2.611,2.611,5))
 
-    
-
-    
     with h5py.File(moving_path, 'r') as hf:
         moving = hf['data'][:]
     moving = ants.from_numpy(moving)
