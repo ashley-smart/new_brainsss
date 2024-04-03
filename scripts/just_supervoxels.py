@@ -100,26 +100,29 @@ for date in dates:
     printlog("")
 
     job_ids = []
-    for fly in func_flies:
-        fly_number = get_fly_number(fly)
-        #look at anat flies and find match
-        for anat_fly in anat_flies:
-            anat_number = get_fly_number(anat_fly)
-            if anat_number == fly_number:
-                current_anat_file = anat_fly
+    # for fly in func_flies:
+    #     fly_number = get_fly_number(fly)
+    #     #look at anat flies and find match
+    #     for anat_fly in anat_flies:
+    #         anat_number = get_fly_number(anat_fly)
+    #         if anat_number == fly_number:
+    #             current_anat_file = anat_fly
 
-        func_directory = os.path.join(dataset_path, fly)
-        anat_directory = os.path.join(dataset_path, current_anat_file)
-        file_id = "mean.nii"
-        #moco_id = "MOCO" #but everything after moco also has MOCO in it => need to specify files
-        moco_files = ["MOCO_ch1.h5", "MOCO_ch2.h5"]
+    #     func_directory = os.path.join(dataset_path, fly)
+    #     anat_directory = os.path.join(dataset_path, current_anat_file)
+    #     file_id = "mean.nii"
+    #     #moco_id = "MOCO" #but everything after moco also has MOCO in it => need to specify files
+    #     moco_files = ["MOCO_ch1.h5", "MOCO_ch2.h5"]
 
     #### SUPERVOXELS
+    printlog(f'all func flies: {func_flies}')
     for fly in func_flies:
         #file_id = 'highpass_full_zscore_rem_light.h5'
         file_id = 'hp_moco_rem_light_masked.h5' #for masked brain
+        func_directory = os.path.join(dataset_path, fly)
         all_files = os.listdir(func_directory)
         file_names = [file for file in all_files if file_id in file]
+        printlog(f'files to run: {file_names}')
         args = {'logfile': logfile, 'directory': func_directory, 'file_names': file_names}
         script = 'make_supervoxels.py'
         job_id = brainsss.sbatch(jobname='supervox',

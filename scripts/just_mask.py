@@ -100,19 +100,19 @@ for date in dates:
     printlog("")
 
     job_ids = []
-    for fly in func_flies:
-        fly_number = get_fly_number(fly)
-        #look at anat flies and find match
-        for anat_fly in anat_flies:
-            anat_number = get_fly_number(anat_fly)
-            if anat_number == fly_number:
-                current_anat_file = anat_fly
+    # for fly in func_flies:
+    #     fly_number = get_fly_number(fly)
+    #     #look at anat flies and find match
+    #     for anat_fly in anat_flies:
+    #         anat_number = get_fly_number(anat_fly)
+    #         if anat_number == fly_number:
+    #             current_anat_file = anat_fly
 
-        func_directory = os.path.join(dataset_path, fly)
-        anat_directory = os.path.join(dataset_path, current_anat_file)
-        file_id = "mean.nii"
-        #moco_id = "MOCO" #but everything after moco also has MOCO in it => need to specify files
-        moco_files = ["MOCO_ch1.h5", "MOCO_ch2.h5"]
+    #     func_directory = os.path.join(dataset_path, fly)
+    #     anat_directory = os.path.join(dataset_path, current_anat_file)
+    #     file_id = "mean.nii"
+    #     #moco_id = "MOCO" #but everything after moco also has MOCO in it => need to specify files
+    #     moco_files = ["MOCO_ch1.h5", "MOCO_ch2.h5"]
 
     #### make mask of hp moco zscore brain
     for fly in func_flies:
@@ -121,6 +121,7 @@ for date in dates:
         # all_files = os.listdir(func_directory)
         # file_names = [file for file in all_files if file_id in file]
         #args = {'logfile': logfile, 'directory': func_directory, 'file_names': file_names}
+        func_directory = os.path.join(dataset_path, fly)
         args = {'logfile': logfile, 'directory': func_directory}
         script = 'mask.py'
         job_id = brainsss.sbatch(jobname='mask',

@@ -1,4 +1,11 @@
 ### BELLA NEW CODE TO MAKE SUPERFLY! NEED TO INTEGRATE IT INTO MY BRAINS 4.1.24
+## run after warp-timeseries to get FDA brain. (need to figure out what this is)
+## need to reorganize how the filestructure works maybe to get the flies since mine are within date
+##could probably set it up the way I do the others and iterate through dates in the starting py file
+## then have it iterate through flies here. Need to get it to look for func fly rather than the hard folder func
+##maybe I will just resave FDA brains in a new folder called superfly with each func date as the next level
+
+
 
 import os
 import sys
@@ -6,6 +13,10 @@ import json
 import numpy as np
 import h5py
 import time
+sys.path.append(os.path.split(os.path.dirname(__file__))[0])
+sys.path.append("/home/users/asmart/projects/new_brainsss/")
+os.listdir("/home/users/asmart/projects/new_brainsss/")
+sys.path.append("/home/users/asmart/projects/new_brainsss/brainsss")
 import brainsss
 from sklearn.cluster import AgglomerativeClustering
 from sklearn.feature_extraction.image import grid_to_graph
@@ -30,7 +41,7 @@ THIS IS A JOBLIB ISSUE. If you can, kindly provide the joblib's team with an
 def main(args):
 
     dataset_path = args['dataset_path']
-    fly_dirs = args['fly_dirs']#.split(',')
+    fly_dirs = args['fly_dirs']#.split(',')  ##should have only flies looking at because it will make the superfly this len long
     logfile = args['logfile']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     n_clusters = 2000

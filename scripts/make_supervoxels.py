@@ -38,7 +38,7 @@ def main(args):  #added directory and file_names
 	directory = args['directory'] # full fly path Is the same as func_path
 	file_names = args['file_names']  #should be highpass_zscore
 	printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
-	n_clusters = 200 #prev 2000
+	n_clusters = 500 #prev 2000
 
 	### LOAD BRAIN ###
 	for brain_file in file_names:
