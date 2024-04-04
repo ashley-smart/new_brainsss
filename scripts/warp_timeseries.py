@@ -66,32 +66,31 @@ def main(args):
     save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
     nib.Nifti1Image(warped.numpy(), np.eye(4)).to_filename(save_file)
 
-def sec_to_hms(t):
-        secs=F"{np.floor(t%60):02.0f}"
-        mins=F"{np.floor((t/60)%60):02.0f}"
-        hrs=F"{np.floor((t/3600)%60):02.0f}"
-        return ':'.join([hrs, mins, secs])
+# def sec_to_hms(t):
+#         secs=F"{np.floor(t%60):02.0f}"
+#         mins=F"{np.floor((t/60)%60):02.0f}"
+#         hrs=F"{np.floor((t/3600)%60):02.0f}"
+#         return ':'.join([hrs, mins, secs])
 
-@contextmanager
-def stderr_redirected(to=os.devnull):
+# @contextmanager
+# def stderr_redirected(to=os.devnull):
 
-    fd = sys.stderr.fileno()
+#     fd = sys.stderr.fileno()
 
-    def _redirect_stderr(to):
-        sys.stderr.close() # + implicit flush()
-        os.dup2(to.fileno(), fd) # fd writes to 'to' file
-        sys.stderr = os.fdopen(fd, 'w') # Python writes to fd
+#     def _redirect_stderr(to):
+#         sys.stderr.close() # + implicit flush()
+#         os.dup2(to.fileno(), fd) # fd writes to 'to' file
+#         sys.stderr = os.fdopen(fd, 'w') # Python writes to fd
 
-    with os.fdopen(os.dup(fd), 'w') as old_stderr:
-        with open(to, 'w') as file:
-            _redirect_stderr(to=file)
-        try:
-            yield # allow code to be run with the redirected stdout
-        finally:
-            _redirect_stderr(to=old_stderr) # restore stdout.
-                                            # buffering and flags such as
-                                            # CLOEXEC may be different
+#     with os.fdopen(os.dup(fd), 'w') as old_stderr:
+#         with open(to, 'w') as file:
+#             _redirect_stderr(to=file)
+#         try:
+#             yield # allow code to be run with the redirected stdout
+#         finally:
+#             _redirect_stderr(to=old_stderr) # restore stdout.
+#                                             # buffering and flags such as
+#                                             # CLOEXEC may be different
 
 if __name__ == '__main__':
-    print(f'argv {sys.argv}')
-    main(json.loads(sys.argv))
+    main(json.loads(sys.argv[1]))
