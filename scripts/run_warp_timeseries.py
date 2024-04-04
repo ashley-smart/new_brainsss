@@ -23,12 +23,6 @@ modules = 'gcc/6.3.0 python/3.6.1 py-numpy/1.14.3_py36 py-pandas/0.23.0_py36 viz
 scripts_path = "/home/users/asmart/projects/new_brainsss/scripts"
 com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
-mem = 4
-high_pass_mem = 6
-runtime = 8 #144 #time in hours before it stops running  use 48 for normal partition
-width = 120 # width of print log
-nodes = 1 # 1 or 2
-nice = True #True # true to lower priority of jobs. ie, other users jobs go first
 
 #####################
 ### Setup logging ###
@@ -37,13 +31,7 @@ logfile = './logs/' + time.strftime("%Y%m%d-%H%M%S") + '.txt'
 printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
 sys.stderr = brainsss.Logger_stderr_sherlock(logfile)
 
-title = pyfiglet.figlet_format("Brainsss", font="cyberlarge" ) #28 #shimrod
-title_shifted = ('\n').join([' '*28+line for line in title.split('\n')][:-2])
-printlog(title_shifted)
-day_now = datetime.datetime.now().strftime("%B %d, %Y")
-time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
-printlog(F"{day_now+' | '+time_now:^{width}}")
-printlog("")
+
 
 ##########################################################
 #### extra functions #####
@@ -65,6 +53,20 @@ dates = ['20230714', '20230707', '20230505', '20230504', '20230428']
 for date in dates:
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
     
+    mem = 4
+    high_pass_mem = 6
+    runtime = 8 #144 #time in hours before it stops running  use 48 for normal partition
+    width = 120 # width of print log
+    nodes = 1 # 1 or 2
+    nice = True #True # true to lower priority of jobs. ie, other users jobs go first
+
+    title = pyfiglet.figlet_format("Brainsss", font="cyberlarge" ) #28 #shimrod
+    title_shifted = ('\n').join([' '*28+line for line in title.split('\n')][:-2])
+    printlog(title_shifted)
+    day_now = datetime.datetime.now().strftime("%B %d, %Y")
+    time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
+    printlog(F"{day_now+' | '+time_now:^{width}}")
+    printlog("")
 
     ###################################
     ## look for flies in date folder ##
