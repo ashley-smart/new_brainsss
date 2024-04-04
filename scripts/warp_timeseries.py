@@ -25,6 +25,7 @@ def main(args):
     fly_directory = args['directory']
     moving_path = args['moving_path']
     save_directory = args['save_directory']
+    anat_file = args['anat_file']
     
     printlog(f'args: {args}')
     save_directory = os.path.join(fly_directory, 'warp')
@@ -51,10 +52,21 @@ def main(args):
     ###########################
     ### Organize Transforms ###
     ###########################
-    affine_file = os.listdir(os.path.join(save_directory, 'func-to-anat_fwdtransforms'))[0]
-    affine_path = os.path.join(save_directory, 'func-to-anat_fwdtransforms', affine_file)
+    #moving_fly.split('/')[-1] + '-to-' + fixed_fly.split('/')[-1]
+    #save_directory, '{}-to-{}_invtransforms'.format(moving_fly.split('/')[-1], fixed_fly.split('/')[-1])
+    fly_name = fly_directory.split('/')[-1]
+    original_warp_path = os.path.join(fly_directory, 'warp')
+    func_to_anat_affine_name = '{}-to-{}_invtransforms_2umiso'.format(fly_name, anat_file)
+    
+    affine_file = os.listdir(os.path.join(original_warp_path, func_to_anat_affine_name))[0]  ## why is this 0 indexed? oh to get the fist one... 
+    #affine_path = os.path.join(save_directory, 'func-to-anat_fwdtransforms', affine_file)
+    affine_path = os.path.join(original_warp_path, affine_file)
 
-    warp_dir = 'anat-to-FDA076iso_fwdtransforms'
+
+    ###need to do the same thing here!!! 
+    #warp_dir = 'anat-to-FDA076iso_fwdtransforms'  ##what script makes this file? maybe its anat to meanbrain?
+    ##not confident this is the same as above
+    warp_dir = 'anat-to-meanbrain_fwdtransforms_2umiso'
     syn_files = os.listdir(os.path.join(save_directory, warp_dir))
     syn_linear_path = os.path.join(save_directory, warp_dir, [x for x in syn_files if '.mat' in x][0])
     syn_nonlinear_path = os.path.join(save_directory, warp_dir, [x for x in syn_files if '.nii.gz' in x][0])
@@ -66,37 +78,37 @@ def main(args):
     ########################
     printlog("applying transforms....")
     warped = ants.apply_transforms(fixed, moving, transforms, imagetype=3, interpolator='nearestNeighbor')
-    save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
+    #save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
+    save_file = os.path.join(save_directory, 'brain_in_FDA.nii')
     nib.Nifti1Image(warped.numpy(), np.eye(4)).to_filename(save_file)
+
+
+
+def sec_to_hms(t):
+        secs=F"{np.floor(t%60):02.0f}"
+        mins=F"{np.floor((t/60)%60):02.0f}"
+        hrs=F"{np.floor((t/3600)%60):02.0f}"
+        return ':'.join([hrs, mins, secs])
+
+@contextmanager
+def stderr_redirected(to=os.devnull):
+
+    fd = sys.stderr.fileno()
+
+    def _redirect_stderr(to):
+        sys.stderr.close() # + implicit flush()
+        os.dup2(to.fileno(), fd) # fd writes to 'to' file
+        sys.stderr = os.fdopen(fd, 'w') # Python writes to fd
+
+    with os.fdopen(os.dup(fd), 'w') as old_stderr:
+        with open(to, 'w') as file:
+            _redirect_stderr(to=file)
+        try:
+            yield # allow code to be run with the redirected stdout
+        finally:
+            _redirect_stderr(to=old_stderr) # restore stdout.
+                                            # buffering and flags such as
+                                            # CLOEXEC may be different
 
 if __name__ == '__main__':
     main(json.loads(sys.argv[1]))
-
-# def sec_to_hms(t):
-#         secs=F"{np.floor(t%60):02.0f}"
-#         mins=F"{np.floor((t/60)%60):02.0f}"
-#         hrs=F"{np.floor((t/3600)%60):02.0f}"
-#         return ':'.join([hrs, mins, secs])
-
-# @contextmanager
-# def stderr_redirected(to=os.devnull):
-
-#     fd = sys.stderr.fileno()
-
-#     def _redirect_stderr(to):
-#         sys.stderr.close() # + implicit flush()
-#         os.dup2(to.fileno(), fd) # fd writes to 'to' file
-#         sys.stderr = os.fdopen(fd, 'w') # Python writes to fd
-
-#     with os.fdopen(os.dup(fd), 'w') as old_stderr:
-#         with open(to, 'w') as file:
-#             _redirect_stderr(to=file)
-#         try:
-#             yield # allow code to be run with the redirected stdout
-#         finally:
-#             _redirect_stderr(to=old_stderr) # restore stdout.
-#                                             # buffering and flags such as
-#                                             # CLOEXEC may be different
-
-# if __name__ == '__main__':
-#     main(json.loads(sys.argv[1]))

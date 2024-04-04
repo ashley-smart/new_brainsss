@@ -110,12 +110,21 @@ for date in dates:
         date_save_directory = "/oak/stanford/groups/trc/data/Ashley2/imports/superfly/" + str(date) + str(fly)
         save_directory = "/oak/stanford/groups/trc/data/Ashley2/imports/superfly/" + str(date) + str(fly) + "/warp"
         printlog('preparing to start script')
+        
         if not os.path.exists(date_save_directory):
             os.mkdir(date_save_directory)
         if not os.path.exists(save_directory):
             os.mkdir(save_directory)
         moving_path = os.path.join(func_directory, file_id)
-        args = {'logfile': logfile, 'directory': func_directory, 'moving_path': moving_path, 'save_directory': save_directory}
+
+        fly_number = get_fly_number(fly)
+        #look at anat flies and find match
+        for anat_fly in anat_flies:
+            anat_number = get_fly_number(anat_fly)
+            if anat_number == fly_number:
+                current_anat_file = anat_fly
+
+        args = {'logfile': logfile, 'directory': func_directory, 'moving_path': moving_path, 'save_directory': save_directory, 'anat_file': current_anat_file}
         script = 'warp_timeseries.py'
         job_id = brainsss.sbatch(jobname='warp_t',
                             script=os.path.join(scripts_path, script),
