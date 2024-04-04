@@ -94,4 +94,4 @@ def stderr_redirected(to=os.devnull):
 
 if __name__ == '__main__':
     print(f'argv {sys.argv}')
-    main(json.loads(sys.argv[1]))
+    main(json.loads(sys.argv))
