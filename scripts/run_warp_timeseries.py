@@ -100,6 +100,7 @@ for date in dates:
         anat_directory = os.path.join(dataset_path, current_anat_file)
         file_id = "MOCO_ch2_highpass_full_zscore_rem_light.h5" ##run warp on this file
         save_directory = "/oak/stanford/groups/trc/data/Ashley2/imports/superfly/" + str(date) + str(fly) + "/warp"
+        printlog('preparing to start script')
         if not os.path.exists(save_directory):
             os.mkdir(save_directory)
         moving_path = os.path.join(func_directory, file_id)

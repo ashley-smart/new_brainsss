@@ -41,7 +41,8 @@ def main(args):
     fixed.set_spacing((2.611,2.611,5))
 
     with h5py.File(moving_path, 'r') as hf:
-        moving = hf['data'][:]
+        #moving = hf['data'][:]
+        moving = hf['zscore'][:]
     moving = ants.from_numpy(moving)
     moving.set_spacing((2.611, 2.611, 5, 1))
 

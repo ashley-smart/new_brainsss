@@ -45,7 +45,7 @@ def get_fly_number (file):
 
 
 ## run these dates
-dates = ['20230707'] 
+dates = ['20230428'] 
 
 
 for date in dates:
