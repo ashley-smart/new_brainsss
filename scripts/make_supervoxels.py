@@ -100,4 +100,5 @@ def main(args):  #added directory and file_names
 		printlog('cluster average duration: {} sec'.format(time.time()-t0))
 
 if __name__ == '__main__':
+	print(f' arg {sys.argv}')
 	main(json.loads(sys.argv[1]))
