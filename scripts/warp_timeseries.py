@@ -21,10 +21,12 @@ import h5py
 def main(args):
 
     logfile = args['logfile']
+    printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     fly_directory = args['directory']
     moving_path = args['moving_path']
     save_directory = args['save_directory']
-    printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
+    
+    printlog(f'args: {args}')
     save_directory = os.path.join(fly_directory, 'warp')
     save_directory = os.path.join(fly_directory, 'warp')
     
@@ -67,6 +69,9 @@ def main(args):
     save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
     nib.Nifti1Image(warped.numpy(), np.eye(4)).to_filename(save_file)
 
+if __name__ == '__main__':
+    main(json.loads(sys.argv[1]))
+
 # def sec_to_hms(t):
 #         secs=F"{np.floor(t%60):02.0f}"
 #         mins=F"{np.floor((t/60)%60):02.0f}"
@@ -93,5 +98,5 @@ def main(args):
 #                                             # buffering and flags such as
 #                                             # CLOEXEC may be different
 
-if __name__ == '__main__':
-    main(json.loads(sys.argv[1]))
+# if __name__ == '__main__':
+#     main(json.loads(sys.argv[1]))
