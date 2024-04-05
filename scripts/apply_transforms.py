@@ -78,7 +78,7 @@ def main(args):
 
 
     transforms = [affine_path, syn_linear_path, syn_nonlinear_path]
-    printlog(f'made transforms {transforms.shape}')
+    printlog(f'made transforms {transforms}')
 
     ########################
     ### Apply Transforms ###

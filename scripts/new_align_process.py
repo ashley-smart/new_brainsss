@@ -93,7 +93,7 @@ def get_fly_number (file):
 
 
 ## run these dates
-dates = ['20230428', '20230504', '20230505'] 
+dates = ['20230428', '20230504', '20230505','20230714'] 
 
 
 
@@ -109,6 +109,7 @@ for date in dates:
 
     mem = 4
     high_pass_mem = 6
+    mean_mem = 18 #12 got oom errors
     runtime = 8 #144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log
     nodes = 1 # 1 or 2
@@ -197,7 +198,7 @@ for date in dates:
                                     script=os.path.join(scripts_path, script),
                                     modules=modules,
                                     args=args,
-                                    logfile=logfile, time=3, mem=12, nice=nice, nodes=nodes) #, global_resources=True)
+                                    logfile=logfile, time=3, mem=mean_mem, nice=nice, nodes=nodes) #, global_resources=True)
                 job_ids.append(job_id)
                 brainsss.wait_for_job(job_id, logfile, com_path)
 
