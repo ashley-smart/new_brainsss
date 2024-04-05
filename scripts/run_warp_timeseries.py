@@ -100,7 +100,7 @@ for date in dates:
     job_ids = []
     
     #### warp timeseries
-    printlog(f'all func flies: {func_flies}')
+    printlog(f'Starting warp timeseries')
     for fly in func_flies:
         #file_id = 'highpass_full_zscore_rem_light.h5'
         func_directory = os.path.join(dataset_path, fly)
@@ -109,7 +109,7 @@ for date in dates:
         file_id = "MOCO_ch2_highpass_full_zscore_rem_light.h5" ##run warp on this file
         date_save_directory = "/oak/stanford/groups/trc/data/Ashley2/imports/superfly/" + str(date) + str(fly)
         save_directory = "/oak/stanford/groups/trc/data/Ashley2/imports/superfly/" + str(date) + str(fly) + "/warp"
-        printlog('preparing to start script')
+        
         
         if not os.path.exists(date_save_directory):
             os.mkdir(date_save_directory)
@@ -124,6 +124,8 @@ for date in dates:
             if anat_number == fly_number:
                 current_anat_file = anat_fly
 
+        printlog(f'anat fly = {current_anat_file}')
+        printlog('preparing to start script')
         args = {'logfile': logfile, 'directory': func_directory, 'moving_path': moving_path, 'save_directory': save_directory, 'anat_file': current_anat_file}
         script = 'warp_timeseries.py'
         job_id = brainsss.sbatch(jobname='warp_t',
