@@ -67,11 +67,13 @@ def main(args):
     #warp_dir = 'anat-to-FDA076iso_fwdtransforms'  ##what script makes this file? maybe its anat to meanbrain?
     ##not confident this is the same as above
     warp_dir = 'anat-to-meanbrain_fwdtransforms_2umiso'
-    syn_files = os.listdir(os.path.join(save_directory, warp_dir))
-    syn_linear_path = os.path.join(save_directory, warp_dir, [x for x in syn_files if '.mat' in x][0])
-    syn_nonlinear_path = os.path.join(save_directory, warp_dir, [x for x in syn_files if '.nii.gz' in x][0])
+    syn_files = os.listdir(os.path.join(original_warp_path, warp_dir))
+    #syn_files = os.listdir(os.path.join(save_directory, warp_dir))
+    syn_linear_path = os.path.join(original_warp_path, warp_dir, [x for x in syn_files if '.mat' in x][0])
+    syn_nonlinear_path = os.path.join(original_warp_path, warp_dir, [x for x in syn_files if '.nii.gz' in x][0])
 
     transforms = [syn_nonlinear_path, syn_linear_path, affine_path]
+    printlog(f'transforms: {transforms}')
 
     ########################
     ### Apply Transforms ###
