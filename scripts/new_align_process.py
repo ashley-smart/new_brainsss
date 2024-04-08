@@ -129,7 +129,7 @@ for date in dates:
     ###################################
     ## look for flies in date folder ##
     ###################################
-
+    printlog('looking for flies in date folder')
     flies_temp = os.listdir(dataset_path)  ## find directory names, they are the fly names
     #to sort out non-fly directories (issue if I ever label a file with fly but I can't get isdir to work.)
     func_flies = []
@@ -141,8 +141,8 @@ for date in dates:
             func_flies.append(i)
         elif 'fly' in fly_path and 'anat' in fly_path and 'json' not in fly_path: ##need to get anat
             anat_flies.append(i)
-    printlog(str(date))
-    printlog(str(func_flies))
+    printlog(f'date{date}')
+    printlog(f' func flies to run: {func_flies}')
 
 
     title = pyfiglet.figlet_format("Brainsss", font="cyberlarge" ) #28 #shimrod
