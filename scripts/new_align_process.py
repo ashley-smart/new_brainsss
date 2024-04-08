@@ -129,6 +129,14 @@ for date in dates:
     ###################################
     ## look for flies in date folder ##
     ###################################
+    title = pyfiglet.figlet_format("Brainsss", font="cyberlarge" ) #28 #shimrod
+    title_shifted = ('\n').join([' '*28+line for line in title.split('\n')][:-2])
+    printlog(title_shifted)
+    day_now = datetime.datetime.now().strftime("%B %d, %Y")
+    time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
+    printlog(F"{day_now+' | '+time_now:^{width}}")
+    printlog("")
+
     printlog('looking for flies in date folder')
     flies_temp = os.listdir(dataset_path)  ## find directory names, they are the fly names
     #to sort out non-fly directories (issue if I ever label a file with fly but I can't get isdir to work.)
@@ -141,17 +149,11 @@ for date in dates:
             func_flies.append(i)
         elif 'fly' in fly_path and 'anat' in fly_path and 'json' not in fly_path: ##need to get anat
             anat_flies.append(i)
-    printlog(f'date{date}')
+    printlog(f'date currently running: {date}')
     printlog(f' func flies to run: {func_flies}')
 
 
-    title = pyfiglet.figlet_format("Brainsss", font="cyberlarge" ) #28 #shimrod
-    title_shifted = ('\n').join([' '*28+line for line in title.split('\n')][:-2])
-    printlog(title_shifted)
-    day_now = datetime.datetime.now().strftime("%B %d, %Y")
-    time_now = datetime.datetime.now().strftime("%I:%M:%S %p")
-    printlog(F"{day_now+' | '+time_now:^{width}}")
-    printlog("")
+    
 
         
     ####################################################
@@ -170,6 +172,7 @@ for date in dates:
                 current_anat_file = anat_fly
 
         func_directory = os.path.join(dataset_path, fly)
+        printlog(f'first func directory {func_directory}')
         anat_directory = os.path.join(dataset_path, current_anat_file)
         file_id = "mean.nii"
         #moco_id = "MOCO" #but everything after moco also has MOCO in it => need to specify files
@@ -179,7 +182,7 @@ for date in dates:
         mean_anat_file = [file for file in os.listdir(anat_directory) if file_id in file]
         if len(mean_func_file) > 2 or len(mean_anat_file) > 2:
             printlog(f'ERROR: TOO many mean files. func = {mean_func_file}, anat = {mean_anat_file}')
-        if len(mean_func_file) == 0:
+        elif len(mean_func_file) == 0:
             printlog(f'no {file_id} files for func. Running meanbrain')
             ##RUN MEAN BRAIN FOR FUNC
             #1. find moco files
