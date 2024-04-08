@@ -56,7 +56,7 @@ def main(args):
         np.nan_to_num(brain_out, copy=False)
 
         ### Save brain ###
-        save_file = file[:-4] + '_clean.nii'
+        save_file = file[:-3] + '_clean.nii'
         aff = np.eye(4)
         img = nib.Nifti1Image(brain_out, aff)
         img.to_filename(save_file)

@@ -125,6 +125,7 @@ def main(args):
     ################################
 
     if save_warp_params:
+        printlog('saving params')
         fwdtransformlist = moco['fwdtransforms']
         fwdtransforms_save_dir = os.path.join(save_directory, '{}-to-{}_fwdtransforms'.format(moving_fly.split('/')[-1], fixed_fly.split('/')[-1]))
         if low_res:
@@ -170,6 +171,7 @@ def main(args):
         #save_file = os.path.join(save_directory, mimic_fly + '_m' + '-to-' + fixed_fly + '.nii')
     else:
         save_file = os.path.join(save_directory, moving_fly.split('/')[-1] + '-to-' + fixed_fly.split('/')[-1])
+        printlog(f'Save file: {save_file}')
         #save_file = os.path.join(save_directory, mimic_fly + '-to-' + fixed_fly + '.nii')
     #nib.Nifti1Image(mimic_moco.numpy(), np.eye(4)).to_filename(save_file)
     if low_res:
