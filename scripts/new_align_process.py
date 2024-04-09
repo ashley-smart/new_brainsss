@@ -182,7 +182,7 @@ for date in dates:
         mean_anat_file = [file for file in os.listdir(anat_directory) if file_id in file]
         if len(mean_func_file) > 2 or len(mean_anat_file) > 2:
             printlog(f'ERROR: TOO many mean files. func = {mean_func_file}, anat = {mean_anat_file}')
-        elif len(mean_func_file) == 0:
+        if len(mean_func_file) == 0:
             printlog(f'no {file_id} files for func. Running meanbrain')
             ##RUN MEAN BRAIN FOR FUNC
             #1. find moco files
