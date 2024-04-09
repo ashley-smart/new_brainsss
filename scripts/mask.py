@@ -45,11 +45,11 @@ def main(args):
     #printlog("masking {}".format(brain_file))
     
     ### Load Brain ###
+    ### Load brain to use as mask ###
     brain_file = os.path.join(directory, mean_id) ##mean brain
     brain_mean = np.array(nib.load(brain_file).get_data(), copy=True)
     #brain = np.array(nib.load(brain_file).get_data(), copy=True)
-
-    ### Load brain to use as mask ###
+ 
     
 
     ### Mask ###
