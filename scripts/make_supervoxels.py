@@ -38,7 +38,7 @@ def main(args):  #added directory and file_names
 	directory = args['directory'] # full fly path Is the same as func_path
 	file_names = args['file_names']  #should be highpass_zscore
 	printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
-	n_clusters = 2000 #prev 2000, 500 was insufficient to see signal due to light flash
+	n_clusters = 500 #prev 2000, 500 was insufficient to see signal due to light flash
 
 	### LOAD BRAIN ###
 	for brain_file in file_names:
@@ -76,7 +76,7 @@ def main(args):  #added directory and file_names
 			cluster_model.fit(neural_activity)
 			cluster_labels.append(cluster_model.labels_)
 		cluster_labels = np.asarray(cluster_labels)
-		save_file = os.path.join(cluster_dir, 'cluster_labels.npy')
+		save_file = os.path.join(cluster_dir, f'cluster_labels_{n_clusters}.npy')
 		np.save(save_file,cluster_labels)
 		printlog('cluster fit duration: {} sec'.format(time.time()-t0))
 
@@ -95,7 +95,7 @@ def main(args):  #added directory and file_names
 			signals = np.asarray(signals)
 			all_signals.append(signals)
 		all_signals = np.asarray(all_signals)
-		save_file = os.path.join(cluster_dir, 'cluster_signals.npy')
+		save_file = os.path.join(cluster_dir, f'cluster_signals_{n_clusters}.npy')
 		np.save(save_file, all_signals)
 		printlog('cluster average duration: {} sec'.format(time.time()-t0))
 
