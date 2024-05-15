@@ -76,7 +76,9 @@ def main(args):
     syn_nonlinear_path = os.path.join(original_warp_path, warp_dir, [x for x in syn_files if '.nii.gz' in x][0])
 
     transforms = [syn_nonlinear_path, syn_linear_path, affine_path]
-    printlog(f'transforms: {transforms}')
+    printlog(f'syn_nonlinear: {syn_nonlinear_path}')
+    printlog(f'syn_linear: {syn_linear_path}')
+    printlog(f'affine: {affine_path}')
 
     ########################
     ### Apply Transforms ###
