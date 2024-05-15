@@ -53,7 +53,7 @@ for date in dates:
 
     mem = 4
     high_pass_mem = 6
-    super_mem = 20 #12 was insufficient
+    super_mem = 24 #12 was insufficient
     runtime = 8 #144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log
     nodes = 1 # 1 or 2
