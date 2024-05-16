@@ -41,6 +41,7 @@ THIS IS A JOBLIB ISSUE. If you can, kindly provide the joblib's team with an
 def main(args):
 
     dataset_path = args['dataset_path']
+    #dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/superfly/" + str(date) + str(fly) + "/warp"
     #fly_dirs should contain folders of the flies and then func or anat
     fly_dirs = args['fly_dirs']#.split(',')  ##should have only flies looking at because it will make the superfly this len long
     logfile = args['logfile']
@@ -75,7 +76,10 @@ def main(args):
         ###################
         brain_superslice = []
         for fly in fly_dirs:
-            brain_path = os.path.join(dataset_path, fly, 'func_0', 'brain_in_FDA.nii')  #this will look for func_0 in the fly folder
+            #brain_path = os.path.join(dataset_path, fly, 'func_0', 'brain_in_FDA.nii')  #this will look for func_0 in the fly folder
+            #brain FDA is actually saved in superfly directory under imports in folder that is 
+            # str(date) + str(fly) + /warp
+            brain_path = os.path.join(dataset_path, fly, 'func_0', 'brain_in_FDA.nii')
             brain = np.nan_to_num(np.asarray(nib.load(brain_path).get_data().squeeze(), dtype='float32'))
             brain_superslice.append(brain[:,:,z,:])
 

@@ -56,14 +56,14 @@ def main(args):
     #save_directory, '{}-to-{}_invtransforms'.format(moving_fly.split('/')[-1], fixed_fly.split('/')[-1])
     fly_name = fly_directory.split('/')[-1]
     original_warp_path = os.path.join(fly_directory, 'warp')
-    func_to_anat_affine_name = '{}-to-{}_invtransforms_2umiso'.format(fly_name, anat_file)
-    inv_warp_dir = 'anat-to-meanbrain_invtransforms_2umiso'
+    func_to_anat_affine_folder = '{}-to-{}_fwdtransforms_2umiso'.format(fly_name, anat_file)
+    
     #I don't like how this doesn't filter for type => redoing like below
     #affine_file = os.listdir(os.path.join(original_warp_path, inv_warp_dir))[0]  ## why is this 0 indexed? oh to get the fist one... 
     #affine_path = os.path.join(save_directory, 'func-to-anat_fwdtransforms', affine_file)
-    affine_files = os.listdir(os.path.join(original_warp_path, inv_warp_dir))
+    affine_files = os.listdir(os.path.join(original_warp_path, func_to_anat_affine_folder))
     #decided that affine should be .mat
-    affine_path = os.path.join(original_warp_path, inv_warp_dir, [x for x in affine_files if '.mat' in x][0])
+    affine_path = os.path.join(original_warp_path, func_to_anat_affine_folder, [x for x in affine_files if '.mat' in x][0])
 
 
     ###need to do the same thing here!!! 
