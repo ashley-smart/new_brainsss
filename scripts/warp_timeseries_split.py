@@ -49,6 +49,7 @@ def main(args):
     moving = ants.from_numpy(moving)
     moving.set_spacing((2.611, 2.611, 5, 1))
     dims = np.shape(moving)
+    printlog(f' brain dims = {dims}')
 
     ###########################
     ### Organize Transforms ###
@@ -86,8 +87,8 @@ def main(args):
     ########################
     printlog("applying transforms....")
     #warp to first half of brain
-    half_timestamps = int(dims[-1]/2)
-    printlog(f'first half of brain ends at ')
+    half_timestamps = (dims[-1]/2)
+    printlog(f'first half of brain ends at half_timestamps')
     warped_1 = ants.apply_transforms(fixed, moving[:,:,:,:half_timestamps], transforms, imagetype=3, interpolator='nearestNeighbor')
     #save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
     save_file_1 = os.path.join(save_directory, 'brain_in_FDA_1.nii') #first half
