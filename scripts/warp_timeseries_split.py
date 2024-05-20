@@ -89,9 +89,11 @@ def main(args):
     #warp to first half of brain
     half_timestamps = int(dims[-1]/2)
     printlog(f'first half of brain ends at {half_timestamps}')
-    moving = moving[:,:,:,:half_timestamps]
-    warped_1 = ants.apply_transforms(fixed, moving, transforms, imagetype=3, interpolator='nearestNeighbor')
+    moving1 = moving[:,:,:,:half_timestamps]
+    warped_1 = ants.apply_transforms(fixed, moving1, transforms, imagetype=3, interpolator='nearestNeighbor')
     #save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
+    printlog(f'shape warped {np.shape(warped_1)}')
+    printlog(f'shape moving {np.shape(moving1)}')
     save_file_1 = os.path.join(save_directory, 'brain_in_FDA_1.nii') #first half
     nib.Nifti1Image(warped_1.numpy(), np.eye(4)).to_filename(save_file_1)
     printlog('saved first half')
