@@ -48,6 +48,7 @@ def main(args):
         moving = hf['zscore'][:]
     moving = ants.from_numpy(moving)
     moving.set_spacing((2.611, 2.611, 5, 1))
+    dims = np.shape(moving)
 
     ###########################
     ### Organize Transforms ###
@@ -84,11 +85,28 @@ def main(args):
     ### Apply Transforms ###
     ########################
     printlog("applying transforms....")
-    warped = ants.apply_transforms(fixed, moving, transforms, imagetype=3, interpolator='nearestNeighbor')
+    #warp to first half of brain
+    warped_1 = ants.apply_transforms(fixed, moving[:,:,:,int(dims[3]/2)], transforms, imagetype=3, interpolator='nearestNeighbor')
     #save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
-    save_file = os.path.join(save_directory, 'brain_in_FDA.nii')
-    nib.Nifti1Image(warped.numpy(), np.eye(4)).to_filename(save_file)
+    save_file_1 = os.path.join(save_directory, 'brain_in_FDA_1.nii') #first half
+    nib.Nifti1Image(warped_1.numpy(), np.eye(4)).to_filename(save_file_1)
+    printlog('saved first half')
+    ##second half
+    warped_2 = ants.apply_transforms(fixed, moving[:,:,:,int(dims[3]/2):], transforms, imagetype=3, interpolator='nearestNeighbor')
+    save_file_2 = os.path.join(save_directory, 'brain_in_FDA_2.nii') #second half
+    nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_2)
+    printlog('saved second half')
 
+
+    full_brain_warped = np.concatenate([warped_1, warped_2], axis = dims[-1])
+    save_file_full = os.path.join(save_directory, 'brain_in_FDA.nii') #full
+    nib.Nifti1Image(full_brain_warped.numpy(), np.eye(4)).to_filename(save_file_full)
+    printlog('saved full brain')
+    
+    
+    
+    
+    
 
 
 def sec_to_hms(t):
