@@ -49,7 +49,7 @@ def main(args):
     with h5py.File(moving_path, 'r') as hf:
         #moving = hf['data'][:]
         moving = hf['zscore'][:]
-    moving = ants.from_numpy(moving)
+    moving = ants.from_numpy(moving)  #apply transforms wants this format
     moving.set_spacing((2.611, 2.611, 5, 1))
     dims = np.shape(moving)
     printlog(f' brain dims = {dims}')
@@ -93,6 +93,7 @@ def main(args):
     half_timestamps = int(dims[-1]/2)
     printlog(f'first half of brain ends at {half_timestamps}')
     moving1 = moving[:,:,:,:half_timestamps]
+    moving1 = ants.from_numpy(moving1)
     warped_1 = ants.apply_transforms(fixed, moving1, transforms, imagetype=3, interpolator='nearestNeighbor')
     #save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
     printlog(f'shape warped {np.shape(warped_1)}')
@@ -101,8 +102,9 @@ def main(args):
     nib.Nifti1Image(warped_1.numpy(), np.eye(4)).to_filename(save_file_1)
     printlog('saved first half')
     ##second half
-  
-    warped_2 = ants.apply_transforms(fixed, moving[:,:,:,half_timestamps:], transforms, imagetype=3, interpolator='nearestNeighbor')
+    moving2 = moving[:,:,:,half_timestamps:]
+    moving2 = ants.from_numpy(moving2)
+    warped_2 = ants.apply_transforms(fixed, moving2, transforms, imagetype=3, interpolator='nearestNeighbor')
     save_file_2 = os.path.join(save_directory, 'brain_in_FDA_2.nii') #second half
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_2)
     printlog('saved second half')
