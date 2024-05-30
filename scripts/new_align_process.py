@@ -93,7 +93,7 @@ def get_fly_number (file):
 
 
 ## run these dates
-dates = ['20230505','20230714'] 
+dates = ['20230428','20230714'] 
 
 
 
@@ -354,7 +354,8 @@ for date in dates:
             moving_resolution = res_anat
 
             # for gcamp6f with actual myr-tdtom
-            fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"#luke.nii"
+            #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"#luke.nii"
+            fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/FDA_at_func_res_PtoA.nii"
             fixed_fly = 'meanbrain'
 
             # for gcamp8s with non-myr-tdtom

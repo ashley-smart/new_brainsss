@@ -116,9 +116,9 @@ def main(args):
     third_quarter = first_quarter*3
     printlog(f'third quarter goes from {second_quarter} to {third_quarter}')
     moving3 = moving[:,:,:,second_quarter:third_quarter]
-    moving3 = ants.from_numpy(moving2)
+    moving3 = ants.from_numpy(moving3)
     warped_3 = ants.apply_transforms(fixed, moving3, transforms, imagetype=3, interpolator='nearestNeighbor')
-    save_file_2 = os.path.join(save_directory, 'brain_in_FDA_3.nii') #second half
+    save_file_3 = os.path.join(save_directory, 'brain_in_FDA_3.nii') #second half
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_3)
     printlog('saved third quarter')
 
