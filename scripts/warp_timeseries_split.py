@@ -90,9 +90,9 @@ def main(args):
     ########################
     printlog("applying transforms....")
     #warp to first half of brain
-    half_timestamps = int(dims[-1]/2)
-    printlog(f'first half of brain ends at {half_timestamps}')
-    moving1 = moving[:,:,:,:half_timestamps]
+    first_quarter = int(dims[-1]/4)
+    printlog(f'first quarter of brain ends at {first_quarter}')
+    moving1 = moving[:,:,:,:first_quarter]
     moving1 = ants.from_numpy(moving1)
     warped_1 = ants.apply_transforms(fixed, moving1, transforms, imagetype=3, interpolator='nearestNeighbor')
     #save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
@@ -100,17 +100,40 @@ def main(args):
     printlog(f'shape moving {np.shape(moving1)}')
     save_file_1 = os.path.join(save_directory, 'brain_in_FDA_1.nii') #first half
     nib.Nifti1Image(warped_1.numpy(), np.eye(4)).to_filename(save_file_1)
-    printlog('saved first half')
-    ##second half
-    moving2 = moving[:,:,:,half_timestamps:]
+    printlog('saved first quarter')
+
+    ##second quarter
+    second_quarter = first_quarter*2
+    printlog(f'second quarter goes from {first_quarter} to {second_quarter}')
+    moving2 = moving[:,:,:,first_quarter:second_quarter]
     moving2 = ants.from_numpy(moving2)
     warped_2 = ants.apply_transforms(fixed, moving2, transforms, imagetype=3, interpolator='nearestNeighbor')
     save_file_2 = os.path.join(save_directory, 'brain_in_FDA_2.nii') #second half
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_2)
-    printlog('saved second half')
+    printlog('saved second quarter')
+
+    ##third quarter
+    third_quarter = first_quarter*3
+    printlog(f'third quarter goes from {second_quarter} to {third_quarter}')
+    moving3 = moving[:,:,:,second_quarter:third_quarter]
+    moving3 = ants.from_numpy(moving2)
+    warped_3 = ants.apply_transforms(fixed, moving3, transforms, imagetype=3, interpolator='nearestNeighbor')
+    save_file_2 = os.path.join(save_directory, 'brain_in_FDA_3.nii') #second half
+    nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_3)
+    printlog('saved third quarter')
+
+    ##4th quarter
+    printlog(f'fourth quarter goes from {third_quarter} to end')
+    moving4 = moving[:,:,:,third_quarter:]
+    moving4 = ants.from_numpy(moving4)
+    warped_4 = ants.apply_transforms(fixed, moving4, transforms, imagetype=3, interpolator='nearestNeighbor')
+    save_file_4 = os.path.join(save_directory, 'brain_in_FDA_4.nii') #second half
+    nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_4)
+    printlog('saved 4th quarter')
 
 
-    full_brain_warped = np.concatenate([warped_1, warped_2], axis = dims[-1])
+    full_brain_warped = np.concatenate([warped_1, warped_2, warped_3, warped_4], axis = dims[-1])
+    printlog(f'shape warped brain= {np.shape(full_brain_warped)}, shape original brain = {np.shape(moving)}')
     save_file_full = os.path.join(save_directory, 'brain_in_FDA.nii') #full
     nib.Nifti1Image(full_brain_warped.numpy(), np.eye(4)).to_filename(save_file_full)
     printlog('saved full brain')
