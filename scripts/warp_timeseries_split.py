@@ -101,7 +101,12 @@ def main(args):
     save_file_1 = os.path.join(save_directory, 'brain_in_FDA_1.nii') #first half
     nib.Nifti1Image(warped_1.numpy(), np.eye(4)).to_filename(save_file_1)
     printlog('saved first quarter')
+    process = psutil.Process()
+    printlog(f'memory before deletion{process.memory_info().rss/ (1024 * 1024)} in MB')  # in bytes
+    del warped_1
     del moving1
+    process = psutil.Process()
+    printlog(f'memory after deletion{process.memory_info().rss/ (1024 * 1024)} in MB')
 
     ##second quarter
     second_quarter = first_quarter*2
@@ -112,6 +117,7 @@ def main(args):
     save_file_2 = os.path.join(save_directory, 'brain_in_FDA_2.nii') #second half
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_2)
     printlog('saved second quarter')
+    del warped_2
     del moving2
 
     ##third quarter
@@ -124,6 +130,7 @@ def main(args):
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_3)
     printlog('saved third quarter')
     del moving3
+    del warped_3
 
     ##4th quarter
     printlog(f'fourth quarter goes from {third_quarter} to end')
@@ -133,8 +140,14 @@ def main(args):
     save_file_4 = os.path.join(save_directory, 'brain_in_FDA_4.nii') #second half
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_4)
     printlog('saved 4th quarter')
-    del moving4
+     
 
+
+    #reopen warped 1-3 to concatenate
+    warped_1 = nib.load(save_file_1)
+    warped_2 = nib.load(save_file_2)
+    warped_3 = nib.load(save_file_3)
+    printlog('reopened first three warp files')
 
     full_brain_warped = np.concatenate([warped_1, warped_2, warped_3, warped_4], axis = dims[-1])
     printlog(f'shape warped brain= {np.shape(full_brain_warped)}, shape original brain = {np.shape(moving)}')

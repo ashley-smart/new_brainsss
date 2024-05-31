@@ -406,7 +406,7 @@ for date in dates:
                     'syn_sampling': syn_sampling}
 
             script = 'align_anat.py'
-            job_id = brainsss.sbatch(jobname='align',
+            job_id = brainsss.sbatch(jobname='align template',
                                 script=os.path.join(scripts_path, script),
                                 modules=modules,
                                 args=args,
@@ -418,41 +418,41 @@ for date in dates:
 
 
 
-            ############   YOU ARE HERE 
-            ####################################################
-            ### APPLY TRANSFORMS TO RAW DATA (MOCO, HP, ZSCORE) ##########
-            #####################################################
-            ## tips
-            ## fixed.set_spacing(fixed_resolution)
-            ## and make sure the z-direction matches (ie either anterior to posterior or vica versa for the func,anat,and template.)
+            # ############   YOU ARE HERE (commenting out bc error and I think does the same as warp_timeseries)
+            # ####################################################
+            # ### APPLY TRANSFORMS TO RAW DATA (MOCO, HP, ZSCORE) ##########
+            # #####################################################
+            # ## tips
+            # ## fixed.set_spacing(fixed_resolution)
+            # ## and make sure the z-direction matches (ie either anterior to posterior or vica versa for the func,anat,and template.)
 
-            warp_directory = os.path.join(func_directory, 'warp')
-            ## func_to_anat is saved differently because my func names are different...
-            func_fly_name = fly #the name of my fly (could also take last segment of func_directory)
-            anat_fly_name = current_anat_file #could also take last segment of anat_directory
+            # warp_directory = os.path.join(func_directory, 'warp')
+            # ## func_to_anat is saved differently because my func names are different...
+            # func_fly_name = fly #the name of my fly (could also take last segment of func_directory)
+            # anat_fly_name = current_anat_file #could also take last segment of anat_directory
 
-            args = {'logfile': logfile,
-                    'save_directory': func_directory, #currently saving in func, not sure if right spot...
-                    'warp_directory': warp_directory,
-                    'moving_path': moving_path,
-                    'fixed_fly': fixed_fly,
-                    'fixed_path': fixed_path,
-                    'moving_fly': moving_fly,
-                    'func_fly_name': func_fly_name,
-                    'anat_fly_name': anat_fly_name,
-                    'moving_resolution': moving_resolution,
-                    'fixed_resolution': fixed_resolution}
+            # args = {'logfile': logfile,
+            #         'save_directory': func_directory, #currently saving in func, not sure if right spot...
+            #         'warp_directory': warp_directory,
+            #         'moving_path': moving_path,
+            #         'fixed_fly': fixed_fly,
+            #         'fixed_path': fixed_path,
+            #         'moving_fly': moving_fly,
+            #         'func_fly_name': func_fly_name,
+            #         'anat_fly_name': anat_fly_name,
+            #         'moving_resolution': moving_resolution,
+            #         'fixed_resolution': fixed_resolution}
             
-            script = 'apply_transforms.py'
-            job_id = brainsss.sbatch(jobname='apply',
-                                    script=os.path.join(scripts_path, script),
-                                    modules=modules,
-                                    args=args,
-                                    logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes) # 2 to 1
-            brainsss.wait_for_job(job_id, logfile, com_path)
-            printlog(os.path.join(scripts_path, script))
-            job_ids.append(job_id)
-            printlog("fly started")
+            # script = 'apply_transforms.py'
+            # job_id = brainsss.sbatch(jobname='apply',
+            #                         script=os.path.join(scripts_path, script),
+            #                         modules=modules,
+            #                         args=args,
+            #                         logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes) # 2 to 1
+            # brainsss.wait_for_job(job_id, logfile, com_path)
+            # printlog(os.path.join(scripts_path, script))
+            # job_ids.append(job_id)
+            # printlog("fly started")
 
 
 

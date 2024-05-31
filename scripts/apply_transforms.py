@@ -1,4 +1,5 @@
-"""applies transforms to raw moco hp zscore data"""
+"""applies transforms to raw moco hp zscore data
+is this the same as warp timeseries? Do I need it if I run warp instaed?"""
 
 
 
@@ -83,6 +84,9 @@ def main(args):
     ########################
     ### Apply Transforms ###
     ########################
+    ## ERRORS HERE need to resolve 
+    # RuntimeError: /home/users/asmart/projects/ANTsPy/itksource/Modules/Core/Common/include/itkImageBase.hxx:309:
+    # itk::ERROR: Image(0x10fbf3e0): itk::ImageBase::CopyInformation() cannot cast PKN3itk10DataObjectE to PKN3itk9ImageBaseILj4EEE
     moco = ants.apply_transforms(fixed, moving, transforms, imagetype=3)
     printlog(f'made transform file {moco.shape}')
 
