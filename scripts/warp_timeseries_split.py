@@ -101,7 +101,6 @@ def main(args):
     save_file_1 = os.path.join(save_directory, 'brain_in_FDA_1.nii') #first half
     nib.Nifti1Image(warped_1.numpy(), np.eye(4)).to_filename(save_file_1)
     printlog('saved first quarter')
-    del save_file_1
     del moving1
 
     ##second quarter
@@ -113,7 +112,6 @@ def main(args):
     save_file_2 = os.path.join(save_directory, 'brain_in_FDA_2.nii') #second half
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_2)
     printlog('saved second quarter')
-    del save_file_2
     del moving2
 
     ##third quarter
@@ -125,7 +123,6 @@ def main(args):
     save_file_3 = os.path.join(save_directory, 'brain_in_FDA_3.nii') #second half
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_3)
     printlog('saved third quarter')
-    del save_file_3
     del moving3
 
     ##4th quarter
@@ -136,7 +133,6 @@ def main(args):
     save_file_4 = os.path.join(save_directory, 'brain_in_FDA_4.nii') #second half
     nib.Nifti1Image(warped_2.numpy(), np.eye(4)).to_filename(save_file_4)
     printlog('saved 4th quarter')
-    del save_file_4
     del moving4
 
 
