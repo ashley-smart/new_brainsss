@@ -414,7 +414,7 @@ for date in dates:
 
             script = 'align_anat.py'
             printlog(f'running align_anat template version with {fixed_fly}')
-            job_id = brainsss.sbatch(jobname='align template',
+            job_id = brainsss.sbatch(jobname='align',
                                 script=os.path.join(scripts_path, script),
                                 modules=modules,
                                 args=args,
