@@ -225,7 +225,7 @@ for date in dates:
             brainsss.wait_for_job(job_id, logfile, com_path)
 
 
-
+        #need to regrab it so the new files appear if any of the above conditions were triggered
         mean_func_file = [file for file in os.listdir(func_directory) if file_id in file]
         mean_anat_file = [file for file in os.listdir(anat_directory) if file_id in file]
         #get paths for moving and fixed flies for alignment
@@ -315,7 +315,7 @@ for date in dates:
 
             #res_anat = (1.3,1.3,1.3) # new anat res <------------------ this is set !!!!!
             res_anat = (0.653, 0.653, 1)
-            res_meanbrain = (2,2,2)
+            res_meanbrain = (2,2,2) #this should change for new template right?
 
             # for fly in fly_dirs:
                 # fly_directory = os.path.join(dataset_path, fly)
