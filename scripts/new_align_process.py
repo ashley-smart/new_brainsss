@@ -413,6 +413,7 @@ for date in dates:
                     'syn_sampling': syn_sampling}
 
             script = 'align_anat.py'
+            printlog(f'running align_anat template version with {fixed_fly}')
             job_id = brainsss.sbatch(jobname='align template',
                                 script=os.path.join(scripts_path, script),
                                 modules=modules,
