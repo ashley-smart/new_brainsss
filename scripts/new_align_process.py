@@ -316,6 +316,9 @@ for date in dates:
             #res_anat = (1.3,1.3,1.3) # new anat res <------------------ this is set !!!!!
             res_anat = (0.653, 0.653, 1)
             res_meanbrain = (2,2,2) #this should change for new template right?
+            res_meanbrain = (2.611, 2.611, 5)
+            #res_atlas = (0.38,0.38,0.38) #not currenty used 
+            res_atlas = (0.76,0.76,0.76) #for 76iso
 
             # for fly in fly_dirs:
                 # fly_directory = os.path.join(dataset_path, fly)
@@ -348,21 +351,25 @@ for date in dates:
             
             else:
                 printlog(f'clean anat files found {clean_file}')
-            printlog(f'moving path: {os.path.join(anat_directory, clean_file[0])}')
-            moving_path = os.path.join(anat_directory, clean_file[0]) #[0] to get rid of brackets
+            clean_file_ch1 = [file for file in clean_file if 'ch1' in file]
+            printlog(f'moving path: {os.path.join(anat_directory, clean_file_ch1[0])}')
+            moving_path = os.path.join(anat_directory, clean_file_ch1[0]) #[0] to get rid of brackets
             moving_fly = 'anat'
             moving_resolution = res_anat
 
             # for gcamp6f with actual myr-tdtom
             #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"#luke.nii"
-            fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/FDA_at_func_res_PtoA.nii"
-            fixed_fly = 'meanbrain'
+            #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/FDA_at_func_res_PtoA.nii"
+            #fixed_fly = 'meanbrain'
+            fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_076iso.nii"
+            fixed_fly = 'FDA076iso'
+            
 
             # for gcamp8s with non-myr-tdtom
             #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/20220421_make_nonmyr_meanbrain/non_myr_2_fdaatlas_40_8.nii"
             #fixed_fly = 'non_myr_mean'
 
-            fixed_resolution = res_meanbrain
+            fixed_resolution = res_atlas
 
             warp_directory = os.path.join(func_directory, 'warp')
             if not os.path.exists(warp_directory):
