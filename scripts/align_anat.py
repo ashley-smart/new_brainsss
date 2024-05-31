@@ -17,7 +17,7 @@ sys.path.append("/home/users/asmart/projects/new_brainsss/")
 os.listdir("/home/users/asmart/projects/new_brainsss/")
 sys.path.append("/home/users/asmart/projects/new_brainsss/brainsss")
 
-print(sys.path)
+
 import brainsss
 
 def main(args):
@@ -65,9 +65,12 @@ def main(args):
     ###################
 
     ### Fixed
+    printlog(f'opening fixed {fixed_path}')
     fixed = np.asarray(nib.load(fixed_path).get_data().squeeze(), dtype='float32')
+    printlog(f'shape fixed ={np.shape(fixed)}')
     fixed = ants.from_numpy(fixed)
     fixed.set_spacing(fixed_resolution)
+    printlog(f'post spacing shape fixed = {np.shape(fixed)}')
     if low_res:
         fixed = ants.resample_image(fixed,(256,128,49),1,0)
     elif very_low_res:
@@ -77,6 +80,7 @@ def main(args):
 
 
     ### Moving
+    printlog('opening moving')
     moving = np.asarray(nib.load(moving_path).get_data().squeeze(), dtype='float32')
     if flip_X:
         moving = moving[::-1,:,:]

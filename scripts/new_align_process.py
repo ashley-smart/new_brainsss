@@ -384,7 +384,7 @@ for date in dates:
             very_low_res = False
 
             iso_2um_fixed = False
-            iso_2um_moving = True
+            iso_2um_moving = False
 
             grad_step = 0.2
             flow_sigma = 3
