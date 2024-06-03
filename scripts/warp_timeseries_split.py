@@ -41,10 +41,14 @@ def main(args):
     #what Bella uses
     #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/FDA_at_func_res_PtoA.nii"
     #what I used for alignment
-    fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"
+    #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"
+    # new alignment 76 FDA
+    fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_076iso.nii"
+
     fixed = np.asarray(nib.load(fixed_path).get_data().squeeze(), dtype='float32')
     fixed = ants.from_numpy(fixed)
-    fixed.set_spacing((2.611,2.611,5))
+    fixed.set_spacing((2.611,2.611,5)) #should this change?
+
 
     with h5py.File(moving_path, 'r') as hf:
         #moving = hf['data'][:]
@@ -61,6 +65,8 @@ def main(args):
     #save_directory, '{}-to-{}_invtransforms'.format(moving_fly.split('/')[-1], fixed_fly.split('/')[-1])
     fly_name = fly_directory.split('/')[-1]
     original_warp_path = os.path.join(fly_directory, 'warp')
+    
+    #check this later. I think this is where it was saved
     func_to_anat_affine_folder = '{}-to-{}_fwdtransforms_2umiso'.format(fly_name, anat_file)
     
     
@@ -74,7 +80,8 @@ def main(args):
     
     #warp_dir = 'anat-to-FDA076iso_fwdtransforms'  
     ##not confident this is the same as above
-    warp_dir = 'anat-to-meanbrain_fwdtransforms_2umiso'
+    #warp_dir = 'anat-to-meanbrain_fwdtransforms_2umiso'
+    warp_dir = 'anat-to-FDA076iso_fwdtransforms' #newer
     syn_files = os.listdir(os.path.join(original_warp_path, warp_dir))
     #syn_files = os.listdir(os.path.join(save_directory, warp_dir))
     syn_linear_path = os.path.join(original_warp_path, warp_dir, [x for x in syn_files if '.mat' in x][0])
