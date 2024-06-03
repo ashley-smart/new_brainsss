@@ -17,6 +17,7 @@ warnings.filterwarnings("ignore")
 from shutil import copyfile
 import ants
 import h5py
+import gc
 
 def main(args):
 
@@ -112,6 +113,7 @@ def main(args):
     printlog(f'memory before deletion{process.memory_info().rss/ (1024 * 1024)} in MB')  # in bytes
     del warped_1
     del moving1
+    gc.collect()
     process = psutil.Process()
     printlog(f'memory after deletion{process.memory_info().rss/ (1024 * 1024)} in MB')
 
@@ -126,6 +128,7 @@ def main(args):
     printlog('saved second quarter')
     del warped_2
     del moving2
+    gc.collect()
 
     ##third quarter
     third_quarter = first_quarter*3
@@ -138,6 +141,7 @@ def main(args):
     printlog('saved third quarter')
     del moving3
     del warped_3
+    gc.collect()
 
     ##4th quarter
     printlog(f'fourth quarter goes from {third_quarter} to end')
