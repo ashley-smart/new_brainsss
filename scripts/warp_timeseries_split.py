@@ -30,7 +30,6 @@ def main(args):
     
     printlog(f'args: {args}')
     save_directory = os.path.join(fly_directory, 'warp')
-    save_directory = os.path.join(fly_directory, 'warp')
     
     #my moving path should be MOCO_ch2_highpass_full_zscore_rem_light.h5
     ## Bella's moving_path 
@@ -102,6 +101,7 @@ def main(args):
     printlog(f'first quarter of brain ends at {first_quarter}')
     moving1 = moving[:,:,:,:first_quarter]
     moving1 = ants.from_numpy(moving1)
+    printlog('running warp 1')
     warped_1 = ants.apply_transforms(fixed, moving1, transforms, imagetype=3, interpolator='nearestNeighbor')
     #save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
     printlog(f'shape warped {np.shape(warped_1)}')
