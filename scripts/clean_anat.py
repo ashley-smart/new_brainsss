@@ -45,7 +45,7 @@ def main(args):
 
         ### Remove blobs outside contiguous brain ###
         labels, label_nb = scipy.ndimage.label(brain_copy)
-        brain_label = np.bincount(labels.flatten())[1:].argmax()+1
+        brain_label = np.bincount(labels.flatten())[1:].argmax()+1 #what is this line??
         brain_copy = brain.copy().astype('float32')
         printlog(f'sum nans before {np.sum(np.isnan(brain_copy))}')
         printlog(f'brain label shape = {np.shape(brain_label)}, labels shape = {np.shape(labels)}')
