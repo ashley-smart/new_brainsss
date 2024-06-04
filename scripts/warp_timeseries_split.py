@@ -20,7 +20,7 @@ import h5py
 import gc
 
 def main(args):
-
+    process = psutil.Process()
     logfile = args['logfile']
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     fly_directory = args['directory']
@@ -101,6 +101,7 @@ def main(args):
     printlog(f'first quarter of brain ends at {first_quarter}')
     moving1 = moving[:,:,:,:first_quarter]
     moving1 = ants.from_numpy(moving1)
+    printlog(f'current memory{psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2}')
     printlog('running warp 1')
     warped_1 = ants.apply_transforms(fixed, moving1, transforms, imagetype=3, interpolator='nearestNeighbor')
     #save_file = os.path.join(fly_directory, 'func_0', 'brain_in_FDA.nii')
@@ -109,12 +110,10 @@ def main(args):
     save_file_1 = os.path.join(save_directory, 'brain_in_FDA_1.nii') #first half
     nib.Nifti1Image(warped_1.numpy(), np.eye(4)).to_filename(save_file_1)
     printlog('saved first quarter')
-    process = psutil.Process()
     printlog(f'memory before deletion{process.memory_info().rss/ (1024 * 1024)} in MB')  # in bytes
     del warped_1
     del moving1
     gc.collect()
-    process = psutil.Process()
     printlog(f'memory after deletion{process.memory_info().rss/ (1024 * 1024)} in MB')
 
     ##second quarter
