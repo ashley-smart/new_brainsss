@@ -93,6 +93,7 @@ def main(args):
         printlog(f'syn_nonlinear: {syn_nonlinear_path}')
         printlog(f'syn_linear: {syn_linear_path}')
         printlog(f'affine: {affine_path}')
+        printlog(f'current memory{psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2}')
 
         ########################
         ### Apply Transforms ###
@@ -101,6 +102,7 @@ def main(args):
         #warp to first half of brain
         first_quarter = int(dims[-1]/4)
         printlog(f'first quarter of brain ends at {first_quarter}')
+        first_quarter = 1000 ## testing how much it can do before failing
         moving1 = moving[:,:,:,:first_quarter]
         moving1 = ants.from_numpy(moving1)
         moving1.set_spacing((2.611, 2.611, 5, 1))
