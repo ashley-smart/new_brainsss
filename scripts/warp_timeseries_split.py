@@ -98,11 +98,21 @@ def main(args):
         ########################
         ### Apply Transforms ###
         ########################
+
+        ## full brain at once version
+        # printlog("applying transforms....")
+        # moving = ants.from_numpy(moving)  #apply transforms wants this format
+        # moving.set_spacing((2.611, 2.611, 5, 1))
+        # warped = ants.apply_transforms(fixed, moving, transforms, imagetype=3, interpolator='nearestNeighbor')
+        # save_file = os.path.join(save_directory, 'brain_in_FDA.nii')
+        # nib.Nifti1Image(warped.numpy(), np.eye(4)).to_filename(save_file)
+
+
         printlog("applying transforms....")
         #warp to first half of brain
         first_quarter = int(dims[-1]/4)
         printlog(f'first quarter of brain ends at {first_quarter}')
-        first_quarter = 1000 ## testing how much it can do before failing
+        #first_quarter = 1000 ## testing how much it can do before failing, can't do 1000
         moving1 = moving[:,:,:,:first_quarter]
         moving1 = ants.from_numpy(moving1)
         moving1.set_spacing((2.611, 2.611, 5, 1))
