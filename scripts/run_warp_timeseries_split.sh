@@ -1,7 +1,7 @@
 #!/bin/bash
 #SBATCH --job-name=warp_i
 #SBATCH --time=7-00:00:00
-#SBATCH --ntasks=1
+#SBATCH --ntasks=2
 #SBATCH --partition=trc
 ## comment out #SBATCH --mem 260G
 #SBATCH --output=./logs/warp_mainlog.out
