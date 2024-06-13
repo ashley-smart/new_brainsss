@@ -47,7 +47,9 @@ def main(args):
 
     fixed = np.asarray(nib.load(fixed_path).get_data().squeeze(), dtype='float32')
     fixed = ants.from_numpy(fixed)
-    fixed.set_spacing((2.611,2.611,5)) #should this change?
+    #fixed.set_spacing((2.611,2.611,5)) #should this change?
+    fixed.set_spacing((0.76,0.76,5)) #guessing here...
+    fixed_dims = np.shape(fixed)
 
 
     with h5py.File(moving_path, 'r') as hf:
@@ -101,7 +103,8 @@ def main(args):
         ########################
         ## looping in an h5py so I don't get oom errors
         stepsize = 100 
-        save_file = make_empty_h5(save_directory, "brain_in_FDA.h5", dims) 
+        new_dims = np.append(fixed_dims, dims[-1])
+        save_file = make_empty_h5(save_directory, "brain_in_FDA.h5", new_dims) 
         steps = list(range(0,dims[-1],stepsize))
         with h5py.File(save_file, 'a') as f:
             for step_index in range(len(steps)):
@@ -111,17 +114,18 @@ def main(args):
                     each_moving_segment = ants.from_numpy(each_moving_segment)
                     each_moving_segment.set_spacing((2.611, 2.611, 5, 1))
                     warped_time_segment = ants.apply_transforms(fixed, each_moving_segment, transforms, imagetype=3, interpolator='nearestNeighbor')
-                    f['data'][:,:,:,current_step:next_step] = warped_time_segment
+                    
+                    f['data'][...,current_step:next_step] = warped_time_segment.numpy()
                 else:
                     next_step = steps[step_index + 1]
                     each_moving_segment = moving[:,:,:,current_step:next_step]
                     each_moving_segment = ants.from_numpy(each_moving_segment)
                     each_moving_segment.set_spacing((2.611, 2.611, 5, 1))
                     warped_time_segment = ants.apply_transforms(fixed, each_moving_segment, transforms, imagetype=3, interpolator='nearestNeighbor')
-                    f['data'][:,:,:,current_step:next_step] = warped_time_segment
-        
-                printlog(f'current memory{psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2}')
-                printlog(f'step index = {step_index}')
+                    f['data'][...,current_step:next_step] = warped_time_segment.numpy()
+
+                print(f'current memory: {psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2}')
+                print(f'step index = {step_index}')
         
 
     
