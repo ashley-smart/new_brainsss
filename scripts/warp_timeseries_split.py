@@ -125,11 +125,7 @@ def main(args):
         
 
     
-    def make_empty_h5(directory, file, brain_dims):
-        savefile = os.path.join(directory, file)
-        with h5py.File(savefile, 'w') as f:
-            dset = f.create_dataset('data', brain_dims, dtype='float32', chunks=True)
-        return savefile
+    
         ## full brain at once version
         # printlog("applying transforms....")
         # moving = ants.from_numpy(moving)  #apply transforms wants this format
@@ -217,7 +213,11 @@ def main(args):
     
     
     
-    
+def make_empty_h5(directory, file, brain_dims):
+        savefile = os.path.join(directory, file)
+        with h5py.File(savefile, 'w') as f:
+            dset = f.create_dataset('data', brain_dims, dtype='float32', chunks=True)
+        return savefile   
 
 
 def sec_to_hms(t):

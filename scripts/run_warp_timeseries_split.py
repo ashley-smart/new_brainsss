@@ -57,7 +57,7 @@ for date in dates:
     runtime = 12 #144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log
     nodes = 1 # 1 or 2
-    nice = True #True # true to lower priority of jobs. ie, other users jobs go first
+    nice = False #True # true to lower priority of jobs. ie, other users jobs go first
 
 
 
