@@ -132,7 +132,7 @@ for date in dates:
                             script=os.path.join(scripts_path, script),
                             modules=modules,
                             args=args,
-                            logfile=logfile, time=2, mem=super_mem, nice=nice, nodes=nodes)
+                            logfile=logfile, time=6, mem=super_mem, nice=nice, nodes=nodes)
         brainsss.wait_for_job(job_id, logfile, com_path)
 
     time.sleep(30) # to allow any final printing
