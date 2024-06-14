@@ -124,8 +124,9 @@ def main(args):
                     warped_time_segment = ants.apply_transforms(fixed, each_moving_segment, transforms, imagetype=3, interpolator='nearestNeighbor')
                     f['data'][...,current_step:next_step] = warped_time_segment.numpy()
 
-                print(f'current memory: {psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2}')
-                print(f'step index = {step_index}')
+                printlog(f'current memory: {psutil.Process(os.getpid()).memory_info().rss / 1024 ** 2}')
+                printlog(f'step index = {step_index}')
+        printlog('completed')
         
 
     
