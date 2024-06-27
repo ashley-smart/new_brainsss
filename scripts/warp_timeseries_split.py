@@ -39,16 +39,16 @@ def main(args):
     ### Load Brains ###
     ###################
     #what Bella uses
-    #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/FDA_at_func_res_PtoA.nii"
+    fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/FDA_at_func_res_PtoA.nii"
     #what I used for alignment
     #fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_2umiso.nii"
-    # new alignment 76 FDA
-    fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_076iso.nii"
+    # # new alignment 76 FDA - only use to make the warp field and not the wapr_timeseries because it will be too big
+    # fixed_path = "/oak/stanford/groups/trc/data/Brezovec/2P_Imaging/anat_templates/20220301_luke_2_jfrc_affine_zflip_076iso.nii"
 
     fixed = np.asarray(nib.load(fixed_path).get_data().squeeze(), dtype='float32')
     fixed = ants.from_numpy(fixed)
     #fixed.set_spacing((2.611,2.611,5)) #should this change?
-    fixed.set_spacing((0.76,0.76,5)) #guessing here...
+    fixed.set_spacing((2.611,2.611,5)) 
     fixed_dims = np.shape(fixed)
 
 
@@ -71,6 +71,7 @@ def main(args):
         fly_name = fly_directory.split('/')[-1]
         original_warp_path = os.path.join(fly_directory, 'warp')
         func_to_anat_affine_folder = '{}-to-{}_fwdtransforms_2umiso'.format(fly_name, anat_file)
+        ## need 76 version here probably
         
         #affine_file = os.listdir(os.path.join(original_warp_path, inv_warp_dir))[0]  ## 0 to get first file 
         #affine_path = os.path.join(save_directory, 'func-to-anat_fwdtransforms', affine_file)
@@ -96,6 +97,7 @@ def main(args):
         ### Apply Transforms ###
         ########################
         ## looping in an h5py so I don't get oom errors
+        ## I need to downsample this. The dims are way too big and it makes gigantic files
         stepsize = 100 
         new_dims = np.append(fixed_dims, dims[-1])
         save_file = make_empty_h5(save_directory, "brain_in_FDA.h5", new_dims) 
