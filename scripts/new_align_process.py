@@ -182,7 +182,7 @@ for date in dates:
         mean_anat_file = [file for file in os.listdir(anat_directory) if file_id in file]
         if len(mean_func_file) > 2 or len(mean_anat_file) > 2:
             printlog(f'ERROR: TOO many mean files. func = {mean_func_file}, anat = {mean_anat_file}')
-        if len(mean_func_file) == 0:
+        if len(mean_func_file) < 2: #==0:
             printlog(f'no {file_id} files for func. Running meanbrain')
             ##RUN MEAN BRAIN FOR FUNC
             #1. find moco files
@@ -205,7 +205,7 @@ for date in dates:
                 job_ids.append(job_id)
                 brainsss.wait_for_job(job_id, logfile, com_path)
 
-        if len(mean_anat_file) == 0:
+        if len(mean_anat_file) < 2: #== 0:
             printlog(f'no {file_id} files for anat. Running meanbrain')
             ##run mean brain for anat
             #will not have moco
@@ -229,6 +229,9 @@ for date in dates:
         mean_func_file = [file for file in os.listdir(func_directory) if file_id in file]
         mean_anat_file = [file for file in os.listdir(anat_directory) if file_id in file]
         #get paths for moving and fixed flies for alignment
+        printlog(f'mean func files = {mean_func_file}')
+        printlog(f'mean anat files = {mean_anat_file}')
+        printlog('if the above != 2 each then the rest will not run')
         if len(mean_anat_file) == 2 and len(mean_func_file) == 2:
             
             ##then I can use them for the rest of the stuff
