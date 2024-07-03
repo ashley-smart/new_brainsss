@@ -27,7 +27,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
 #dates = ['20230630', '20230616', '20230623'] 
-dates = ['20230414', '20230512', '20230606', '20230609', '20230614', '20230407', '20230330', '20230616', '20230623', '20230630'] #'20230428', '20230616'] 
+dates = ['20230414', '20230505'] #'20230428', '20230616'] 
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
