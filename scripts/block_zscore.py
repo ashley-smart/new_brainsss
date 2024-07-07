@@ -23,6 +23,7 @@ import math
 from xml.etree import ElementTree as ET
 import csv as csv
 from sklearn.decomposition import IncrementalPCA
+import re
 
 
 def main(args):
@@ -37,15 +38,23 @@ def main(args):
     light_buffer = 200 #ms needed away from light peak to allow brain volume to not be marked as light
     redo_rem_light = True # if true will redo remove light and readd it to peaks
     redo_light_peaks = True
-    fix = True ##should the timestamps be corrected due to split_nii data drop?
     
+    date_string = directory.split('/')[-2] #this could have __queue__ or something in it so scrape it for digits
+    date = re.findall(r'\d+', date_string )[0]
+    if date > '20231101':
+        fix = False
+    else:
+        fix = True
+    printlog(f'Fixing timestamps for dropped frames = {fix}')
+    #fix = True ##should the timestamps be corrected due to split_nii data drop? If date is before Nov 2023 then it should be True
+
     stepsize = 25 ##this is set so memory doesn't get overwhelmed. lower if getting oom errors
     exp_types = ['20', '40','dark'] #must be this format ['20', '40', dark] #skip dark if don't want it
 
 
     for brain_file in file_names:
         full_load_path = os.path.join(directory, brain_file)
-
+        printlog(f'brain file = {full_load_path}')
         #rerun timestamps, need to do this so if other functions call load timestamps it will pull the fixed version
         timestamps = fun.find_timestamps(directory, fix = fix)
         rem_light_file = os.path.join(save_directory, brain_file.split('.')[0] + '_data_rem_light.h5') #generate this file

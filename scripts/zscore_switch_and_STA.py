@@ -1,6 +1,3 @@
-### runs STA.py 
-## can be run on sherlock with STA.sh
-
 import time
 import sys
 import os
@@ -26,17 +23,15 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = ['20230405__queue__', '20230330__queue__' ] #, '20230210_stitch']  #'20230124_stitch' didn't finish running zscore for first fly1-20s_0018 (2-27-23)
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
-#dates = ['20230630', '20230616', '20230623'] 
-dates = ['20230606'] #'20230428', '20230616'] 
-#next 606
+dates = ['20230505'] #, '20230512', '20230606', '20230609', '20230614', '20230407', '20230330', '20230616', '20230623', '20230630'] #'20230428', '20230616'] 
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
-    #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
+    
 
-
-    mem = 18
+    mem = 12
     high_pass_mem = 6
+    STA_mem = 18
     runtime = 48 #144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log
     nodes = 1 # 1 or 2
@@ -82,6 +77,34 @@ for date in dates:
 
 
     ######################
+    ### vol zscore ####
+    #######################
+    printlog(f"\n{'   vol by vol switch zscore   ':=^{width}}")
+    #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+    ##run zscore on high pass filtered moco files
+    file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
+    job_ids = []
+    for fly in flies:
+        directory = os.path.join(dataset_path, fly)
+        save_path = directory  #could have it save in a different folder in the future
+        all_files = os.listdir(directory)
+        filenames = [file for file in all_files if file_id in file]
+        if len(filenames) == 0: 
+            printlog(f'NO {file_id} files! Cannot run zscore')
+        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+        script = 'block_zscore.py'
+        printlog(os.path.join(scripts_path, script))
+        job_id = brainsss.sbatch(jobname='switch_zscore',
+                             script=os.path.join(scripts_path, script),
+                             modules=modules,
+                             args=args,
+                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+        job_ids.append(job_id)
+        printlog("fly started")
+
+
+
+    ######################
     ### STA ####
     #######################
     printlog(f"\n{'   STA   ':=^{width}}")
@@ -103,7 +126,7 @@ for date in dates:
                              script=os.path.join(scripts_path, script),
                              modules=modules,
                              args=args,
-                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+                             logfile=logfile, time=runtime, mem=STA_mem, nice=nice, nodes=nodes)
         job_ids.append(job_id)
         printlog("fly started")
 
