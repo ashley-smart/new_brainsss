@@ -41,6 +41,10 @@ def main(args):
         ### HIGH PASS ###
         #################
 
+        ## new brainsss sigma
+        # hz = 1/np.diff(timestamps[:,0])[0]*1000
+        # sigma = int(hz/0.01) #gets a good sigma of ~1.5min
+
         printlog("Beginning high pass")
         printlog("this should be the full path")
         printlog(str(full_load_path))
