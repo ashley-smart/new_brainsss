@@ -100,26 +100,25 @@ for date in dates:
                              args=args,
                              logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
         job_ids.append(job_id)
-        printlog("fly started")
+        printlog(f"{directory} fly started")
 
 
-
-    ######################
-    ### STA ####
-    #######################
-    printlog(f"\n{'   STA   ':=^{width}}")
-    #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
-    ##run zscore on high pass filtered moco files
-    file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
-    job_ids = []
-    for fly in flies:
+        ######################
+        ### STA ####
+        #######################
+        printlog(f"\n{'   STA   ':=^{width}}")
+        #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+        ##run zscore on high pass filtered moco files
+        #file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+        STA_file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+    
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future
         all_files = os.listdir(directory)
-        filenames = [file for file in all_files if file_id in file]
+        STA_filenames = [file for file in all_files if STA_file_id in file]
         if len(filenames) == 0: 
-            printlog(f'NO {file_id} files! Cannot run STA')
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+            printlog(f'NO {STA_file_id} files! Cannot run STA')
+        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': STA_filenames, 'save_path': save_path}
         script = 'STA.py'  ##this removes light frames
         printlog(os.path.join(scripts_path, script))
         job_id = brainsss.sbatch(jobname='STA',
@@ -128,7 +127,36 @@ for date in dates:
                              args=args,
                              logfile=logfile, time=runtime, mem=STA_mem, nice=nice, nodes=nodes)
         job_ids.append(job_id)
-        printlog("fly started")
+        printlog(f"{directory} fly started")
+
+
+
+    # ######################
+    # ### STA ####
+    # #######################
+    # printlog(f"\n{'   STA   ':=^{width}}")
+    # #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+    # ##run zscore on high pass filtered moco files
+    # #file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+    # file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+    # job_ids = []
+    # for fly in flies:
+    #     directory = os.path.join(dataset_path, fly)
+    #     save_path = directory  #could have it save in a different folder in the future
+    #     all_files = os.listdir(directory)
+    #     filenames = [file for file in all_files if file_id in file]
+    #     if len(filenames) == 0: 
+    #         printlog(f'NO {file_id} files! Cannot run STA')
+    #     args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+    #     script = 'STA.py'  ##this removes light frames
+    #     printlog(os.path.join(scripts_path, script))
+    #     job_id = brainsss.sbatch(jobname='STA',
+    #                          script=os.path.join(scripts_path, script),
+    #                          modules=modules,
+    #                          args=args,
+    #                          logfile=logfile, time=runtime, mem=STA_mem, nice=nice, nodes=nodes)
+    #     job_ids.append(job_id)
+    #     printlog("fly started")
 
     for job_id in job_ids:
         brainsss.wait_for_job(job_id, logfile, com_path)
