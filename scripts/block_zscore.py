@@ -149,6 +149,9 @@ def main(args):
                     elif exp == 'dark': #this is a special case
                         switch_set_t = None
 
+                    printlog(f'shape of exp switch 1: {np.shape(exp1_switch_set_t)}')
+                    printlog(f'shape of exp switch 2: {np.shape(exp2_switch_set_t)}')
+
                     #find start and end points for each switch set
 
                     if switch_set_t is not None:
