@@ -47,12 +47,12 @@ def main(args):
         labels, label_nb = scipy.ndimage.label(brain_copy)
         brain_label = np.bincount(labels.flatten())[1:].argmax()+1 #what is this line??
         brain_copy = brain.copy().astype('float32')
-        printlog(f'sum nans before {np.sum(np.isnan(brain_copy))}')
-        printlog(f'brain label shape = {np.shape(brain_label)}, labels shape = {np.shape(labels)}')
-        printlog(f'first brain label = {brain_label[0]} first label = {labels[0]}')
+        # printlog(f'sum nans before {np.sum(np.isnan(brain_copy))}')
+        # printlog(f'brain label shape = {np.shape(brain_label)}, labels shape = {np.shape(labels)}')
+        # printlog(f'first brain label = {brain_label[0]} first label = {labels[0]}')
         brain_copy[np.where(labels != brain_label)] = np.nan
-        printlog(f'sum nans after nan=ing {np.sum(np.isnan(brain_copy))}')
-        printlog(f'brain copy post nan-- {brain_copy.shape}, is nan: {np.any(np.isnan(brain_copy))}, max = {np.max(brain_copy)}, min = {np.min(brain_copy)}')
+        # printlog(f'sum nans after nan=ing {np.sum(np.isnan(brain_copy))}')
+        # printlog(f'brain copy post nan-- {brain_copy.shape}, is nan: {np.any(np.isnan(brain_copy))}, max = {np.max(brain_copy)}, min = {np.min(brain_copy)}')
 
         ### Perform quantile normalization ###
         brain_out = quantile_transform(brain_copy.flatten().reshape(-1, 1), n_quantiles=500, random_state=0, copy=True)
