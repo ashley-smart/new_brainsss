@@ -118,7 +118,8 @@ for date in dates:
     printlog(f'all func flies: {func_flies}')
     for fly in func_flies:
         #file_id = 'highpass_full_zscore_rem_light.h5'
-        file_id = 'hp_moco_rem_light_masked.h5' #for masked brain
+        #file_id = 'hp_moco_rem_light_masked.h5' #for masked brain
+        file_id = 'brain_zscore_hp_moco_rem_light_masked.h5' #masked zscore
         func_directory = os.path.join(dataset_path, fly)
         all_files = os.listdir(func_directory)
         file_names = [file for file in all_files if file_id in file]
