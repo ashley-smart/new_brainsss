@@ -13,7 +13,7 @@ import gc
 
 #get to files
 #date = '20211215'
-dates = ['20240106']  #as of 4-27 4-5 still has one bad fly as does 330
+dates = ['20240726']  ## this code is fixed to not drop timepoints 
 for date in dates:
   print('STARTING DATE:', str(date))
   #dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
