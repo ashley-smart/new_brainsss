@@ -16,9 +16,9 @@ import gc
 dates = ['20240726']  ## this code is fixed to not drop timepoints 
 for date in dates:
   print('STARTING DATE:', str(date))
-  #dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
+  dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
   #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
-  dataset_path = f"/oak/stanford/groups/trc/data/Jacob/ImagingData/Bruker/{date}"
+  #dataset_path = f"/oak/stanford/groups/trc/data/Jacob/ImagingData/Bruker/{date}"
   
   fly_files = os.listdir(dataset_path)  ## find directory names, they are the fly names
   fly_folders = []
