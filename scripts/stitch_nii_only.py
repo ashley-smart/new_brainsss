@@ -13,7 +13,7 @@ import gc
 
 #get to files
 #date = '20211215'
-dates = ['20240726']  ## this code is fixed to not drop timepoints 
+dates = ['20240802']  ## this code works fine (not related to the dropped timepoints problem) 
 for date in dates:
   print('STARTING DATE:', str(date))
   dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
