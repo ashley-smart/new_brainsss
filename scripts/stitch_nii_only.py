@@ -23,7 +23,7 @@ for date in dates:
   fly_files = os.listdir(dataset_path)  ## find directory names, they are the fly names
   fly_folders = []
   for i in fly_files:
-    if os.path.isdir(os.path.join(dataset_path, i)):
+    if os.path.isdir(os.path.join(dataset_path, i)) and "fly" in i: #new thing saving brightness over time. breaks code, this should prevent it looking there
       fly_folders.append(i)
   print('found flies: ', len(fly_folders))
 
