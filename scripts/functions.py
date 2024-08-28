@@ -303,7 +303,21 @@ def find_switch_points(dataset_path, difference=15):
 ## functions
 ## get data out of voltage file     
 #get just diode column
+# def get_diode_column(raw_light_data): this version does not work for data that has 3 columns
+#     """light data should be single fly and have the header be the first row"""
+#     header = raw_light_data[0]
+#     diode_column = []
+#     for i in range(len(header)):
+#         #if 'diode' in header[i]:
+#         if 'Input 0' in header[i]: #for new split straagey
+#             diode_column = i
+#     reshape_light_data = np.transpose(raw_light_data[1:])
+#     column = reshape_light_data[:][diode_column] #don't want header anymore
+#     column = [float(i) for i in column] #for some reason it was saved as string before
+#     return column
+
 def get_diode_column(raw_light_data):
+    #this one
     """light data should be single fly and have the header be the first row"""
     header = raw_light_data[0]
     diode_column = []
@@ -311,9 +325,11 @@ def get_diode_column(raw_light_data):
         #if 'diode' in header[i]:
         if 'Input 0' in header[i]: #for new split straagey
             diode_column = i
+            print(f'found diode column {i}')
     reshape_light_data = np.transpose(raw_light_data[1:])
-    column = reshape_light_data[:][diode_column] #don't want header anymore
-    column = [float(i) for i in column] #for some reason it was saved as string before
+    column = []
+    for row in reshape_light_data:
+        column.append(float(row[diode_column]))
     return column
 
 
@@ -656,27 +672,16 @@ def get_time_column(raw_light_data):
 #         else:
 #             print(f'could not find "Time(ms)" in header{header}')
     reshape_light_data = np.transpose(raw_light_data[1:])
-    column = reshape_light_data[:][time_column] #don't want header anymore
-    column = [float(i) for i in column] #for some reason it was saved as string before
+    column = []
+    for row in reshape_light_data:
+        column.append(float(row[diode_column]))
     return column
 
 
 def get_light_peaks (dataset_path): #, data_reducer = 100):
     
     """input fly path and get out the light peaks files in milliseconds"""
-#     data_reducer = 100
-#     light_data = []
-#     voltage_path = find_voltage_file(Path)
-#     with open(voltage_path, 'r') as rawfile:
-#         reader = csv.reader(rawfile)
-#         data_single = []
-#         for i, row in enumerate(reader):
-#             if i % data_reducer == 0: #will downsample the data 
-#                 data_single.append(row)
-#         #light_data.append(data_single) #for more than one fly
-#         light_data = data_single    
-    #voltage_multiplier = 0.9991401258909588  ##this is the average of the more accurate estimations of the last bleedthrough time and corresponding light flash in voltage
-    #voltage_multiplier = 0.9991021996109531  #this was calculated from bleedthrough and voltage difference on bruker 8.7.23
+
     voltage_multiplier = 1 ##20231102 no longer need correction. Sorted out issue was from indexing and dropping timepoints in split nii
     light_data_column, time_data = get_voltage_data(dataset_path)
 
@@ -688,11 +693,15 @@ def get_light_peaks (dataset_path): #, data_reducer = 100):
     if len(light_peaks) == 0:
         print("attempting new early_light_max, because no light peaks")
         early_light_max = max(light_data_column[0:100])
-        light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max +.001, prominence = .1, distance = 10)
-        
+        #light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max +.001, prominence = .1, distance = 10)
+        light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max*0.6, prominence = .1, distance = 10)
         if len(light_peaks) == 0:
-            print("There are still no light peaks")
-            print("skipping this fly--no light peaks")
+            print("There are still no light peaks, attempting without prominence")
+            early_light_max = max(light_data_column[0:2000])
+            light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max*0.6, distance = 10)
+            print(f'early light max 0:2000 {early_light_max}')
+            if len(light_peaks) == 0:
+                print("skipping this fly--no light peaks")
             
     
 #     ## convert to seconds
@@ -714,6 +723,7 @@ def get_light_peaks (dataset_path): #, data_reducer = 100):
     single_light_ms = get_single_light_peaks(light_ms, 10000)
     add_to_h5(light_peaks_path, 'light peaks ms', single_light_ms)
     return single_light_ms
+
 
 
 
