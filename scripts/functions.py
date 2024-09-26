@@ -326,9 +326,9 @@ def get_diode_column(raw_light_data):
         if 'Input 0' in header[i]: #for new split straagey
             diode_column = i
             print(f'found diode column {i}')
-    reshape_light_data = np.transpose(raw_light_data[1:])
+    #reshape_light_data = np.transpose(raw_light_data[1:])
     column = []
-    for row in reshape_light_data:
+    for row in raw_light_data:
         column.append(float(row[diode_column]))
     return column
 
@@ -669,12 +669,13 @@ def get_time_column(raw_light_data):
     for i in range(len(header)):
         if 'Time(ms)' in header[i]: 
             time_column = i
+            print(f'found time column {i}')
 #         else:
 #             print(f'could not find "Time(ms)" in header{header}')
-    reshape_light_data = np.transpose(raw_light_data[1:])
+    #reshape_light_data = np.transpose(raw_light_data[1:])
     column = []
-    for row in reshape_light_data:
-        column.append(float(row[diode_column]))
+    for row in raw_light_data:
+        column.append(float(row[time_column]))
     return column
 
 
