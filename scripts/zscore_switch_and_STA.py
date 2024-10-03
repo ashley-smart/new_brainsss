@@ -37,6 +37,8 @@ for date in dates:
     nodes = 1 # 1 or 2
     nice = True #True # true to lower priority of jobs. ie, other users jobs go first
 
+    switch_zscore = True #sta will fail if this is false. need to change that
+
 
 
     #####################
@@ -79,28 +81,52 @@ for date in dates:
     ######################
     ### vol zscore ####
     #######################
-    printlog(f"\n{'   vol by vol switch zscore   ':=^{width}}")
-    #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
-    ##run zscore on high pass filtered moco files
-    file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
-    job_ids = []
-    for fly in flies:
-        directory = os.path.join(dataset_path, fly)
-        save_path = directory  #could have it save in a different folder in the future
-        all_files = os.listdir(directory)
-        filenames = [file for file in all_files if file_id in file]
-        if len(filenames) == 0: 
-            printlog(f'NO {file_id} files! Cannot run zscore')
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
-        script = 'block_zscore.py'
-        printlog(os.path.join(scripts_path, script))
-        job_id = brainsss.sbatch(jobname='switch_zscore',
-                             script=os.path.join(scripts_path, script),
-                             modules=modules,
-                             args=args,
-                             logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
-        job_ids.append(job_id)
-        printlog(f"{directory} fly started")
+    if switch_zscore == True: 
+        printlog(f"\n{'   vol by vol switch zscore   ':=^{width}}")
+        #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+        ##run zscore on high pass filtered moco files
+        file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
+        job_ids = []
+        for fly in flies:
+            directory = os.path.join(dataset_path, fly)
+            save_path = directory  #could have it save in a different folder in the future
+            all_files = os.listdir(directory)
+            filenames = [file for file in all_files if file_id in file]
+            if len(filenames) == 0: 
+                printlog(f'NO {file_id} files! Cannot run zscore')
+            args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+            script = 'block_zscore.py'
+            printlog(os.path.join(scripts_path, script))
+            job_id = brainsss.sbatch(jobname='switch_zscore',
+                                script=os.path.join(scripts_path, script),
+                                modules=modules,
+                                args=args,
+                                logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+            job_ids.append(job_id)
+            printlog(f"{directory} fly started")
+    else:
+        printlog(f"\n{'   vol by vol full zscore   ':=^{width}}")
+        #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+        ##run zscore on high pass filtered moco files
+        file_id = '_highpass.h5'  ##looks for this tag in filename and runs analysis on it
+        job_ids = []
+        for fly in flies:
+            directory = os.path.join(dataset_path, fly)
+            save_path = directory  #could have it save in a different folder in the future
+            all_files = os.listdir(directory)
+            filenames = [file for file in all_files if file_id in file]
+            if len(filenames) == 0: 
+                printlog(f'NO {file_id} files! Cannot run zscore')
+            args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+            script = 'vol_zscore_rem_light.py'
+            printlog(os.path.join(scripts_path, script))
+            job_id = brainsss.sbatch(jobname='full_zscore',
+                                script=os.path.join(scripts_path, script),
+                                modules=modules,
+                                args=args,
+                                logfile=logfile, time=runtime, mem=mem, nice=nice, nodes=nodes)
+            job_ids.append(job_id)
+            printlog(f"{directory} fly started")
 
 
         ######################
@@ -109,8 +135,11 @@ for date in dates:
         printlog(f"\n{'   STA   ':=^{width}}")
         #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
         ##run zscore on high pass filtered moco files
-        #file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
-        STA_file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+        if switch_zscore == True:
+            STA_file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+        else:
+            STA_file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+        
     
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future
