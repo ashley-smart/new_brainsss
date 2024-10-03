@@ -56,6 +56,7 @@ def main(args):
         full_load_path = os.path.join(directory, brain_file)
         printlog(f'brain file = {full_load_path}')
         #rerun timestamps, need to do this so if other functions call load timestamps it will pull the fixed version
+        printlog(f'fix timestamps = {fix}')
         timestamps = fun.find_timestamps(directory, fix = fix)
         rem_light_file = os.path.join(save_directory, brain_file.split('.')[0] + '_data_rem_light.h5') #generate this file
 
@@ -228,11 +229,12 @@ def main(args):
                             f['dark zscore'][:,:,:, chunk_start:chunk_end] = each_zscore
 
             printlog(f'ZSCORE complete for {brain_file}')
-            txt_file_path = os.path.join(directory, 'redone_with_fix.txt')
-            file1 = open(txt_file_path,"w")
-            L = [f'path: {full_load_path} has new timestamps and new zscore']
-            file1.writelines(L)
-            file1.close()
+            if fix == True:
+                txt_file_path = os.path.join(directory, 'redone_with_fix.txt')
+                file1 = open(txt_file_path,"w")
+                L = [f'path: {full_load_path} has new timestamps and new zscore']
+                file1.writelines(L)
+                file1.close()
 
     
 if __name__ == '__main__':
