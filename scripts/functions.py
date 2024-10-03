@@ -329,7 +329,7 @@ def get_diode_column(raw_light_data):
     #reshape_light_data = np.transpose(raw_light_data[1:])
     column = []
     for row in raw_light_data:
-        column.append(float(row[diode_column]))
+        column.append(float(row[diode_column[1:]]))  #added [1:] because was trying to add header
     return column
 
 
@@ -675,7 +675,7 @@ def get_time_column(raw_light_data):
     #reshape_light_data = np.transpose(raw_light_data[1:])
     column = []
     for row in raw_light_data:
-        column.append(float(row[time_column]))
+        column.append(float(row[time_column[1:]])) #adding [1:] to be consistent with diode column
     return column
 
 
