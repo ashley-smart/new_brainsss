@@ -112,7 +112,10 @@ for date in dates:
         printlog(f"\n{'   STA   ':=^{width}}")
         #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
         ##run zscore on high pass filtered moco files
-        STA_file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+        if switch == True:
+            STA_file_id = 'highpass_switch_zscore_rem_light.h5'
+        else:
+            STA_file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
         #STA_file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
     
         directory = os.path.join(dataset_path, fly)
