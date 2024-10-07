@@ -36,7 +36,7 @@ for date in dates:
     width = 120 # width of print log
     nodes = 1 # 1 or 2
     nice = True #True # true to lower priority of jobs. ie, other users jobs go first
-
+    switch = False #If false run zscore without blocks
 
 
     #####################
@@ -92,7 +92,10 @@ for date in dates:
         if len(filenames) == 0: 
             printlog(f'NO {file_id} files! Cannot run zscore')
         args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
-        script = 'block_zscore.py'
+        if switch == True:
+            script = 'block_zscore.py'
+        else:
+            script = 'vol_zscore_rem_light.py'
         printlog(os.path.join(scripts_path, script))
         job_id = brainsss.sbatch(jobname='switch_zscore',
                              script=os.path.join(scripts_path, script),
@@ -109,8 +112,8 @@ for date in dates:
         printlog(f"\n{'   STA   ':=^{width}}")
         #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
         ##run zscore on high pass filtered moco files
-        #file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
-        STA_file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+        STA_file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+        #STA_file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
     
         directory = os.path.join(dataset_path, fly)
         save_path = directory  #could have it save in a different folder in the future

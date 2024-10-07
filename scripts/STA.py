@@ -55,7 +55,7 @@ def main(args):
 
         #load brain
         with h5py.File(full_load_path, 'r') as hf:
-            #printlog(f'{hf.keys()}')
+            printlog(f'{hf.keys()}')
             brain = hf['zscore']
             brain_dims = np.shape(brain)
             printlog('got the brain!')
