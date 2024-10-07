@@ -91,11 +91,13 @@ for date in dates:
         filenames = [file for file in all_files if file_id in file]
         if len(filenames) == 0: 
             printlog(f'NO {file_id} files! Cannot run zscore')
-        args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
+        
         if switch == True:
             script = 'block_zscore.py'
+            args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path}
         else:
             script = 'vol_zscore_rem_light.py'
+            args = {'logfile': logfile, 'directory': directory, 'smooth': False, 'file_names': filenames, 'save_path': save_path, 'fix_timestamps': False}
         printlog(os.path.join(scripts_path, script))
         job_id = brainsss.sbatch(jobname='switch_zscore',
                              script=os.path.join(scripts_path, script),
