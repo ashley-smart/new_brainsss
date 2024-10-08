@@ -35,6 +35,7 @@ def main(args):
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
     for brain_file in file_names:
+        printlog('looking for brain file for STA')
         full_load_path = os.path.join(directory, brain_file)
         ##both 20 and 40s will be saved in this file, actually saving in seperate files so they don't break
         # save_file = os.path.join(save_directory, brain_file.split('.')[0] + '_STA.h5') #generate this file
@@ -94,7 +95,7 @@ def main(args):
                     for t in trials[i][0][0]:
                         all_t.append(len(t))
                 max_trial_time = max(all_t) 
-                printlog(f'{max_trial_time}')
+                printlog(f'max trial time: {max_trial_time}')
                 nan_brain = np.empty((len(trials), brain_dims[0], brain_dims[1], brain_dims[2],  max_trial_time)) * np.nan
                 for i, trial in enumerate(trials): #[:,:,:]):
                     nan_brain[i, :,:,:, :trial.shape[3]] = trial
