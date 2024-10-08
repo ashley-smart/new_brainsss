@@ -87,9 +87,9 @@ for date in dates:
     printlog(f"\n{'   STA   ':=^{width}}")
     #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
     ##run zscore on high pass filtered moco files
-    #file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+    file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
     
-    file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+    #file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
     job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
