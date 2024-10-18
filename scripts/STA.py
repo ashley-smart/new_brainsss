@@ -30,7 +30,7 @@ def main(args):
     directory = args['directory'] # full fly path 
     file_names = args['file_names'] ## should be  _highpass.h5 now to run zscore on h5 files
     save_directory = args['save_path']
-
+    roi_peaks = True #if true then will use roi light peaks rather than voltage
     
     printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     
@@ -46,12 +46,12 @@ def main(args):
             os.mkdir(fig_save_path)
 
         #get light peaks in terms of brain time
-        light_peaks_brain_t = fun.get_light_peaks_brain_t_no_bleedthrough (directory)
+        light_peaks_brain_t = fun.get_light_peaks_brain_t_no_bleedthrough (directory, roi_peaks = roi_peaks)
         printlog(f'light shape {np.shape(light_peaks_brain_t)}')
 
         ## get frames dark, 20, 40
         ## these are the start and stop points of the different experiments (have them be inclusive)
-        brain_t_switch_indices = fun.get_brain_t_switch_set(directory)
+        brain_t_switch_indices = fun.get_brain_t_switch_set(directory, roi_peaks = roi_peaks)
         printlog(f'indices {brain_t_switch_indices}')
 
         #load brain

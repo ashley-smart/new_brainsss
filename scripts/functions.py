@@ -91,13 +91,13 @@ def run_PCA (h5file, n_components, key = 'data'):
             
 
 
-def get_brain_t_switch_set(dataset_path, exp_length1 = 20, exp_length2 = 40):
+def get_brain_t_switch_set(dataset_path, exp_length1 = 20, exp_length2 = 40, roi_peaks = False):
     """returns array of arrays of switch times that correspond to index in t of brains.
     returns seperately 20 and 40s experiemnts
     20s_t_points = [[start1 stop1] [start 2 stop2]]
     *takes time from zstack timestamps to find which zstack the light is in"""
     
-    light_peaks_twenty_times, light_peaks_forty_times = get_times_switch_blocks (dataset_path, exp_length1, exp_length2)
+    light_peaks_twenty_times, light_peaks_forty_times = get_times_switch_blocks (dataset_path, exp_length1, exp_length2, roi_peaks = roi_peaks)
     timestamps = load_timestamps(dataset_path)
     average_timestamps = np.mean(timestamps, axis = 1)/1000  ##to convert ms to s to match light_peaks
     
@@ -186,20 +186,25 @@ def get_brain_t_switch_set(dataset_path, exp_length1 = 20, exp_length2 = 40):
     forty_switch_set_t = np.array(forty_switch_set_t)
     return twenty_switch_set_t, forty_switch_set_t
 
-def get_times_switch_blocks (dataset_path, exp_length1 = 20, exp_length2 = 40):
+def get_times_switch_blocks (dataset_path, exp_length1 = 20, exp_length2 = 40, roi_peaks = False):
     """returns array of arrays of times in s that each block 
     starts and ends seperate arrays returned for 20 and 40 (or specified expt times)
     i.e. 20s_times = [[30.9 400.2][600.7  987.6]]  [[start1 stop 1] [start 2 stop 2]] """
     
-    
-    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
-    opened_peaks = open_light_peaks(light_peaks_path)
-    if opened_peaks is not None:
-        light_peaks = opened_peaks/1000
-        print('found light in h5 file')
+    ##getting light peaks in this function is unnececessary
+    if roi_peaks == False:
+        light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
+        opened_peaks = open_light_peaks(light_peaks_path)
+        if opened_peaks is not None:
+            light_peaks = opened_peaks/1000
+            print('found light in h5 file')
+        else:
+            light_peaks = get_light_peaks(dataset_path)/1000
     else:
-        light_peaks = get_light_peaks(dataset_path)/1000
-    twenty, forty = get_switch_start_stop_indices(dataset_path, exp_length1, exp_length2)
+        print('opening light from roi')
+        light_peaks = get_roi_light_peaks(dataset_path)
+
+    twenty, forty = get_switch_start_stop_indices(dataset_path, exp_length1, exp_length2, roi_peaks = roi_peaks)
     
     light_peaks_twenty_times = []
     for set_index in range(len(twenty)):
@@ -218,17 +223,21 @@ def get_times_switch_blocks (dataset_path, exp_length1 = 20, exp_length2 = 40):
 
 
 ##support functions
-def get_switch_start_stop_indices(dataset_path, exp_length1 = 20, exp_length2 = 40):
+def get_switch_start_stop_indices(dataset_path, exp_length1 = 20, exp_length2 = 40, roi_peaks = False):
     """returns an array of tuples of start and stop indices for starts and stops of 20s or 40s. 
     20 and 40 are returned in seperate arrays.
     inclusive (start = first index and stop = last index)"""
-    switch_points = find_switch_points(dataset_path)
-    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
-    opened_peaks = open_light_peaks(light_peaks_path)
-    if opened_peaks is not None:
-        light_peaks = opened_peaks/1000
+    switch_points = find_switch_points(dataset_path, roi_peaks = roi_peaks)
+    if roi_peaks == False:
+        light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
+        opened_peaks = open_light_peaks(light_peaks_path)
+        if opened_peaks is not None:
+            light_peaks = opened_peaks/1000
+        else:
+            light_peaks = get_light_peaks(dataset_path)/1000
     else:
-        light_peaks = get_light_peaks(dataset_path)/1000
+        print('opening light from roi')
+        light_peaks = get_roi_light_peaks(dataset_path)
     
     light_times = light_peaks[1:]- light_peaks[0:-1]
     twenty = []
@@ -257,7 +266,7 @@ def get_switch_start_stop_indices(dataset_path, exp_length1 = 20, exp_length2 = 
     return twenty, forty
 
 
-def find_switch_points(dataset_path, difference=15):
+def find_switch_points(dataset_path, difference=15, roi_peaks = False):
     """takes dataset path and imports light peaks and returns the times there is a switch
     args:
     dataset_path = path to fly folder that has voltage file
@@ -267,14 +276,18 @@ def find_switch_points(dataset_path, difference=15):
     indices of the last trial before switch"""
     
     #get light peaks
-    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
-    opened_peaks = open_light_peaks(light_peaks_path)
-    print(opened_peaks)
-    if opened_peaks is not None:
-        light_peaks = opened_peaks/1000
+    if roi_peaks == False:
+        light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
+        opened_peaks = open_light_peaks(light_peaks_path)
+        print(opened_peaks)
+        if opened_peaks is not None:
+            light_peaks = opened_peaks/1000
+        else:
+            light_peaks = get_light_peaks(dataset_path)/1000
     else:
-        light_peaks = get_light_peaks(dataset_path)/1000
-    
+        print('opening light from roi')
+        light_peaks = get_roi_light_peaks(dataset_path)
+
     #find times between light flashes
     light_times = light_peaks[1:]- light_peaks[0:-1] 
     #check that light peaks is single light peaks 
@@ -328,7 +341,7 @@ def get_diode_column(raw_light_data):
             print(f'found diode column {i}')
     #reshape_light_data = np.transpose(raw_light_data[1:])
     column = []
-    for row in raw_light_data[1:]:
+    for row in raw_light_data[1:-1]:  ##sometimes getting errors with last row
         column.append(float(row[diode_column]))  #added [1:] because was trying to add header
     return column
 
@@ -504,20 +517,23 @@ def get_timestamp_drop_number (directory):
             
 
 
-def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
+def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100, roi_peaks = False):
     """gets light peaks in terms of brain time index.
     Note: this may end up being longer than light_peaks_ms because 
     if the light turns on between two zstacks it records the closer 
     one or records both if they are both < 100ms from the flash.
     max dims is the t dims of the brain (sometimes voltage recording extends longer than 2p imaging)"""
     
-    light_peaks_path = os.path.join(fly_path, 'light_peaks.h5')
-    opened_peaks = open_light_peaks(light_peaks_path)
-    if opened_peaks is not None:
-        light_peaks_s = opened_peaks/1000
+    if roi_peaks == False:
+        light_peaks_path = os.path.join(fly_path, 'light_peaks.h5')
+        opened_peaks = open_light_peaks(light_peaks_path)
+        if opened_peaks is not None:
+            light_peaks_s = opened_peaks/1000
+        else:
+            light_peaks_s = get_light_peaks(fly_path)/1000
     else:
-        light_peaks_s = get_light_peaks(fly_path)/1000
-    
+        print('opening light from roi')
+        light_peaks_s = get_roi_light_peaks(fly_path)
     timestamps = load_timestamps(fly_path)
     #average_timestamps = np.mean(timestamps, axis = 1)/1000  ##to convert ms to s to match light_peaks
 
@@ -582,17 +598,21 @@ def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100):
     return light_peaks_t
 
 
-def get_light_peaks_brain_t_no_bleedthrough (fly_path):
+def get_light_peaks_brain_t_no_bleedthrough (fly_path, roi_peaks = False):
     """same as get_light_peaks_brain_t except it removes the added stacks to add as a buffer 
     so it only removes the stack that have a light in them. If it's between stacks it will find the stack the light is closest to.
     consider if this will be an issue. I think not since I remove data that clsoe to the light.
     Need to make sure the data removal isn't an issue too"""
-    light_peaks_path = os.path.join(fly_path, 'light_peaks.h5')
-    opened_peaks = open_light_peaks(light_peaks_path)
-    if opened_peaks is not None:
-        light_peaks_s = opened_peaks/1000
+    if roi_peaks == False:
+        light_peaks_path = os.path.join(fly_path, 'light_peaks.h5')
+        opened_peaks = open_light_peaks(light_peaks_path)
+        if opened_peaks is not None:
+            light_peaks_s = opened_peaks/1000
+        else:
+            light_peaks_s = get_light_peaks(fly_path)/1000
     else:
-        light_peaks_s = get_light_peaks(fly_path)/1000
+        print('opening light from roi')
+        light_peaks_s = get_roi_light_peaks(fly_path)
 
     timestamps = load_timestamps(fly_path)
     print(np.shape(timestamps))
@@ -674,7 +694,7 @@ def get_time_column(raw_light_data):
 #             print(f'could not find "Time(ms)" in header{header}')
     #reshape_light_data = np.transpose(raw_light_data[1:])
     column = []
-    for row in raw_light_data[1:]:
+    for row in raw_light_data[1:-1]: #sometimes last row is bad
         column.append(float(row[time_column])) #adding [1:] to be consistent with diode column
     return column
 
@@ -817,17 +837,20 @@ def get_Bruker_framerate(dataset_path, z_number = 49):
     z_timestamps_s = z_timestamps/1000    
     return bruker_framerate
     
-def run_STA (dataset_path, loading):
+def run_STA (dataset_path, loading, roi_peaks = False):
     """path to folder, this will generate xml file. will also calculate light peaks adjusted. This works for single loading.
     returns a list with loading values seperated by light as different trials"""
     bruker_framerate = get_Bruker_framerate(dataset_path)
-    light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
-    opened_peaks = open_light_peaks(light_peaks_path)
-    if opened_peaks is not None:
-        light_peaks_adjusted = opened_peaks/1000
+    if roi_peaks == False:
+        light_peaks_path = os.path.join(dataset_path, 'light_peaks.h5')
+        opened_peaks = open_light_peaks(light_peaks_path)
+        if opened_peaks is not None:
+            light_peaks_adjusted = opened_peaks/1000
+        else:
+            light_peaks_adjusted = get_light_peaks(dataset_path)/1000
     else:
-        light_peaks_adjusted = get_light_peaks(dataset_path)/1000
-
+        print('opening light from roi')
+        light_peaks_adjusted = get_roi_light_peaks(dataset_path)
     
     all_trials = []
     for light_index in range(len(light_peaks_adjusted)): #look at each time
@@ -877,4 +900,113 @@ def make_empty_h5(savefile, key, dims):
     return savefile
     
 
+def get_video_framerate (cam_data_path):
+    """input filepath to cam file from video file, will check both computer and 
+    camera timestamps to verify that the framerate is similar and return cam fr"""
+    allowed_variability = .1
+    frames_to_use = 20000
+    #get data
+    num_list = []
+    with open(cam_data_path, 'r') as fh:
+        for line in fh:
+            num_list.append((line.split()))
+    #check first input
+    single_column = []
+    specified_column = 1
+    for row in num_list:
+        single_column.append(float(row[specified_column]))
+    single_column = np.squeeze(np.array(single_column))
+    #difference = single_column[1:] - single_column[0:-1]
+    difference = single_column[100:frames_to_use] - single_column[99:frames_to_use-1]
+    first_mean = np.mean(difference)*1000
+    #check second input
+    single_column = []
+    specified_column = 2
+    for row in num_list:
+        single_column.append(float(row[specified_column]))
+    single_column = np.squeeze(np.array(single_column))
+    #difference = single_column[1:] - single_column[0:-1]
+    difference = single_column[100:frames_to_use] - single_column[99:frames_to_use-1]
 
+    second_mean = np.mean(difference)*1000
+    
+    #compare
+    if abs(first_mean - second_mean) < allowed_variability:
+        print(f'within {allowed_variability} \n mean difference = abs{first_mean - second_mean}, first = {first_mean}, second = {second_mean}')
+        print(f'median value = {np.median(difference)*1000}')
+    else:
+        print(f'too much discrepency between fr first = {first_mean}, second = {second_mean}')
+    
+    framerate = 1000/first_mean
+    print(f'first col framerate = {framerate}. second col framerate = {1000/second_mean}')
+    print(framerate)
+    return framerate
+
+
+def calculate_light_peaks_from_roi (dataset_path, roi_path, framerate): #, data_reducer = 100):
+    
+    """input path to ROI h5 file generated from roi_results! and get out the light peaks in frames from ROI data.
+    will save in h5 file in dataset_path"""
+
+    
+    with h5py.File(roi_path, 'r') as f:
+        roi_data = f['roi data'][()]
+        raw_light = f['raw light'][()]
+    
+    # find peaks
+    light_median = np.median(raw_light)
+    early_light_max = max(raw_light[0:2000])
+    light_peaks, properties = scipy.signal.find_peaks(raw_light, height = early_light_max +.001, prominence = 20, distance = 10)
+    #there is a condition that requires this, but I can't remember exactly what the data looked like
+    if len(light_peaks) == 0:
+        print("attempting new early_light_max, because no light peaks")
+        early_light_max = max(light_data_column[0:100])
+        #light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max +.001, prominence = .1, distance = 10)
+        light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max*0.6, distance = 10)
+        if len(light_peaks) == 0:
+            print("There are still no light peaks, attempting with very low prominence")
+            early_light_max = max(light_data_column[0:2000])
+            light_peaks, properties = scipy.signal.find_peaks(light_data_column, height = early_light_max*0.6, prominence = .05, distance = 10)
+            print(f'early light max 0:2000 {early_light_max}')
+            if len(light_peaks) == 0:
+                print("skipping this fly--no light peaks")
+            
+    
+#     ## convert to seconds
+#     voltage_framerate =  10000/data_reducer #frames/s # 1frame/.1ms * 1000ms/1s = 10000f/s
+#     light_peaks_adjusted = light_peaks/voltage_framerate
+    
+    ##use time to give voltage in time
+    ##light_peaks should be the indices of peaks => I can check the indices in time column
+    light_peaks = np.array(light_peaks)
+    
+
+    #save light peaks
+    light_peaks_path = os.path.join(dataset_path, 'light_peaks_roi.h5')
+    #add_to_h5(light_peaks_path, 'light peaks ms', light_ms)
+    
+    
+    add_to_h5(light_peaks_path, 'light peaks frames roi', light_peaks)
+    add_to_h5(light_peaks_path, 'light peaks sec roi', light_peaks*framerate)
+    add_to_h5(light_peaks_path, 'framerate used', framerate)
+    return light_peaks
+
+
+def get_roi_light_peaks (dataset_path, framerate = None):
+    """get light peaks from roi_light_peaks.h5 file. Return light peaks in seconds. 
+    Framerate will be used from roi peaks file unless otherwise specified. Should be video framerate"""
+    
+    roi_peaks_path = os.path.join(dataset_path, 'light_peaks_roi.h5')
+    
+    if framerate == None:
+        with h5py.File(roi_peaks_path, 'r') as f:
+            print(f"framerate used {f['framerate used'][()]}")
+            #roi_light_frames = f['light peaks frames roi'][()]
+            roi_light_peaks_s = f['light peaks sec roi'][()]
+    else:
+        with h5py.File(roi_peaks_path, 'r') as f:
+            print(f"used inputed framerate {framerate}")
+            roi_light_frames = f['light peaks frames roi'][()]
+            roi_light_peaks_s = roi_light_frames / framerate
+        
+    return roi_light_peaks_s
