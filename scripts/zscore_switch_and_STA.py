@@ -86,6 +86,7 @@ for date in dates:
     job_ids = []
     for fly in flies:
         directory = os.path.join(dataset_path, fly)
+        printlog(f' directory = {directory}')
         save_path = directory  #could have it save in a different folder in the future
         all_files = os.listdir(directory)
         filenames = [file for file in all_files if file_id in file]
@@ -107,20 +108,24 @@ for date in dates:
         job_ids.append(job_id)
         printlog(f"{directory} fly started")
 
+    for job_id in job_ids:
+        brainsss.wait_for_job(job_id, logfile, com_path)
 
-        ######################
-        ### STA ####
-        #######################
-        printlog(f"\n{'   STA   ':=^{width}}")
-        #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
-        ##run zscore on high pass filtered moco files
-        if switch == True:
-            STA_file_id = 'highpass_switch_zscore_rem_light.h5'
-        else:
-            STA_file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
-        #STA_file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+    ######################
+    ### STA ####
+    #######################
+    printlog(f"\n{'   STA   ':=^{width}}")
+    #moco_names = ['MOCO_ch1.h5', 'MOCO_ch2.h5']   #run zscore on moco h5 files
+    ##run zscore on high pass filtered moco files
+    if switch == True:
+        STA_file_id = 'highpass_switch_zscore_rem_light.h5'
+    else:
+        STA_file_id = 'highpass_full_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
+    #STA_file_id = 'highpass_switch_zscore_rem_light.h5'  ##looks for this tag in filename and runs analysis on it
     
+    for fly in flies:
         directory = os.path.join(dataset_path, fly)
+        printlog(f' directory = {directory}')
         save_path = directory  #could have it save in a different folder in the future
         all_files = os.listdir(directory)
         STA_filenames = [file for file in all_files if STA_file_id in file]
