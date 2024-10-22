@@ -987,7 +987,7 @@ def calculate_light_peaks_from_roi (dataset_path, roi_path, framerate): #, data_
     
     
     add_to_h5(light_peaks_path, 'light peaks frames roi', light_peaks)
-    add_to_h5(light_peaks_path, 'light peaks sec roi', light_peaks*framerate)
+    add_to_h5(light_peaks_path, 'light peaks sec roi', light_peaks/framerate)
     add_to_h5(light_peaks_path, 'framerate used', framerate)
     return light_peaks
 
