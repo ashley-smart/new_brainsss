@@ -36,7 +36,7 @@ def main(args):
     redo_rem_light = True
     #fix = True  ##fixes timestamps to account for stitch error for files before 20231201
     light_buffer = 100
-    roi_peaks = True #use roi_light peaks rather than voltage light peaks
+    roi_peaks = True #use roi_light peaks rather than voltage light peaks ##NEED TO TURN THIS INTO ARG in main script
     
     
     #save_file = os.path.join(save_path, 'ch2_zscore_hp.h5')
