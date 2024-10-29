@@ -551,50 +551,51 @@ def get_light_peaks_brain_time(fly_path, max_dims, light_buffer_ms = 100, roi_pe
     
     light_peaks_t = []
     for light in light_peaks_s:
-        last = np.where(last_timestamps_s >= light)[0][0]
-        first = np.where(first_timestamps_s <= light)[0][-1]
-        ##check to make sure it is within brain time
-        if last <= max_dims:
-            #then sort out which ones to append based on when the light is coming on in relation to brain volume
-            if last == first:
-                light_peaks_t.append(last) #since the are the same then the light is in this zstack
-                
-                #extra
-                light_peaks_t.append(last-1)
-                light_peaks_t.append(last +1)
-                
-            elif last != first: #then the light comes on between two zstacks
-                #determine which one it is closer to.
-                time_start_last = first_timestamps_s[last] #the start of the zstack that happens just after flash
-                time_end_first = last_timestamps_s[first] #the end of the zstack that happens just before the flash
-
-                if time_start_last - light  < light - time_end_first:
-                    #then the flash is closer to the "last" index
-        #             print('closer to second stack')
-        #             print('diff ms = ', (time_start_last - light)*1000)
-                    light_peaks_t.append(last)
+        if light < last_timestamps_s[-1]: #sometimes roi light continues beyond imaging experiment
+            last = np.where(last_timestamps_s >= light)[0][0]
+            first = np.where(first_timestamps_s <= light)[0][-1]
+            ##check to make sure it is within brain time
+            if last <= max_dims:
+                #then sort out which ones to append based on when the light is coming on in relation to brain volume
+                if last == first:
+                    light_peaks_t.append(last) #since the are the same then the light is in this zstack
                     
                     #extra
-                    light_peaks_t.append(last - 1)
+                    light_peaks_t.append(last-1)
                     light_peaks_t.append(last +1)
                     
-                     #check if it is very close to the last index too though
-                    if (light - time_end_first)*1000 < light_buffer_ms:
-                        light_peaks_t.append(first) #if it's close then add the other zstack to be removed too
+                elif last != first: #then the light comes on between two zstacks
+                    #determine which one it is closer to.
+                    time_start_last = first_timestamps_s[last] #the start of the zstack that happens just after flash
+                    time_end_first = last_timestamps_s[first] #the end of the zstack that happens just before the flash
 
-                else:
-                    #light is closet to the "first" index
-        #             print('closer to first stack')
-        #             print('diff ms = ', (light - time_end_first)*1000)
-                    light_peaks_t.append(first)
-            
-                    #extra
-                    light_peaks_t.append(first - 1)
-                    light_peaks_t.append(first +1)
-                    
-                    #check if it is very close to the last index too though
-                    if (time_start_last - light)*1000 < light_buffer_ms:
-                        light_peaks_t.append(last) #if it's close then add the other zstack to be removed too
+                    if time_start_last - light  < light - time_end_first:
+                        #then the flash is closer to the "last" index
+            #             print('closer to second stack')
+            #             print('diff ms = ', (time_start_last - light)*1000)
+                        light_peaks_t.append(last)
+                        
+                        #extra
+                        light_peaks_t.append(last - 1)
+                        light_peaks_t.append(last +1)
+                        
+                        #check if it is very close to the last index too though
+                        if (light - time_end_first)*1000 < light_buffer_ms:
+                            light_peaks_t.append(first) #if it's close then add the other zstack to be removed too
+
+                    else:
+                        #light is closet to the "first" index
+            #             print('closer to first stack')
+            #             print('diff ms = ', (light - time_end_first)*1000)
+                        light_peaks_t.append(first)
+                
+                        #extra
+                        light_peaks_t.append(first - 1)
+                        light_peaks_t.append(first +1)
+                        
+                        #check if it is very close to the last index too though
+                        if (time_start_last - light)*1000 < light_buffer_ms:
+                            light_peaks_t.append(last) #if it's close then add the other zstack to be removed too
     return light_peaks_t
 
 
