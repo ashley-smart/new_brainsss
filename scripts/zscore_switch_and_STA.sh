@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=z_and_STA
-#SBATCH --time=7-00:00:00
+#SBATCH --time=3-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
 ## comment out #SBATCH --mem 260G
