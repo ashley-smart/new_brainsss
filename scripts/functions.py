@@ -633,22 +633,23 @@ def get_light_peaks_brain_t_no_bleedthrough (fly_path, roi_peaks = False):
 
     light_peaks_t = []
     for light in light_peaks_s:
-        last = np.where(last_timestamps_s >= light)[0][0]  #the stack num where the light time is less than the last z time in the stack
-        first = np.where(first_timestamps_s <= light)[0][-1] # the stack num where the light time is greater tahn the first z time in the stack
-        #ort out which ones to append based on when the light is coming on in relation to brain volume
-        if last == first:
-            light_peaks_t.append(last) #since the are the same then the light is in this zstack
-        elif last != first: #then the light comes on between two zstacks
-            #determine which one it is closer to.
-            time_start_last = first_timestamps_s[last] #the start of the zstack that happens just after flash
-            time_end_first = last_timestamps_s[first] #the end of the zstack that happens just before the flash
+        if light < last_timestamps_s[-1]: #sometimes roi light continues beyond imaging experiment
+            last = np.where(last_timestamps_s >= light)[0][0]  #the stack num where the light time is less than the last z time in the stack
+            first = np.where(first_timestamps_s <= light)[0][-1] # the stack num where the light time is greater tahn the first z time in the stack
+            #ort out which ones to append based on when the light is coming on in relation to brain volume
+            if last == first:
+                light_peaks_t.append(last) #since the are the same then the light is in this zstack
+            elif last != first: #then the light comes on between two zstacks
+                #determine which one it is closer to.
+                time_start_last = first_timestamps_s[last] #the start of the zstack that happens just after flash
+                time_end_first = last_timestamps_s[first] #the end of the zstack that happens just before the flash
 
-            if time_start_last - light  < light - time_end_first:
-                #then the flash is closer to the "last" index
-                light_peaks_t.append(last)
-            else:
-                #light is closet to the "first" index
-                light_peaks_t.append(first)
+                if time_start_last - light  < light - time_end_first:
+                    #then the flash is closer to the "last" index
+                    light_peaks_t.append(last)
+                else:
+                    #light is closet to the "first" index
+                    light_peaks_t.append(first)
     return light_peaks_t
 
 
