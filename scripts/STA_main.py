@@ -27,7 +27,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 #dates = sys.argv  #input should be ['with date strings'] this doesnt work right
 
 #dates = ['20230630', '20230616', '20230623'] 
-dates = ['20240802', '20240906', '20240913'] #'20230428', '20230616'] 
+dates = ['20241004'] #'20230428', '20230616'] 
 #next 606
 for date in dates:
 
