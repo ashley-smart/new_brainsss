@@ -35,7 +35,7 @@ for date in dates:
     #dataset_path = "/oak/stanford/groups/trc/data/krave/bruker_data/imports/" + str(date)
 
 
-    mem = 18
+    mem = 14 #was 18
     high_pass_mem = 6
     runtime = 48 #144 #time in hours before it stops running  use 48 for normal partition
     width = 120 # width of print log

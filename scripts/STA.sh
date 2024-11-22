@@ -1,12 +1,12 @@
 #!/bin/bash
-#SBATCH --job-name=STA
+#SBATCH --job-name=STA run
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
 ## comment out #SBATCH --mem 260G
 #SBATCH --output=./logs/mainlogSTA.out
 #SBATCH --open-mode=append
-#SBATCH --cpus-per-task=4
+#SBATCH --cpus-per-task=1
 #SBATCH --mail-type=ALL
 
 ml python/3.6.1
