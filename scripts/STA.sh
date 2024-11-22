@@ -1,5 +1,5 @@
 #!/bin/bash
-#SBATCH --job-name=STA run
+#SBATCH --job-name=STArun
 #SBATCH --time=2-00:00:00
 #SBATCH --ntasks=1
 #SBATCH --partition=trc
