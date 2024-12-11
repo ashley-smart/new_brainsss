@@ -1002,7 +1002,7 @@ def get_roi_light_peaks (dataset_path, framerate = None):
     
     if framerate == None:
         with h5py.File(roi_peaks_path, 'r') as f:
-            print(f"framerate used {f['framerate used'][()]}")
+            #print(f"framerate used {f['framerate used'][()]}")
             #roi_light_frames = f['light peaks frames roi'][()]
             roi_light_peaks_s = f['light peaks sec roi'][()]
     else:
