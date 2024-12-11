@@ -34,6 +34,8 @@ def main(args):
     save_directory = args['save_path']
 
     overwrite = False #to redo calculations
+    roi_peaks = True
+    
     # rem_light = True #to remove light flash times from the zscore data (will resave as new h5 file)
     # printlog = getattr(brainsss.Printlog(logfile=logfile), 'print_to_log')
     # light_buffer = 200 #ms needed away from light peak to allow brain volume to not be marked as light
