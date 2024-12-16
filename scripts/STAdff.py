@@ -108,7 +108,8 @@ def main(args):
 
                     #delete nan_brain from memory
                     del nan_brain
-                    
+                    del trials
+
                     printlog(f'{np.shape(mean_STA)}')
                     fun.add_to_h5(save_file, f'{key_id} STA', mean_STA)
                     printlog(f'saved {key_id} STA')
@@ -137,7 +138,8 @@ def main(args):
                     plt.savefig(os.path.join(fig_save_path, save_title), bbox_inches='tight')
                     plt.show()
                     printlog(f'images saved for {key_id} experiment for {brain_file}')
-
+                    
+                    del mean_STA
                 
 
 if __name__ == '__main__':
