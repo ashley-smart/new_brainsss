@@ -24,7 +24,7 @@ com_path = "/home/users/asmart/projects/new_brainsss/scripts/com"
 
 
 
-dates = ['20240906'] 
+dates = ['20240918'] 
 for date in dates:
 
     dataset_path = "/oak/stanford/groups/trc/data/Ashley2/imports/" + str(date)
