@@ -114,30 +114,30 @@ def main(args):
                     fun.add_to_h5(save_file, f'{key_id} STA', mean_STA)
                     printlog(f'saved {key_id} STA')
 
-                ## make plots! 7 x 7 grid of zslices
-                for t in range(mean_STA.shape[3]):  # x, y, z, t
-                    assert mean_STA.shape[2] == 49
-                    rows = []
-                    for row_ii in range(7):
-                        row = []
-                        for col_ii in range(7):
-                            row.append(mean_STA[:, :, row_ii*7 + col_ii, t])
-                        rows.append(np.concatenate(row, 0))  # if concatenate(row, 1) this makes the row horizontal. Could change.
-                    mean_STA_tile = np.concatenate(rows, 1)  # this should always be a different axis from the one above.
-                    printlog(f'max {mean_STA_tile.max()}, mean {mean_STA_tile.mean()}, min{mean_STA_tile.min()}') # use this to figure out vmax,vmin
+                # ## make plots! 7 x 7 grid of zslices
+                # for t in range(mean_STA.shape[3]):  # x, y, z, t
+                #     assert mean_STA.shape[2] == 49
+                #     rows = []
+                #     for row_ii in range(7):
+                #         row = []
+                #         for col_ii in range(7):
+                #             row.append(mean_STA[:, :, row_ii*7 + col_ii, t])
+                #         rows.append(np.concatenate(row, 0))  # if concatenate(row, 1) this makes the row horizontal. Could change.
+                #     mean_STA_tile = np.concatenate(rows, 1)  # this should always be a different axis from the one above.
+                #     printlog(f'max {mean_STA_tile.max()}, mean {mean_STA_tile.mean()}, min{mean_STA_tile.min()}') # use this to figure out vmax,vmin
                     
-                #     plt.figure(figsize=(10,19))  # mostly vertical
-                #     plt.imshow(mean_STA_tile, vmax=3., vmin=-1.)
-                    plt.figure(figsize=(19,10))   # mostly horizontal
-                    #plt.imshow(mean_STA_tile.T, vmax=3., vmin=-1.)
-                    plt.imshow(mean_STA_tile.T, vmax=2., vmin=-2.) #, cmap = 'bwr')
-                    plt.title(f'STA {key_id}, t={t}')
-                    brain_name = brain_file.split('.')[0]
-                    save_title = f'{brain_name}STA_{key_id}_dffbrain_t-{t}.png'
-                    printlog(os.path.join(fig_save_path, save_title))
-                    plt.savefig(os.path.join(fig_save_path, save_title), bbox_inches='tight')
-                    plt.show()
-                    printlog(f'images saved for {key_id} experiment for {brain_file}')
+                # #     plt.figure(figsize=(10,19))  # mostly vertical
+                # #     plt.imshow(mean_STA_tile, vmax=3., vmin=-1.)
+                #     plt.figure(figsize=(19,10))   # mostly horizontal
+                #     #plt.imshow(mean_STA_tile.T, vmax=3., vmin=-1.)
+                #     plt.imshow(mean_STA_tile.T, vmax=2., vmin=-2.) #, cmap = 'bwr')
+                #     plt.title(f'STA {key_id}, t={t}')
+                #     brain_name = brain_file.split('.')[0]
+                #     save_title = f'{brain_name}STA_{key_id}_dffbrain_t-{t}.png'
+                #     printlog(os.path.join(fig_save_path, save_title))
+                #     plt.savefig(os.path.join(fig_save_path, save_title), bbox_inches='tight')
+                #     plt.show()
+                #     printlog(f'images saved for {key_id} experiment for {brain_file}')
                     
                     del mean_STA
                 
